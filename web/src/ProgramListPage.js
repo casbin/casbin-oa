@@ -30,9 +30,9 @@ class ProgramListPage extends React.Component {
     return {
       owner: "admin", // this.props.account.username,
       name: `program_${this.state.programs.length}`,
-      title: `New Program - ${this.state.programs.length}`,
       createdTime: moment().format(),
-      Url: "",
+      title: `New Program - ${this.state.programs.length}`,
+      url: "https://example.com",
     }
   }
 
@@ -116,7 +116,7 @@ class ProgramListPage extends React.Component {
         title: 'Action',
         dataIndex: '',
         key: 'op',
-        width: '220px',
+        width: '160px',
         render: (text, record, index) => {
           return (
             <div>

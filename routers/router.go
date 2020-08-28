@@ -38,4 +38,10 @@ func initAPI() {
 	beego.Router("/api/update-program", &controllers.ApiController{}, "POST:UpdateProgram")
 	beego.Router("/api/add-program", &controllers.ApiController{}, "POST:AddProgram")
 	beego.Router("/api/delete-program", &controllers.ApiController{}, "POST:DeleteProgram")
+
+	beego.Router("/api/get-students", &controllers.ApiController{}, "GET:GetStudents")
+	beego.Router("/api/get-student", &controllers.ApiController{}, "GET:GetStudent")
+	beego.Router("/api/update-student", &controllers.ApiController{}, "POST:UpdateStudent")
+	beego.Router("/api/add-student", &controllers.ApiController{}, "POST:AddStudent")
+	beego.Router("/api/delete-student", &controllers.ApiController{}, "POST:DeleteStudent")
 }

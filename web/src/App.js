@@ -21,6 +21,8 @@ import {Switch, Route, withRouter, Redirect} from 'react-router-dom'
 import * as AccountBackend from "./backend/AccountBackend";
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
+import StudentListPage from "./StudentListPage";
+import StudentEditPage from "./StudentEditPage";
 
 const { Header, Footer } = Layout;
 
@@ -46,8 +48,10 @@ class App extends Component {
     const uri = location.pathname;
     if (uri === '/') {
       this.setState({ selectedMenuKey: 0 });
-    } else if (uri.includes('programs')) {
+    } else if (uri.includes('students')) {
       this.setState({ selectedMenuKey: 1 });
+    } else if (uri.includes('programs')) {
+      this.setState({ selectedMenuKey: 2 });
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -73,10 +77,6 @@ class App extends Component {
         this.setState({
           account: account,
         });
-
-        if (account !== undefined && account !== null) {
-          window.mouselogUserId = account.username;
-        }
       });
   }
 
@@ -189,6 +189,13 @@ class App extends Component {
     );
     res.push(
       <Menu.Item key="1">
+        <a href="/students">
+          Students
+        </a>
+      </Menu.Item>
+    );
+    res.push(
+      <Menu.Item key="2">
         <a href="/programs">
           Programs
         </a>
@@ -245,6 +252,8 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
+          <Route exact path="/students" component={StudentListPage}/>
+          <Route exact path="/students/:studentName" component={StudentEditPage}/>
           <Route exact path="/programs" component={ProgramListPage}/>
           <Route exact path="/programs/:programName" component={ProgramEditPage}/>
         </Switch>
