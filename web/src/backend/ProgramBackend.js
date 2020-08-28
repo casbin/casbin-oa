@@ -16,7 +16,6 @@ export function getProgram(owner, name) {
 
 export function updateProgram(owner, name, program) {
   let newProgram = Setting.deepCopy(program);
-  newProgram.ticket = JSON.stringify(program.ticket);
   return fetch(`${Setting.ServerUrl}/api/update-program?id=${owner}/${encodeURIComponent(name)}`, {
     method: 'POST',
     credentials: 'include',
@@ -26,7 +25,6 @@ export function updateProgram(owner, name, program) {
 
 export function addProgram(program) {
   let newProgram = Setting.deepCopy(program);
-  newProgram.ticket = JSON.stringify(program.ticket);
   return fetch(`${Setting.ServerUrl}/api/add-program`, {
     method: 'POST',
     credentials: 'include',
@@ -36,7 +34,6 @@ export function addProgram(program) {
 
 export function deleteProgram(program) {
   let newProgram = Setting.deepCopy(program);
-  newProgram.ticket = JSON.stringify(program.ticket);
   return fetch(`${Setting.ServerUrl}/api/delete-program`, {
     method: 'POST',
     credentials: 'include',
