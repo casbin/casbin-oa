@@ -33,5 +33,9 @@ func initAPI() {
 		)
 	beego.AddNamespace(ns)
 
-	beego.Router("/api/get-top-posts", &controllers.ApiController{}, "POST:GetTopPosts")
+	beego.Router("/api/get-programs", &controllers.ApiController{}, "GET:GetPrograms")
+	beego.Router("/api/get-program", &controllers.ApiController{}, "GET:GetProgram")
+	beego.Router("/api/update-program", &controllers.ApiController{}, "POST:UpdateProgram")
+	beego.Router("/api/add-program", &controllers.ApiController{}, "POST:AddProgram")
+	beego.Router("/api/delete-program", &controllers.ApiController{}, "POST:DeleteProgram")
 }

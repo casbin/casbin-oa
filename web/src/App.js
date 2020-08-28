@@ -19,6 +19,8 @@ import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
 import {Switch, Route, withRouter, Redirect} from 'react-router-dom'
 import * as AccountBackend from "./backend/AccountBackend";
+import ProgramListPage from "./ProgramListPage";
+import ProgramEditPage from "./ProgramEditPage";
 
 const { Header, Footer } = Layout;
 
@@ -30,6 +32,8 @@ class App extends Component {
       selectedMenuKey: 0,
       account: undefined,
     };
+
+    Setting.initServerUrl();
   }
 
   componentWillMount() {
@@ -42,6 +46,8 @@ class App extends Component {
     const uri = location.pathname;
     if (uri === '/') {
       this.setState({ selectedMenuKey: 0 });
+    } else if (uri.includes('programs')) {
+      this.setState({ selectedMenuKey: 1 });
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -170,9 +176,9 @@ class App extends Component {
   renderMenu() {
     let res = [];
 
-    if (this.state.account === null || this.state.account === undefined) {
-      return [];
-    }
+    // if (this.state.account === null || this.state.account === undefined) {
+    //   return [];
+    // }
 
     res.push(
       <Menu.Item key="0">
@@ -183,7 +189,7 @@ class App extends Component {
     );
     res.push(
       <Menu.Item key="1">
-        <a href="/program-edit">
+        <a href="/programs">
           Programs
         </a>
       </Menu.Item>
@@ -239,7 +245,8 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
-          {/*<Route exact path="/" component={ProgramPage}/>*/}
+          <Route exact path="/programs" component={ProgramListPage}/>
+          <Route exact path="/programs/:programName" component={ProgramEditPage}/>
         </Switch>
       </div>
     )
