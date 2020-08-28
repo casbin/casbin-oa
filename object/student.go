@@ -26,6 +26,10 @@ type Student struct {
 
 	RealName string `xorm:"varchar(100)" json:"realName"`
 	School   string `xorm:"varchar(100)" json:"school"`
+	Program  string `xorm:"varchar(100)" json:"program"`
+	Mentor   string `xorm:"varchar(100)" json:"mentor"`
+	Github   string `xorm:"varchar(100)" json:"github"`
+	Email    string `xorm:"varchar(100)" json:"email"`
 }
 
 func GetStudents(owner string) []*Student {

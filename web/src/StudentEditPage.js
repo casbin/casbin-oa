@@ -84,6 +84,46 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        <Row style={{marginTop: '10px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Program:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.student.program} onChange={e => {
+              this.updateStudentField('program', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '10px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Mentor:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.student.mentor} onChange={e => {
+              this.updateStudentField('mentor', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '10px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            GitHub:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.student.github} onChange={e => {
+              this.updateStudentField('github', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '10px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Email:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.student.email} onChange={e => {
+              this.updateStudentField('email', e.target.value);
+            }} />
+          </Col>
+        </Row>
       </Card>
     )
   }

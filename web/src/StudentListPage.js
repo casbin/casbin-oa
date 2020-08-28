@@ -33,6 +33,10 @@ class StudentListPage extends React.Component {
       createdTime: moment().format(),
       realName: "James Bond",
       school: "Harvard University",
+      program: "summer2020",
+      mentor: "alice",
+      github: "jamesbond",
+      email: "jamesbond@gmail.com",
     }
   }
 
@@ -102,6 +106,54 @@ class StudentListPage extends React.Component {
         key: 'school',
         // width: '150px',
         sorter: (a, b) => a.school.localeCompare(b.school),
+      },
+      {
+        title: 'Program',
+        dataIndex: 'program',
+        key: 'program',
+        width: '120px',
+        sorter: (a, b) => a.program.localeCompare(b.program),
+        render: (text, record, index) => {
+          return (
+            <a href={`/programs/${text}`}>{text}</a>
+          )
+        }
+      },
+      {
+        title: 'Mentor',
+        dataIndex: 'mentor',
+        key: 'mentor',
+        width: '120px',
+        sorter: (a, b) => a.mentor.localeCompare(b.mentor),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
+          )
+        }
+      },
+      {
+        title: 'GitHub',
+        dataIndex: 'github',
+        key: 'github',
+        width: '120px',
+        sorter: (a, b) => a.github.localeCompare(b.github),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
+          )
+        }
+      },
+      {
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
+        width: '120px',
+        sorter: (a, b) => a.email.localeCompare(b.email),
+        render: (text, record, index) => {
+          return (
+            <a href={`mailto:${text}`}>{text}</a>
+          )
+        }
       },
       {
         title: 'Action',
