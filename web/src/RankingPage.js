@@ -18,7 +18,7 @@ class RankingPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      programName: props.match.params.programName,
+      programName: props.match.params.programName !== undefined ? props.match.params.programName : "summer2020",
       students: null,
       reports: null,
       program: null,

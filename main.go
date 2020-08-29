@@ -17,6 +17,7 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/casbin/casbin-oa/controllers"
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/routers"
 
@@ -25,6 +26,7 @@ import (
 
 func main() {
 	object.InitAdapter()
+	controllers.InitHttpClient()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

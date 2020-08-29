@@ -17,7 +17,8 @@ import './App.css';
 import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
-import {Switch, Route, withRouter, Redirect} from 'react-router-dom'
+import {Switch, Route, withRouter, Redirect} from 'react-router-dom';
+import {GithubLoginButton} from "react-social-login-buttons";
 import * as AccountBackend from "./backend/AccountBackend";
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
@@ -29,6 +30,7 @@ import RoundEditPage from "./RoundEditPage";
 import ReportListPage from "./ReportListPage";
 import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
+import CallbackBox from "./AuthBox";
 
 const { Header, Footer } = Layout;
 
@@ -42,6 +44,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
+    Setting.initFullClientUrl();
   }
 
   componentWillMount() {
@@ -81,9 +84,6 @@ class App extends Component {
     AccountBackend.getAccount()
       .then((res) => {
         const account = Setting.parseJson(res.data);
-        if (window.location.pathname === '/' && account === null) {
-          Setting.goToLink("/");
-        }
         this.setState({
           account: account,
         });
@@ -158,25 +158,10 @@ class App extends Component {
       res.push(this.renderRightDropdown());
     } else {
       res.push(
-        <Menu.Item key="1" style={{float: 'right', marginRight: '20px'}}>
-          <a href="/register">
-            Register
-          </a>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="2" style={{float: 'right'}}>
-          <a href="/login">
-            Login
-          </a>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="4" style={{float: 'right'}}>
-          <a href="/">
-            Home
-          </a>
-        </Menu.Item>
+        <div key="100" style={{float: 'right', height: "64px", marginRight: "10px"}}>
+          <GithubLoginButton style={{marginTop: "12px", fontSize: "14px"}} size={40} onClick={() => Setting.getGithubAuthCode("signup")} />
+          {/*<a href="/login"></a>*/}
+        </div>
       );
     }
 
@@ -276,6 +261,8 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
+          <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
+          <Route exact path="/callback/:authType/:addition" component={CallbackBox}/>
           <Route exact path="/account" render={(props) => this.renderLoginIfNotLogined(<AccountPage account={this.state.account} {...props} />)}/>
           <Route exact path="/user/:username" render={(props) => <AccountPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" component={StudentListPage}/>

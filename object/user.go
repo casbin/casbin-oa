@@ -112,3 +112,40 @@ func AddUser(user string, password string, name string, school string, email str
 
 	return affected != 0
 }
+
+func GetMail(email string) *User {
+	user := User{Email: email}
+	existed, err := adapter.engine.Get(&user)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &user
+	} else {
+		return nil
+	}
+}
+
+func GetGithub(github string) *User {
+	user := User{Github: github}
+	existed, err := adapter.engine.Get(&user)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &user
+	} else {
+		return nil
+	}
+}
+
+func LinkUserAccount(user, field, value string) bool {
+	affected, err := adapter.engine.Table(new(User)).ID(user).Update(map[string]interface{}{field: value})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
