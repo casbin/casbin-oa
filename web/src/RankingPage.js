@@ -347,7 +347,7 @@ class RankingPage extends React.Component {
     } else {
       return (
         <ReactMarkdown
-          source={this.state.report.text}
+          source={this.state.report.text !== "" ? this.state.report.text : "(empty)"}
           renderers={{image: props => <img {...props} style={{maxWidth: '100%'}} alt="img" />}}
           escapeHtml={false}
         />
@@ -389,9 +389,14 @@ class RankingPage extends React.Component {
           {
             this.renderReportTextEdit()
           }
-          <Rate tooltips={desc} value={this.state.report.score} onChange={value => {
+          <Rate tooltips={desc} disabled={this.state.report.text === ""} value={this.state.report.score} onChange={value => {
             this.updateReportField('score', value);
           }} />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          {
+            this.state.report.text === "" ?
+              "(You cannot rate it if the text is empty or you are not the mentor)" : null
+          }
         </div>
       </Modal>
     )
