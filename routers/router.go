@@ -50,4 +50,10 @@ func initAPI() {
 	beego.Router("/api/update-student", &controllers.ApiController{}, "POST:UpdateStudent")
 	beego.Router("/api/add-student", &controllers.ApiController{}, "POST:AddStudent")
 	beego.Router("/api/delete-student", &controllers.ApiController{}, "POST:DeleteStudent")
+
+	beego.Router("/api/get-rounds", &controllers.ApiController{}, "GET:GetRounds")
+	beego.Router("/api/get-round", &controllers.ApiController{}, "GET:GetRound")
+	beego.Router("/api/update-round", &controllers.ApiController{}, "POST:UpdateRound")
+	beego.Router("/api/add-round", &controllers.ApiController{}, "POST:AddRound")
+	beego.Router("/api/delete-round", &controllers.ApiController{}, "POST:DeleteRound")
 }

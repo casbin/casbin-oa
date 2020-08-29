@@ -2,72 +2,71 @@ import React from "react";
 import {Button, Col, Popconfirm, Row, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
-import * as ProgramBackend from "./backend/ProgramBackend";
+import * as RoundBackend from "./backend/RoundBackend";
 
-class ProgramListPage extends React.Component {
+class RoundListPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      programs: null,
+      rounds: null,
     };
   }
 
   componentWillMount() {
-    this.getPrograms();
+    this.getRounds();
   }
 
-  getPrograms() {
-    ProgramBackend.getPrograms("admin")
+  getRounds() {
+    RoundBackend.getRounds("admin")
       .then((res) => {
         this.setState({
-          programs: res,
+          rounds: res,
         });
       });
   }
 
-  newProgram() {
+  newRound() {
     return {
       owner: "admin", // this.props.account.username,
-      name: `program_${this.state.programs.length}`,
+      name: `round_${this.state.rounds.length}`,
       createdTime: moment().format(),
-      title: `New Program - ${this.state.programs.length}`,
-      url: "https://example.com",
+      title: `New Round - ${this.state.rounds.length}`,
       startDate: "2020-01-23",
       endDate: "2020-01-23",
     }
   }
 
-  addProgram() {
-    const newProgram = this.newProgram();
-    ProgramBackend.addProgram(newProgram)
+  addRound() {
+    const newRound = this.newRound();
+    RoundBackend.addRound(newRound)
       .then((res) => {
-          Setting.showMessage("success", `Program added successfully`);
+          Setting.showMessage("success", `Round added successfully`);
           this.setState({
-            programs: Setting.prependRow(this.state.programs, newProgram),
+            rounds: Setting.prependRow(this.state.rounds, newRound),
           });
         }
       )
       .catch(error => {
-        Setting.showMessage("error", `Program failed to add: ${error}`);
+        Setting.showMessage("error", `Round failed to add: ${error}`);
       });
   }
 
-  deleteProgram(i) {
-    ProgramBackend.deleteProgram(this.state.programs[i])
+  deleteRound(i) {
+    RoundBackend.deleteRound(this.state.rounds[i])
       .then((res) => {
-          Setting.showMessage("success", `Program deleted successfully`);
+          Setting.showMessage("success", `Round deleted successfully`);
           this.setState({
-            programs: Setting.deleteRow(this.state.programs, i),
+            rounds: Setting.deleteRow(this.state.rounds, i),
           });
         }
       )
       .catch(error => {
-        Setting.showMessage("error", `Program failed to delete: ${error}`);
+        Setting.showMessage("error", `Round failed to delete: ${error}`);
       });
   }
 
-  renderTable(programs) {
+  renderTable(rounds) {
     const columns = [
       {
         title: 'Name',
@@ -77,7 +76,7 @@ class ProgramListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/programs/${text}`}>{text}</a>
+            <a href={`/rounds/${text}`}>{text}</a>
           )
         }
       },
@@ -99,18 +98,14 @@ class ProgramListPage extends React.Component {
         }
       },
       {
-        title: 'Url',
-        dataIndex: 'url',
-        key: 'url',
-        width: '150px',
-        sorter: (a, b) => a.url.localeCompare(b.url),
+        title: 'Program',
+        dataIndex: 'program',
+        key: 'program',
+        width: '120px',
+        sorter: (a, b) => a.program.localeCompare(b.program),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={text}>
-              {
-                text
-              }
-            </a>
+            <a href={`/programs/${text}`}>{text}</a>
           )
         }
       },
@@ -136,10 +131,10 @@ class ProgramListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/programs/${record.name}`)}>Edit</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/rounds/${record.name}`)}>Edit</Button>
               <Popconfirm
-                title={`Sure to delete program: ${record.name} ?`}
-                onConfirm={() => this.deleteProgram(index)}
+                title={`Sure to delete round: ${record.name} ?`}
+                onConfirm={() => this.deleteRound(index)}
               >
                 <Button style={{marginBottom: '10px'}} type="danger">Delete</Button>
               </Popconfirm>
@@ -151,14 +146,14 @@ class ProgramListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={programs} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table columns={columns} dataSource={rounds} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
                title={() => (
                  <div>
-                   Programs&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addProgram.bind(this)}>Add</Button>
+                   Rounds&nbsp;&nbsp;&nbsp;&nbsp;
+                   <Button type="primary" size="small" onClick={this.addRound.bind(this)}>Add</Button>
                  </div>
                )}
-               loading={programs === null}
+               loading={rounds === null}
         />
       </div>
     );
@@ -172,7 +167,7 @@ class ProgramListPage extends React.Component {
           </Col>
           <Col span={22}>
             {
-              this.renderTable(this.state.programs)
+              this.renderTable(this.state.rounds)
             }
           </Col>
           <Col span={1}>
@@ -183,4 +178,4 @@ class ProgramListPage extends React.Component {
   }
 }
 
-export default ProgramListPage;
+export default RoundListPage;
