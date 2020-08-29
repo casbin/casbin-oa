@@ -23,6 +23,7 @@ import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
 import StudentListPage from "./StudentListPage";
 import StudentEditPage from "./StudentEditPage";
+import AccountPage from "./AccountPage";
 
 const { Header, Footer } = Layout;
 
@@ -252,6 +253,8 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
+          <Route exact path="/account" render={(props) => this.renderLoginIfNotLogined(<AccountPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/user/:username" render={(props) => <AccountPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" component={StudentListPage}/>
           <Route exact path="/students/:studentName" component={StudentEditPage}/>
           <Route exact path="/programs" component={ProgramListPage}/>

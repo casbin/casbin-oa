@@ -79,7 +79,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/students/${text}`}>{text}</a>
+            <a href={`/user/${text}`}>{text}</a>
           )
         }
       },
@@ -127,7 +127,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.mentor.localeCompare(b.mentor),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
+            <a href={`/user/${text}`}>{text}</a>
           )
         }
       },
