@@ -154,15 +154,17 @@ class App extends Component {
   renderAccount() {
     let res = [];
 
-    if (this.state.account !== null && this.state.account !== undefined) {
-      res.push(this.renderRightDropdown());
-    } else {
+    if (this.state.account === undefined) {
+      return null;
+    } else if (this.state.account === null) {
       res.push(
         <div key="100" style={{float: 'right', height: "64px", marginRight: "10px"}}>
           <GithubLoginButton style={{marginTop: "12px", fontSize: "14px"}} size={40} onClick={() => Setting.getGithubAuthCode("signup")} />
           {/*<a href="/login"></a>*/}
         </div>
       );
+    } else {
+      res.push(this.renderRightDropdown());
     }
 
     return res;
