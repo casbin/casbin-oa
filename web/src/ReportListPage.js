@@ -33,6 +33,7 @@ class ReportListPage extends React.Component {
       createdTime: moment().format(),
       program: "summer2020",
       round: "week-0",
+      student: "alice",
       text: "report content",
       score: 0,
     }

@@ -73,7 +73,8 @@ func GetReport(id string) *Report {
 func UpdateReport(id string, report *Report) bool {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	if getReport(owner, name) == nil {
-		return false
+		AddReport(report)
+		return true
 	}
 
 	_, err := adapter.engine.Id(core.PK{owner, name}).AllCols().Update(report)
