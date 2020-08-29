@@ -47,7 +47,7 @@ func HasMail(email string) string {
 func HasGithub(github string) string {
 	user := GetGithub(github)
 	if user != nil {
-		return user.Name
+		return user.User
 	}
 	return ""
 }
