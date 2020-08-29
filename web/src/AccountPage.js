@@ -43,10 +43,12 @@ class AccountPage extends React.Component {
   }
 
   renderValue(key) {
-    if (this.state.user !== null) {
+    if (this.props.account === null || this.props.account === undefined) {
+      return null;
+    } else if (this.state.user !== null) {
       return this.state.user[key];
     } else {
-      return this.props.account?.key;
+      return this.props.account[key];
     }
   }
 
