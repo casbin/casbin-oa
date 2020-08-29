@@ -26,6 +26,8 @@ import StudentEditPage from "./StudentEditPage";
 import AccountPage from "./AccountPage";
 import RoundListPage from "./RoundListPage";
 import RoundEditPage from "./RoundEditPage";
+import ReportListPage from "./ReportListPage";
+import ReportEditPage from "./ReportEditPage";
 
 const { Header, Footer } = Layout;
 
@@ -57,6 +59,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: 2 });
     } else if (uri.includes('rounds')) {
       this.setState({ selectedMenuKey: 3 });
+    } else if (uri.includes('reports')) {
+      this.setState({ selectedMenuKey: 4 });
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -213,6 +217,13 @@ class App extends Component {
         </a>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="4">
+        <a href="/reports">
+          Reports
+        </a>
+      </Menu.Item>
+    );
 
     return res;
   }
@@ -272,6 +283,8 @@ class App extends Component {
           <Route exact path="/programs/:programName" component={ProgramEditPage}/>
           <Route exact path="/rounds" component={RoundListPage}/>
           <Route exact path="/rounds/:roundName" component={RoundEditPage}/>
+          <Route exact path="/reports" component={ReportListPage}/>
+          <Route exact path="/reports/:reportName" component={ReportEditPage}/>
         </Switch>
       </div>
     )

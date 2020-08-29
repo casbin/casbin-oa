@@ -56,4 +56,10 @@ func initAPI() {
 	beego.Router("/api/update-round", &controllers.ApiController{}, "POST:UpdateRound")
 	beego.Router("/api/add-round", &controllers.ApiController{}, "POST:AddRound")
 	beego.Router("/api/delete-round", &controllers.ApiController{}, "POST:DeleteRound")
+
+	beego.Router("/api/get-reports", &controllers.ApiController{}, "GET:GetReports")
+	beego.Router("/api/get-report", &controllers.ApiController{}, "GET:GetReport")
+	beego.Router("/api/update-report", &controllers.ApiController{}, "POST:UpdateReport")
+	beego.Router("/api/add-report", &controllers.ApiController{}, "POST:AddReport")
+	beego.Router("/api/delete-report", &controllers.ApiController{}, "POST:DeleteReport")
 }
