@@ -120,6 +120,7 @@ class RankingPage extends React.Component {
 
       let studentMap = new Map();
       students.forEach(student => {
+        student.score = 0;
         studentMap.set(student.name, student);
       });
       let roundMap = new Map();
@@ -133,6 +134,11 @@ class RankingPage extends React.Component {
 
         let student = studentMap.get(studentName);
         student[roundName] = report;
+        student.score += report.score;
+      });
+
+      students.sort(function(a, b) {
+        return b.score - a.score;
       });
 
       const columns = this.state.columns.concat(roundColumns);
