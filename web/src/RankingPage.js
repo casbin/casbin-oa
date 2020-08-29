@@ -28,8 +28,7 @@ class RankingPage extends React.Component {
         title: 'Name',
         dataIndex: 'realName',
         key: 'realName',
-        width: '70px',
-        sorter: (a, b) => a.realName.localeCompare(b.realName),
+        width: '60px',
         render: (text, record, index) => {
           return (
             <a href={`/user/${record.name}`}>{text}</a>
@@ -40,8 +39,8 @@ class RankingPage extends React.Component {
         title: 'GitHub',
         dataIndex: 'github',
         key: 'github',
-        width: '120px',
-        sorter: (a, b) => a.github.localeCompare(b.github),
+        width: '80px',
+        ellipsis: true,
         render: (text, record, index) => {
           return (
             <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
@@ -52,8 +51,7 @@ class RankingPage extends React.Component {
         title: 'Mentor',
         dataIndex: 'mentor',
         key: 'mentor',
-        width: '80px',
-        sorter: (a, b) => a.mentor.localeCompare(b.mentor),
+        width: '70px',
         render: (text, record, index) => {
           return (
             <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
@@ -64,8 +62,7 @@ class RankingPage extends React.Component {
         title: 'Score',
         dataIndex: 'score',
         key: 'score',
-        width: '60px',
-        sorter: (a, b) => a.score - b.score,
+        width: '50px',
       },
     ];
   }
