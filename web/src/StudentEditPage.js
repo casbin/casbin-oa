@@ -64,7 +64,7 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             Real Name:
           </Col>
@@ -74,7 +74,7 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             School:
           </Col>
@@ -84,7 +84,7 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             Program:
           </Col>
@@ -94,7 +94,7 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             Mentor:
           </Col>
@@ -104,7 +104,7 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             GitHub:
           </Col>
@@ -114,7 +114,7 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             Email:
           </Col>

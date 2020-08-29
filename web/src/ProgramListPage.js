@@ -33,6 +33,8 @@ class ProgramListPage extends React.Component {
       createdTime: moment().format(),
       title: `New Program - ${this.state.programs.length}`,
       url: "https://example.com",
+      startDate: "2020-01-23",
+      endDate: "2020-01-23",
     }
   }
 
@@ -111,6 +113,20 @@ class ProgramListPage extends React.Component {
             </a>
           )
         }
+      },
+      {
+        title: 'Start Date',
+        dataIndex: 'startDate',
+        key: 'startDate',
+        width: '100px',
+        sorter: (a, b) => a.startDate.localeCompare(b.startDate),
+      },
+      {
+        title: 'End Date',
+        dataIndex: 'endDate',
+        key: 'endDate',
+        width: '100px',
+        sorter: (a, b) => a.endDate.localeCompare(b.endDate),
       },
       {
         title: 'Action',

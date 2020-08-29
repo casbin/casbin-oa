@@ -24,8 +24,10 @@ type Program struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	Title string `xorm:"varchar(100)" json:"title"`
-	Url   string `xorm:"varchar(2000)" json:"url"`
+	Title     string `xorm:"varchar(100)" json:"title"`
+	Url       string `xorm:"varchar(100)" json:"url"`
+	StartDate string `xorm:"varchar(100)" json:"startDate"`
+	EndDate   string `xorm:"varchar(100)" json:"endDate"`
 }
 
 func GetPrograms(owner string) []*Program {

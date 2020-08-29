@@ -1,8 +1,9 @@
 import React from "react";
-import {Button, Card, Col, Input, Row} from 'antd';
+import {Button, Card, Col, DatePicker, Input, Row} from 'antd';
 import {LinkOutlined} from "@ant-design/icons";
 import * as ProgramBackend from "./backend/ProgramBackend";
 import * as Setting from "./Setting";
+import moment from "moment";
 
 class ProgramEditPage extends React.Component {
   constructor(props) {
@@ -64,7 +65,7 @@ class ProgramEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             Title:
           </Col>
@@ -74,13 +75,33 @@ class ProgramEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
             Link:
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined/>} value={this.state.program.url} onChange={e => {
               this.updateProgramField('url', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Start Date:
+          </Col>
+          <Col span={22} >
+            <DatePicker defaultValue={moment(this.state.program.startDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
+              this.updateProgramField('startDate', timeString);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            End Date:
+          </Col>
+          <Col span={22} >
+            <DatePicker defaultValue={moment(this.state.program.endDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
+              this.updateProgramField('endDate', timeString);
             }} />
           </Col>
         </Row>
