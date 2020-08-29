@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Input, Modal, Rate, Row, Table, Tag} from 'antd';
+import {Button, Col, Modal, Rate, Row, Switch, Table, Tag} from 'antd';
 import {CheckCircleOutlined, SyncOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
 import * as StudentBackend from "./backend/StudentBackend";
 import * as ProgramBackend from "./backend/ProgramBackend";
@@ -9,6 +9,9 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
 import ReactMarkdown from "react-markdown";
+import {Controlled as CodeMirror} from 'react-codemirror2'
+import "codemirror/lib/codemirror.css"
+require("codemirror/mode/markdown/markdown");
 
 class RankingPage extends React.Component {
   constructor(props) {
@@ -21,6 +24,7 @@ class RankingPage extends React.Component {
       program: null,
       columns: this.getColumns(),
       reportVisible: false,
+      reportEditable: false,
       report: null,
     };
   }
@@ -290,12 +294,14 @@ class RankingPage extends React.Component {
     this.submitReportEdit();
     this.setState({
       reportVisible: false,
+      reportEditable: false,
     });
   }
 
   handleReportCancel() {
     this.setState({
       reportVisible: false,
+      reportEditable: false,
     });
   }
 
@@ -316,6 +322,39 @@ class RankingPage extends React.Component {
     });
   }
 
+  onSwitchReportEditable(checked, e) {
+    this.setState({
+      reportEditable: checked,
+    });
+  }
+
+  renderReportTextEdit() {
+    if (this.state.reportEditable) {
+      return (
+        <CodeMirror
+          // editorDidMount={(editor) => Tools.attachEditor(editor)}
+          // onPaste={() => Tools.uploadMdFile()}
+          value={this.state.report.text}
+          // onDrop={() => Tools.uploadMdFile()}
+          options={{mode: 'markdown', lineNumbers: true}}
+          onBeforeChange={(editor, data, value) => {
+            this.updateReportField('text', value);
+          }}
+          onChange={(editor, data, value) => {
+          }}
+        />
+      )
+    } else {
+      return (
+        <ReactMarkdown
+          source={this.state.report.text}
+          renderers={{image: props => <img {...props} style={{maxWidth: '100%'}} alt="img" />}}
+          escapeHtml={false}
+        />
+      )
+    }
+  }
+
   renderReportModal() {
     if (this.state.report === null) {
       return null;
@@ -330,7 +369,16 @@ class RankingPage extends React.Component {
 
     return (
       <Modal
-        title={`Weekly Report for ${this.state.report.round} - ${this.state.report.student}`}
+        title={
+          <div>
+            {
+              `Weekly Report for ${this.state.report.round} - ${this.state.report.student}`
+            }
+            <div style={{float: 'right', marginRight: '30px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable Edit: &nbsp;
+              <Switch checked={this.state.reportEditable} onChange={this.onSwitchReportEditable.bind(this)}/>
+            </div>
+          </div>
+        }
         visible={this.state.reportVisible}
         onOk={this.handleReportOk.bind(this)}
         onCancel={this.handleReportCancel.bind(this)}
@@ -338,11 +386,9 @@ class RankingPage extends React.Component {
         width={1000}
       >
         <div>
-          <ReactMarkdown
-            source={this.state.report.text}
-            renderers={{image: props => <img {...props} style={{maxWidth: '100%'}} alt="img" />}}
-            escapeHtml={false}
-          />
+          {
+            this.renderReportTextEdit()
+          }
           <Rate tooltips={desc} value={this.state.report.score} onChange={value => {
             this.updateReportField('score', value);
           }} />
