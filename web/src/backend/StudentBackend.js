@@ -7,6 +7,13 @@ export function getStudents(owner) {
   }).then(res => res.json());
 }
 
+export function getFilteredStudents(owner, program) {
+  return fetch(`${Setting.ServerUrl}/api/get-filtered-students?owner=${owner}&program=${program}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function getStudent(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-student?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

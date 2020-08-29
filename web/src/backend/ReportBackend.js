@@ -7,6 +7,13 @@ export function getReports(owner) {
   }).then(res => res.json());
 }
 
+export function getFilteredReports(owner, program) {
+  return fetch(`${Setting.ServerUrl}/api/get-filtered-reports?owner=${owner}&program=${program}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function getReport(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-report?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

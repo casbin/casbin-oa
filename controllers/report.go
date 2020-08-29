@@ -27,6 +27,14 @@ func (c *ApiController) GetReports() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) GetFilteredReports() {
+	owner := c.Input().Get("owner")
+	program := c.Input().Get("program")
+
+	c.Data["json"] = object.GetFilteredReports(owner, program)
+	c.ServeJSON()
+}
+
 func (c *ApiController) GetReport() {
 	id := c.Input().Get("id")
 

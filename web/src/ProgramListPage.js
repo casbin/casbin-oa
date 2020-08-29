@@ -132,10 +132,11 @@ class ProgramListPage extends React.Component {
         title: 'Action',
         dataIndex: '',
         key: 'op',
-        width: '160px',
+        width: '250px',
         render: (text, record, index) => {
           return (
             <div>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.goToLink(`/programs/${record.name}/ranking`)}>Ranking</Button>
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/programs/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete program: ${record.name} ?`}

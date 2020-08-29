@@ -101,6 +101,26 @@ export function getShortName(s) {
   return s.split('/').slice(-1)[0];
 }
 
+export function toCsv(s) {
+  if (s === undefined) {
+    return "";
+  }
+
+  if (typeof s === "string") {
+    return s.replace(/"/g, '""');
+  } else {
+    return s;
+  }
+}
+
+export function getPercentage(f) {
+  if (f === undefined) {
+    return 0.0;
+  }
+
+  return (100 * f).toFixed(1);
+}
+
 function getRandomInt(s) {
   let hash = 0;
   if (s.length !== 0) {

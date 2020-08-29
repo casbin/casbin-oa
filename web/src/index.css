@@ -29,3 +29,8 @@ code {
 .ant-list-sm .ant-list-item {
   padding: 2px !important;
 }
+
+.alert-row {
+  font-weight: bolder;
+  background: rgb(255,241,240);
+}

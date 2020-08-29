@@ -28,6 +28,7 @@ import RoundListPage from "./RoundListPage";
 import RoundEditPage from "./RoundEditPage";
 import ReportListPage from "./ReportListPage";
 import ReportEditPage from "./ReportEditPage";
+import RankingPage from "./RankingPage";
 
 const { Header, Footer } = Layout;
 
@@ -285,6 +286,7 @@ class App extends Component {
           <Route exact path="/rounds/:roundName" component={RoundEditPage}/>
           <Route exact path="/reports" component={ReportListPage}/>
           <Route exact path="/reports/:reportName" component={ReportEditPage}/>
+          <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
         </Switch>
       </div>
     )

@@ -27,6 +27,14 @@ func (c *ApiController) GetRounds() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) GetFilteredRounds() {
+	owner := c.Input().Get("owner")
+	program := c.Input().Get("program")
+
+	c.Data["json"] = object.GetFilteredRounds(owner, program)
+	c.ServeJSON()
+}
+
 func (c *ApiController) GetRound() {
 	id := c.Input().Get("id")
 

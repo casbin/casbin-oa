@@ -7,6 +7,13 @@ export function getRounds(owner) {
   }).then(res => res.json());
 }
 
+export function getFilteredRounds(owner, program) {
+  return fetch(`${Setting.ServerUrl}/api/get-filtered-rounds?owner=${owner}&program=${program}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function getRound(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-round?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

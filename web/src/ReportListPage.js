@@ -116,6 +116,18 @@ class ReportListPage extends React.Component {
         }
       },
       {
+        title: 'Student',
+        dataIndex: 'student',
+        key: 'student',
+        width: '120px',
+        sorter: (a, b) => a.student.localeCompare(b.student),
+        render: (text, record, index) => {
+          return (
+            <a href={`/user/${text}`}>{text}</a>
+          )
+        }
+      },
+      {
         title: 'Text',
         dataIndex: 'text',
         key: 'text',

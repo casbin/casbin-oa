@@ -27,6 +27,14 @@ func (c *ApiController) GetStudents() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) GetFilteredStudents() {
+	owner := c.Input().Get("owner")
+	program := c.Input().Get("program")
+
+	c.Data["json"] = object.GetFilteredStudents(owner, program)
+	c.ServeJSON()
+}
+
 func (c *ApiController) GetStudent() {
 	id := c.Input().Get("id")
 

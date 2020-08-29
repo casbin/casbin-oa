@@ -42,6 +42,16 @@ func GetStudents(owner string) []*Student {
 	return students
 }
 
+func GetFilteredStudents(owner string, program string) []*Student {
+	students := []*Student{}
+	err := adapter.engine.Desc("created_time").Find(&students, &Student{Owner: owner, Program: program})
+	if err != nil {
+		panic(err)
+	}
+
+	return students
+}
+
 func getStudent(owner string, name string) *Student {
 	student := Student{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&student)

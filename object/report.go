@@ -26,6 +26,7 @@ type Report struct {
 
 	Program string `xorm:"varchar(100)" json:"program"`
 	Round   string `xorm:"varchar(100)" json:"round"`
+	Student string `xorm:"varchar(100)" json:"student"`
 	Text    string `xorm:"mediumtext" json:"text"`
 	Score   int    `json:"score"`
 }
@@ -33,6 +34,16 @@ type Report struct {
 func GetReports(owner string) []*Report {
 	reports := []*Report{}
 	err := adapter.engine.Desc("created_time").Find(&reports, &Report{Owner: owner})
+	if err != nil {
+		panic(err)
+	}
+
+	return reports
+}
+
+func GetFilteredReports(owner string, program string) []*Report {
+	reports := []*Report{}
+	err := adapter.engine.Desc("created_time").Find(&reports, &Report{Owner: owner, Program: program})
 	if err != nil {
 		panic(err)
 	}

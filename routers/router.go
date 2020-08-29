@@ -46,18 +46,21 @@ func initAPI() {
 	beego.Router("/api/delete-program", &controllers.ApiController{}, "POST:DeleteProgram")
 
 	beego.Router("/api/get-students", &controllers.ApiController{}, "GET:GetStudents")
+	beego.Router("/api/get-filtered-students", &controllers.ApiController{}, "GET:GetFilteredStudents")
 	beego.Router("/api/get-student", &controllers.ApiController{}, "GET:GetStudent")
 	beego.Router("/api/update-student", &controllers.ApiController{}, "POST:UpdateStudent")
 	beego.Router("/api/add-student", &controllers.ApiController{}, "POST:AddStudent")
 	beego.Router("/api/delete-student", &controllers.ApiController{}, "POST:DeleteStudent")
 
 	beego.Router("/api/get-rounds", &controllers.ApiController{}, "GET:GetRounds")
+	beego.Router("/api/get-filtered-rounds", &controllers.ApiController{}, "GET:GetFilteredRounds")
 	beego.Router("/api/get-round", &controllers.ApiController{}, "GET:GetRound")
 	beego.Router("/api/update-round", &controllers.ApiController{}, "POST:UpdateRound")
 	beego.Router("/api/add-round", &controllers.ApiController{}, "POST:AddRound")
 	beego.Router("/api/delete-round", &controllers.ApiController{}, "POST:DeleteRound")
 
 	beego.Router("/api/get-reports", &controllers.ApiController{}, "GET:GetReports")
+	beego.Router("/api/get-filtered-reports", &controllers.ApiController{}, "GET:GetFilteredReports")
 	beego.Router("/api/get-report", &controllers.ApiController{}, "GET:GetReport")
 	beego.Router("/api/update-report", &controllers.ApiController{}, "POST:UpdateReport")
 	beego.Router("/api/add-report", &controllers.ApiController{}, "POST:AddReport")

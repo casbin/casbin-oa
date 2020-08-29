@@ -86,6 +86,16 @@ class ReportEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
+            Student:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.report.student} onChange={e => {
+              this.updateReportField('student', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
             Text:
           </Col>
           <Col span={22} >

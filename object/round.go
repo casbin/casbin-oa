@@ -40,6 +40,16 @@ func GetRounds(owner string) []*Round {
 	return rounds
 }
 
+func GetFilteredRounds(owner string, program string) []*Round {
+	rounds := []*Round{}
+	err := adapter.engine.Asc("created_time").Find(&rounds, &Round{Owner: owner, Program: program})
+	if err != nil {
+		panic(err)
+	}
+
+	return rounds
+}
+
 func getRound(owner string, name string) *Round {
 	round := Round{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&round)
