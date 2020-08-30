@@ -76,7 +76,12 @@ class RankingPage extends React.Component {
 
   isCurrentRound(round) {
     const now = moment();
-    return moment(round.startDate) <= now && now < moment(round.endDate);
+    return moment(round.startDate) <= now && now <= moment(round.endDate);
+  }
+
+  isFutureRound(round) {
+    const now = moment();
+    return now < moment(round.startDate);
   }
 
   openReport(report) {
@@ -142,6 +147,24 @@ class RankingPage extends React.Component {
     }
   }
 
+  getReportTooltip(report) {
+    if (report.text === "") {
+      return "Student needs to submit weekly report";
+    } else if (report.score === -1) {
+      return "Mentor needs to rate this weekly report";
+    } else {
+      const rateMap = {
+        0: "0 - No Response: student is not contactable",
+        1: "1 - Terrible: did nothing or empty weekly report",
+        2: "2 - Bad: just relied to one or two issues, no much code contribution",
+        3: "3 - Normal: just so so",
+        4: "4 - Good: had made a good progress",
+        5: "5 - Wonderful: you are a genius!",
+      }
+      return rateMap[report.score];
+    }
+  }
+
   componentWillMount() {
     Promise.all([this.getFilteredStudents(this.state.programName), this.getFilteredReports(this.state.programName), this.getFilteredRounds(this.state.programName), this.getProgram(this.state.programName)]).then((values) => {
       let students = values[0];
@@ -154,11 +177,7 @@ class RankingPage extends React.Component {
         roundColumns.push(
           {
             title: (
-              <Tooltip title={
-                <div>
-                  {`${round.title} (${round.startDate} to ${round.endDate})`}
-                </div>
-              }>
+              <Tooltip title={`${round.title} (${round.startDate} to ${round.endDate})`}>
                 <a href={`/rounds/${round.name}`}>{round.name}</a>
               </Tooltip>
             ),
@@ -168,18 +187,23 @@ class RankingPage extends React.Component {
             // sorter: (a, b) => a.key.localeCompare(b.key),
             className: this.isCurrentRound(round) ? "alert-row" : null,
             render: (report, student, index) => {
+              if (this.isFutureRound(round)) {
+                return null;
+              }
+
               if (this.isReportEmptyAndFromOthers(report)) {
                 return this.getTag(report);
               } else {
                 return (
-                  <a onClick={() => this.openReport.bind(this)(report)}>
-                    {
-                      this.getTag(report)
-                    }
-                  </a>
+                  <Tooltip title={this.getReportTooltip(report)}>
+                    <a onClick={() => this.openReport.bind(this)(report)}>
+                      {
+                        this.getTag(report)
+                      }
+                    </a>
+                  </Tooltip>
                 )
               }
-
             }
           },
         );
