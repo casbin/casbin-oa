@@ -87,14 +87,14 @@ class RankingPage extends React.Component {
   }
 
   isReportEmptyAndFromOthers(report) {
-    return report.text === "" && report.student !== this.props.account?.username;
+    return report.text === "" && (report.student !== this.props.account?.username && !Setting.isAdminUser(this.props.account));
   }
 
   isSelfReport(report) {
-    return report.student === this.props.account?.username;
+    return report.student === this.props.account?.username || Setting.isAdminUser(this.props.account);
   }
 
-  isMentoredOrAdminReport(report) {
+  isMentoredReport(report) {
     return report.mentor === this.props.account?.username || Setting.isAdminUser(this.props.account);
   }
 
@@ -138,7 +138,7 @@ class RankingPage extends React.Component {
       student: student.name,
       mentor: student.mentor,
       text: "",
-      score: 0,
+      score: -1,
     }
   }
 
@@ -205,7 +205,7 @@ class RankingPage extends React.Component {
 
         let student = studentMap.get(studentName);
         student[roundName] = report;
-        student.score += report.score;
+        student.score += report.score >= 0 ? report.score : 0;
       });
 
       students.sort(function(a, b) {
@@ -420,14 +420,14 @@ class RankingPage extends React.Component {
         onOk={this.handleReportOk.bind(this)}
         onCancel={this.handleReportCancel.bind(this)}
         okText="Save"
-        okButtonProps={{disabled: !this.isMentoredOrAdminReport(this.state.report) && !this.isSelfReport(this.state.report)}}
+        okButtonProps={{disabled: !this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}}
         width={1000}
       >
         <div>
           {
             this.renderReportTextEdit()
           }
-          <Rate tooltips={desc} disabled={!this.isMentoredOrAdminReport(this.state.report)} value={this.state.report.score} onChange={value => {
+          <Rate tooltips={desc} disabled={!this.isMentoredReport(this.state.report)} value={this.state.report.score} onChange={value => {
             this.updateReportField('score', value);
           }} />
           &nbsp;&nbsp;&nbsp;&nbsp;
