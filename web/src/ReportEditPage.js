@@ -51,7 +51,7 @@ class ReportEditPage extends React.Component {
       <Card size="small" title={
         <div>
           Edit Report&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitReportEdit.bind(this)}>Save</Button>
+          <Button type="primary" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.submitReportEdit.bind(this)}>Save</Button>
         </div>
       } style={{marginLeft: '5px'}} type="inner">
         <Row style={{marginTop: '10px'}} >
@@ -156,7 +156,7 @@ class ReportEditPage extends React.Component {
           <Col span={2}>
           </Col>
           <Col span={18}>
-            <Button type="primary" size="large" onClick={this.submitReportEdit.bind(this)}>Save</Button>
+            <Button type="primary" size="large" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.submitReportEdit.bind(this)}>Save</Button>
           </Col>
         </Row>
       </div>

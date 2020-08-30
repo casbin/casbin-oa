@@ -51,7 +51,7 @@ class RoundEditPage extends React.Component {
       <Card size="small" title={
         <div>
           Edit Round&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitRoundEdit.bind(this)}>Save</Button>
+          <Button type="primary" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.submitRoundEdit.bind(this)}>Save</Button>
         </div>
       } style={{marginLeft: '5px'}} type="inner">
         <Row style={{marginTop: '10px'}} >
@@ -136,7 +136,7 @@ class RoundEditPage extends React.Component {
           <Col span={2}>
           </Col>
           <Col span={18}>
-            <Button type="primary" size="large" onClick={this.submitRoundEdit.bind(this)}>Save</Button>
+            <Button type="primary" size="large" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.submitRoundEdit.bind(this)}>Save</Button>
           </Col>
         </Row>
       </div>

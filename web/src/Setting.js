@@ -68,6 +68,10 @@ export function showMessage(type, text) {
   }
 }
 
+export function isAdminUser(account) {
+  return account?.isAdmin;
+}
+
 export function deepCopy(obj) {
   return Object.assign({}, obj);
 }

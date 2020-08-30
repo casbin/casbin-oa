@@ -153,8 +153,9 @@ class ReportListPage extends React.Component {
               <Popconfirm
                 title={`Sure to delete report: ${record.name} ?`}
                 onConfirm={() => this.deleteReport(index)}
+                disabled={!Setting.isAdminUser(this.props.account)}
               >
-                <Button style={{marginBottom: '10px'}} type="danger">Delete</Button>
+                <Button style={{marginBottom: '10px'}} type="danger" disabled={!Setting.isAdminUser(this.props.account)}>Delete</Button>
               </Popconfirm>
             </div>
           )
@@ -168,7 +169,7 @@ class ReportListPage extends React.Component {
                title={() => (
                  <div>
                    Reports&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addReport.bind(this)}>Add</Button>
+                   <Button type="primary" size="small" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.addReport.bind(this)}>Add</Button>
                  </div>
                )}
                loading={reports === null}

@@ -226,7 +226,7 @@ class App extends Component {
 
   renderLoginIfNotLogined(component) {
     if (this.state.account === null) {
-      return <Redirect to='/login' />
+      return <Redirect to='/' />
     } else if (this.state.account === undefined) {
       return null;
     }
@@ -264,18 +264,18 @@ class App extends Component {
         </Header>
         <Switch>
           <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
+          <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/callback/:authType/:addition" component={CallbackBox}/>
           <Route exact path="/account" render={(props) => this.renderLoginIfNotLogined(<AccountPage account={this.state.account} {...props} />)}/>
           <Route exact path="/user/:username" render={(props) => <AccountPage account={this.state.account} {...props} />}/>
-          <Route exact path="/students" component={StudentListPage}/>
-          <Route exact path="/students/:studentName" component={StudentEditPage}/>
-          <Route exact path="/programs" component={ProgramListPage}/>
-          <Route exact path="/programs/:programName" component={ProgramEditPage}/>
-          <Route exact path="/rounds" component={RoundListPage}/>
-          <Route exact path="/rounds/:roundName" component={RoundEditPage}/>
-          <Route exact path="/reports" component={ReportListPage}/>
-          <Route exact path="/reports/:reportName" component={ReportEditPage}/>
-          <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
+          <Route exact path="/students" render={(props) => <StudentListPage account={this.state.account} {...props} />}/>
+          <Route exact path="/students/:studentName" render={(props) => <StudentEditPage account={this.state.account} {...props} />}/>
+          <Route exact path="/programs" render={(props) => <ProgramListPage account={this.state.account} {...props} />}/>
+          <Route exact path="/programs/:programName" render={(props) => <ProgramEditPage account={this.state.account} {...props} />}/>
+          <Route exact path="/rounds" render={(props) => <RoundListPage account={this.state.account} {...props} />}/>
+          <Route exact path="/rounds/:roundName" render={(props) => <RoundEditPage account={this.state.account} {...props} />}/>
+          <Route exact path="/reports" render={(props) => <ReportListPage account={this.state.account} {...props} />}/>
+          <Route exact path="/reports/:reportName" render={(props) => <ReportEditPage account={this.state.account} {...props} />}/>
         </Switch>
       </div>
     )

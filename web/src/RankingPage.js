@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Modal, Rate, Row, Switch, Table, Tag} from 'antd';
+import {Button, Col, Modal, Rate, Row, Switch, Table, Tag, Tooltip} from 'antd';
 import {CheckCircleOutlined, SyncOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
 import * as StudentBackend from "./backend/StudentBackend";
 import * as ProgramBackend from "./backend/ProgramBackend";
@@ -136,7 +136,15 @@ class RankingPage extends React.Component {
       rounds.forEach((round) => {
         roundColumns.push(
           {
-            title: <a href={`/rounds/${round.name}`}>{round.name}</a>,
+            title: (
+              <Tooltip title={
+                <div>
+                  {`${round.title} (${round.startDate} to ${round.endDate})`}
+                </div>
+              }>
+                <a href={`/rounds/${round.name}`}>{round.name}</a>
+              </Tooltip>
+            ),
             dataIndex: round.name,
             key: round.name,
             width: '70px',
