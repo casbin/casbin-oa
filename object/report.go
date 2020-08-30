@@ -27,6 +27,7 @@ type Report struct {
 	Program string `xorm:"varchar(100)" json:"program"`
 	Round   string `xorm:"varchar(100)" json:"round"`
 	Student string `xorm:"varchar(100)" json:"student"`
+	Mentor  string `xorm:"varchar(100)" json:"mentor"`
 	Text    string `xorm:"mediumtext" json:"text"`
 	Score   int    `json:"score"`
 }

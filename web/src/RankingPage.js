@@ -86,14 +86,30 @@ class RankingPage extends React.Component {
     });
   }
 
+  isReportEmptyAndFromOthers(report) {
+    return report.text === "" && report.student !== this.props.account?.username;
+  }
+
+  isSelfReport(report) {
+    return report.student === this.props.account?.username;
+  }
+
+  isMentoredOrAdminReport(report) {
+    return report.mentor === this.props.account?.username || Setting.isAdminUser(this.props.account);
+  }
+
   getTag(report) {
     if (report.text === "") {
-      return (
-        <Tag style={{cursor: "pointer"}} icon={<CloseCircleOutlined />} color="error">N/A</Tag>
-      )
-    }
-
-    if (report.score <= 0) {
+      if (this.isReportEmptyAndFromOthers(report)) {
+        return (
+          <Tag icon={<CloseCircleOutlined />} color="default">N/A</Tag>
+        )
+      } else {
+        return (
+          <Tag style={{cursor: "pointer"}} icon={<CloseCircleOutlined />} color="default">N/A</Tag>
+        )
+      }
+    } else if (report.score <= 0) {
       return (
         <Tag style={{cursor: "pointer"}} icon={<MinusCircleOutlined />} color="error">{report.score}</Tag>
       )
@@ -120,6 +136,7 @@ class RankingPage extends React.Component {
       program: program.name,
       round: round.name,
       student: student.name,
+      mentor: student.mentor,
       text: "",
       score: 0,
     }
@@ -151,13 +168,18 @@ class RankingPage extends React.Component {
             // sorter: (a, b) => a.key.localeCompare(b.key),
             className: this.isCurrentRound(round) ? "alert-row" : null,
             render: (report, student, index) => {
-              return (
-                <a onClick={() => this.openReport.bind(this)(report)}>
-                  {
-                    this.getTag(report)
-                  }
-                </a>
-              )
+              if (this.isReportEmptyAndFromOthers(report)) {
+                return this.getTag(report);
+              } else {
+                return (
+                  <a onClick={() => this.openReport.bind(this)(report)}>
+                    {
+                      this.getTag(report)
+                    }
+                  </a>
+                )
+              }
+
             }
           },
         );
@@ -277,6 +299,13 @@ class RankingPage extends React.Component {
                  </div>
                )}
                loading={students === null}
+               rowClassName={(record, index) => {
+                 if (record.name === this.props.account?.username || record.mentor === this.props.account?.username) {
+                   return "self-row";
+                 } else {
+                   return null;
+                 }
+               }}
         />
       </div>
     );
@@ -383,7 +412,7 @@ class RankingPage extends React.Component {
               `Weekly Report for ${this.state.report.round} - ${this.state.report.student}`
             }
             <div style={{float: 'right', marginRight: '30px'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable Edit: &nbsp;
-              <Switch checked={this.state.reportEditable} onChange={this.onSwitchReportEditable.bind(this)}/>
+              <Switch disabled={!this.isSelfReport(this.state.report)} checked={this.state.reportEditable} onChange={this.onSwitchReportEditable.bind(this)}/>
             </div>
           </div>
         }
@@ -391,19 +420,20 @@ class RankingPage extends React.Component {
         onOk={this.handleReportOk.bind(this)}
         onCancel={this.handleReportCancel.bind(this)}
         okText="Save"
+        okButtonProps={{disabled: !this.isMentoredOrAdminReport(this.state.report) && !this.isSelfReport(this.state.report)}}
         width={1000}
       >
         <div>
           {
             this.renderReportTextEdit()
           }
-          <Rate tooltips={desc} disabled={this.state.report.text === ""} value={this.state.report.score} onChange={value => {
+          <Rate tooltips={desc} disabled={!this.isMentoredOrAdminReport(this.state.report)} value={this.state.report.score} onChange={value => {
             this.updateReportField('score', value);
           }} />
           &nbsp;&nbsp;&nbsp;&nbsp;
           {
             this.state.report.text === "" ?
-              "(You cannot rate it if the text is empty or you are not the mentor)" : null
+              "(You cannot rate it if you are not the mentor)" : null
           }
         </div>
       </Modal>

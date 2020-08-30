@@ -34,6 +34,7 @@ class ReportListPage extends React.Component {
       program: "summer2020",
       round: "week-0",
       student: "alice",
+      mentor: "bob",
       text: "report content",
       score: 0,
     }

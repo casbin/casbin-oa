@@ -32,5 +32,10 @@ code {
 
 .alert-row {
   font-weight: bolder;
-  background: rgb(255,241,240);
+  background: #ffccc7;
+}
+
+.self-row {
+  font-weight: bolder;
+  background: #d9f7be;
 }
