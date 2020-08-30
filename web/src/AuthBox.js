@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Spin} from "antd";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
 import {withRouter} from "react-router-dom";
@@ -58,10 +59,9 @@ class CallbackBox extends React.Component {
 
   render() {
     return (
-      <div>
-        <h3>
-          Logging in ...
-        </h3>
+      // https://codesandbox.io/s/antd-reproduction-template-q2dwk
+      <div className="App">
+        <Spin size="large" tip="Logging in..." style={{paddingTop: "10%"}} />
       </div>
     )
   }
