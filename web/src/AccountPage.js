@@ -43,7 +43,7 @@ class AccountPage extends React.Component {
   }
 
   renderValue(key) {
-    if (this.props.account === null || this.props.account === undefined) {
+    if (this.state.user === null && this.props.account === null || this.props.account === undefined) {
       return null;
     } else if (this.state.user !== null) {
       return this.state.user[key];
@@ -56,7 +56,7 @@ class AccountPage extends React.Component {
     return (
       <div>
         &nbsp;
-        <Descriptions title="My Info" bordered>
+        <Descriptions title="Info" bordered>
           <Descriptions.Item label="Username">{this.renderValue("username")}</Descriptions.Item>
           <Descriptions.Item label="Type">{this.renderValue("type")}</Descriptions.Item>
           <Descriptions.Item label="Name">{this.renderValue("name")}</Descriptions.Item>
