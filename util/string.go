@@ -16,6 +16,7 @@ package util
 
 import (
 	"errors"
+	"io/ioutil"
 	"strings"
 )
 
@@ -28,3 +29,18 @@ func GetOwnerAndNameFromId(id string) (string, string) {
 	return tokens[0], tokens[1]
 }
 
+func ReadStringFromPath(path string) string {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(data)
+}
+
+func WriteStringToPath(s string, path string) {
+	err := ioutil.WriteFile(path, []byte(s), 0644)
+	if err != nil {
+		panic(err)
+	}
+}
