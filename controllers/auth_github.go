@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
 	"sync"
 
 	"github.com/astaxie/beego"
@@ -78,7 +79,12 @@ func (c *ApiController) AuthGithub() {
 	var tempUserAccount userInfoFromGithub
 	wg.Add(2)
 	go func() {
-		response, err := httpClient.Get("https://api.github.com/user/emails?access_token=" + token.AccessToken)
+		req, err := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
+		if err != nil {
+			panic(err)
+		}
+		req.Header.Add("Authorization", "token " + token.AccessToken)
+		response, err := httpClient.Do(req)
 		if err != nil {
 			panic(err)
 		}
@@ -99,7 +105,12 @@ func (c *ApiController) AuthGithub() {
 		wg.Done()
 	}()
 	go func() {
-		response2, err := httpClient.Get("https://api.github.com/user?access_token=" + token.AccessToken)
+		req, err := http.NewRequest("GET", "https://api.github.com/user", nil)
+		if err != nil {
+			panic(err)
+		}
+		req.Header.Add("Authorization", "token " + token.AccessToken)
+		response2, err := httpClient.Do(req)
 		if err != nil {
 			panic(err)
 		}
