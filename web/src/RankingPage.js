@@ -18,7 +18,7 @@ class RankingPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      programName: props.match.params.programName !== undefined ? props.match.params.programName : "summer2020",
+      programName: props.match.params.programName !== undefined ? props.match.params.programName : "talent2021",
       students: null,
       reports: null,
       program: null,
@@ -178,7 +178,7 @@ class RankingPage extends React.Component {
           {
             title: (
               <Tooltip title={`${round.title} (${round.startDate} to ${round.endDate})`}>
-                <a href={`/rounds/${round.name}`}>{round.name}</a>
+                <a href={`/rounds/${round.name}`}>{round.title}</a>
               </Tooltip>
             ),
             dataIndex: round.name,
