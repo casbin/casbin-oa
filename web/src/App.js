@@ -48,6 +48,7 @@ class App extends Component {
     Auth.initAuthWithConfig({
       serverUrl: "https://door.casbin.com",
       appName: "app-casbin-oa",
+      organizationName: "casbin-oa",
     });
   }
 
@@ -112,7 +113,7 @@ class App extends Component {
 
   handleRightDropdownClick(e) {
     if (e.key === '0') {
-      Setting.goToLink("https://door.casbin.com/account");
+      Setting.goToLink(Auth.getMyProfileUrl());
     } else if (e.key === '1') {
       this.logout();
     }

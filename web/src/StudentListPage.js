@@ -3,6 +3,7 @@ import {Button, Col, Popconfirm, Row, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as StudentBackend from "./backend/StudentBackend";
+import {getUserProfileUrl} from "./auth/Auth";
 
 class StudentListPage extends React.Component {
   constructor(props) {
@@ -79,7 +80,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/user/${text}`}>{text}</a>
+            <a href={getUserProfileUrl(text)}>{text}</a>
           )
         }
       },
@@ -127,7 +128,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.mentor.localeCompare(b.mentor),
         render: (text, record, index) => {
           return (
-            <a href={`/user/${text}`}>{text}</a>
+            <a href={getUserProfileUrl(text)}>{text}</a>
           )
         }
       },

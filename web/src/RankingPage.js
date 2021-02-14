@@ -5,6 +5,7 @@ import * as StudentBackend from "./backend/StudentBackend";
 import * as ProgramBackend from "./backend/ProgramBackend";
 import * as ReportBackend from "./backend/ReportBackend";
 import * as RoundBackend from "./backend/RoundBackend";
+import {getUserProfileUrl} from "./auth/Auth";
 import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
@@ -38,7 +39,7 @@ class RankingPage extends React.Component {
         width: '60px',
         render: (text, record, index) => {
           return (
-            <a href={`/user/${record.name}`}>{text}</a>
+            <a href={getUserProfileUrl(record.name)}>{text}</a>
           )
         }
       },
