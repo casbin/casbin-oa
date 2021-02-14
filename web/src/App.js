@@ -17,20 +17,21 @@ import './App.css';
 import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
-import {Switch, Route, withRouter, Redirect} from 'react-router-dom';
-import {GithubLoginButton} from "react-social-login-buttons";
-import * as AccountBackend from "./backend/AccountBackend";
+import {Switch, Route, withRouter, Redirect, Link} from 'react-router-dom';
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
 import StudentListPage from "./StudentListPage";
 import StudentEditPage from "./StudentEditPage";
-import AccountPage from "./AccountPage";
 import RoundListPage from "./RoundListPage";
 import RoundEditPage from "./RoundEditPage";
 import ReportListPage from "./ReportListPage";
 import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
-import CallbackBox from "./AuthBox";
+
+import * as Auth from "./auth/Auth";
+import LoginPage from "./auth/LoginPage";
+import * as AuthBackend from "./auth/AuthBackend";
+import AuthCallback from "./auth/AuthCallback";
 
 const { Header, Footer } = Layout;
 
@@ -44,7 +45,10 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
-    Setting.initFullClientUrl();
+    Auth.initAuthWithConfig({
+      serverUrl: "https://door.casbin.com",
+      appName: "app-casbin-oa",
+    });
   }
 
   componentWillMount() {
@@ -70,18 +74,12 @@ class App extends Component {
     }
   }
 
-  onLogined() {
+  onLoggedIn() {
     this.getAccount();
   }
 
-  onUpdateAccount(account) {
-    this.setState({
-      account: account
-    });
-  }
-
   getAccount() {
-    AccountBackend.getAccount()
+    AuthBackend.getAccount()
       .then((res) => {
         const account = Setting.parseJson(res.data);
         this.setState({
@@ -96,7 +94,7 @@ class App extends Component {
       submitted: false,
     });
 
-    AccountBackend.logout()
+    AuthBackend.logout()
       .then((res) => {
         if (res.status === 'ok') {
           this.setState({
@@ -114,7 +112,7 @@ class App extends Component {
 
   handleRightDropdownClick(e) {
     if (e.key === '0') {
-      this.props.history.push(`/account`);
+      Setting.goToLink("https://door.casbin.com/account");
     } else if (e.key === '1') {
       this.logout();
     }
@@ -158,10 +156,11 @@ class App extends Component {
       return null;
     } else if (this.state.account === null) {
       res.push(
-        <div key="100" style={{float: 'right', height: "64px", marginRight: "10px"}}>
-          <GithubLoginButton style={{marginTop: "12px", fontSize: "14px"}} size={40} onClick={() => Setting.getGithubAuthCode("signup")} />
-          {/*<a href="/login"></a>*/}
-        </div>
+        <Menu.Item key="101" style={{float: 'right'}}>
+          <Link to="/login">
+            Login
+          </Link>
+        </Menu.Item>
       );
     } else {
       res.push(this.renderRightDropdown());
@@ -216,29 +215,18 @@ class App extends Component {
     return res;
   }
 
-  renderHomeIfLogined(component) {
+  isStartPages() {
+    return window.location.pathname.startsWith('/login') ||
+      window.location.pathname.startsWith('/register') ||
+      window.location.pathname === '/';
+  }
+
+  renderHomeIfLoggedIn(component) {
     if (this.state.account !== null && this.state.account !== undefined) {
       return <Redirect to='/' />
     } else {
       return component;
     }
-  }
-
-  renderLoginIfNotLogined(component) {
-    if (this.state.account === null) {
-      return <Redirect to='/' />
-    } else if (this.state.account === undefined) {
-      return null;
-    }
-    else {
-      return component;
-    }
-  }
-
-  isStartPages() {
-    return window.location.pathname.startsWith('/login') ||
-      window.location.pathname.startsWith('/register') ||
-      window.location.pathname === '/';
   }
 
   renderContent() {
@@ -263,11 +251,10 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
+          <Route exact path="/login" render={(props) => this.renderHomeIfLoggedIn(<LoginPage onLoggedIn={this.onLoggedIn.bind(this)} {...props} />)}/>
+          <Route exact path="/callback/:applicationName/:providerName/:method" component={AuthCallback}/>
           <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
-          <Route exact path="/callback/:authType/:addition" component={CallbackBox}/>
-          <Route exact path="/account" render={(props) => this.renderLoginIfNotLogined(<AccountPage account={this.state.account} {...props} />)}/>
-          <Route exact path="/user/:username" render={(props) => <AccountPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" render={(props) => <StudentListPage account={this.state.account} {...props} />}/>
           <Route exact path="/students/:studentName" render={(props) => <StudentEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs" render={(props) => <ProgramListPage account={this.state.account} {...props} />}/>

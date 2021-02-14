@@ -14,24 +14,13 @@
 
 import {message} from "antd";
 import {isMobile as isMobileDevice} from "react-device-detect";
-import * as Conf from "./Conf"
 
 export let ServerUrl = '';
-export let ClientUrl = '';
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
   if (hostname === 'localhost') {
     ServerUrl = `http://${hostname}:10000`;
-  }
-}
-
-export function initFullClientUrl() {
-  const hostname = window.location.hostname;
-  if (hostname === 'localhost') {
-    ClientUrl = `http://${hostname}:9000`;
-  } else {
-    ClientUrl = `https://${hostname}`;
   }
 }
 
@@ -156,8 +145,4 @@ export function getAvatarColor(s) {
     random = -random;
   }
   return colorList[random % 4];
-}
-
-export function getGithubAuthCode(method) {
-  window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`;
 }

@@ -9516,11 +9516,6 @@ react-scripts@3.4.3:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-social-login-buttons@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npm.taobao.org/react-social-login-buttons/download/react-social-login-buttons-3.1.0.tgz#21fdb14063bed4adb325de5508db3e4318e452f2"
-  integrity sha1-If2xQGO+1K2zJd5VCNs+QxjkUvI=
-
 react@^16.13.1:
   version "16.13.1"
   resolved "https://registry.npm.taobao.org/react/download/react-16.13.1.tgz?cache=0&sync_timestamp=1597091609400&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact%2Fdownload%2Freact-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
