@@ -28,7 +28,7 @@ class RoundListPage extends React.Component {
 
   newRound() {
     return {
-      owner: "admin", // this.props.account.username,
+      owner: "admin", // this.props.account.name,
       name: `round_${this.state.rounds.length}`,
       createdTime: moment().format(),
       title: `New Round - ${this.state.rounds.length}`,

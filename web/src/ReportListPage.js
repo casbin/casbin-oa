@@ -28,7 +28,7 @@ class ReportListPage extends React.Component {
 
   newReport() {
     return {
-      owner: "admin", // this.props.account.username,
+      owner: "admin", // this.props.account.name,
       name: `report_${this.state.reports.length}`,
       createdTime: moment().format(),
       program: "summer2020",

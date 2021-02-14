@@ -28,7 +28,7 @@ class ProgramListPage extends React.Component {
 
   newProgram() {
     return {
-      owner: "admin", // this.props.account.username,
+      owner: "admin", // this.props.account.name,
       name: `program_${this.state.programs.length}`,
       createdTime: moment().format(),
       title: `New Program - ${this.state.programs.length}`,

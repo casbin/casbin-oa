@@ -92,15 +92,15 @@ class RankingPage extends React.Component {
   }
 
   isReportEmptyAndFromOthers(report) {
-    return report.text === "" && (report.student !== this.props.account?.username && !Setting.isAdminUser(this.props.account));
+    return report.text === "" && (report.student !== this.props.account?.name && !Setting.isAdminUser(this.props.account));
   }
 
   isSelfReport(report) {
-    return report.student === this.props.account?.username || Setting.isAdminUser(this.props.account);
+    return report.student === this.props.account?.name || Setting.isAdminUser(this.props.account);
   }
 
   isMentoredReport(report) {
-    return report.mentor === this.props.account?.username || Setting.isAdminUser(this.props.account);
+    return report.mentor === this.props.account?.name || Setting.isAdminUser(this.props.account);
   }
 
   getTag(report) {
@@ -135,7 +135,7 @@ class RankingPage extends React.Component {
 
   newReport(program, round, student) {
     return {
-      owner: "admin", // this.props.account.username,
+      owner: "admin", // this.props.account.name,
       name: `report_${program.name}_${round.name}_${student.name}`,
       createdTime: moment().format(),
       program: program.name,
@@ -324,7 +324,7 @@ class RankingPage extends React.Component {
                )}
                loading={students === null}
                rowClassName={(record, index) => {
-                 if (record.name === this.props.account?.username || record.mentor === this.props.account?.username) {
+                 if (record.name === this.props.account?.name || record.mentor === this.props.account?.name) {
                    return "self-row";
                  } else {
                    return null;

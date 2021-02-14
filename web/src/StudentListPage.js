@@ -28,7 +28,7 @@ class StudentListPage extends React.Component {
 
   newStudent() {
     return {
-      owner: "admin", // this.props.account.username,
+      owner: "admin", // this.props.account.name,
       name: `student_${this.state.students.length}`,
       createdTime: moment().format(),
       realName: "James Bond",
