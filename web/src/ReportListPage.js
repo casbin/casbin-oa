@@ -126,7 +126,7 @@ class ReportListPage extends React.Component {
         sorter: (a, b) => a.student.localeCompare(b.student),
         render: (text, record, index) => {
           return (
-            <a href={getUserProfileUrl(text)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
           )
         }
       },

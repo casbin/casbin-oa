@@ -39,7 +39,7 @@ class RankingPage extends React.Component {
         width: '60px',
         render: (text, record, index) => {
           return (
-            <a href={getUserProfileUrl(record.name)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(record.name)}>{text}</a>
           )
         }
       },
