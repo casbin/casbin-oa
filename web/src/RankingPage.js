@@ -6,10 +6,12 @@ import * as ProgramBackend from "./backend/ProgramBackend";
 import * as ReportBackend from "./backend/ReportBackend";
 import * as RoundBackend from "./backend/RoundBackend";
 import {getUserProfileUrl} from "./auth/Auth";
+import * as Conf from "./Conf";
 import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
 import ReactMarkdown from "react-markdown";
+
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
 require("codemirror/mode/markdown/markdown");
@@ -19,7 +21,7 @@ class RankingPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      programName: props.match.params.programName !== undefined ? props.match.params.programName : "talent2021",
+      programName: props.match.params.programName !== undefined ? props.match.params.programName : Conf.DefaultProgramName,
       students: null,
       reports: null,
       program: null,

@@ -134,7 +134,7 @@ class App extends Component {
     );
 
     return (
-      <Dropdown key="4" overlay={menu} >
+      <Dropdown key="200" overlay={menu} >
         <a className="ant-dropdown-link" href="#" style={{float: 'right'}}>
           <Avatar style={{ backgroundColor: Setting.getAvatarColor(this.state.account.name), verticalAlign: 'middle' }} size="large">
             {Setting.getShortName(this.state.account.name)}
