@@ -13,3 +13,9 @@
 // limitations under the License.
 
 export const DefaultProgramName = "talent2021";
+
+export const AuthConfig = {
+  serverUrl: "https://door.casbin.com",
+  appName: "app-casbin-oa",
+  organizationName: "casbin-oa",
+};

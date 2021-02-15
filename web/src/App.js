@@ -27,6 +27,7 @@ import RoundEditPage from "./RoundEditPage";
 import ReportListPage from "./ReportListPage";
 import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
+import * as Conf from "./Conf";
 
 import * as Auth from "./auth/Auth";
 import LoginPage from "./auth/LoginPage";
@@ -45,11 +46,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
-    Auth.initAuthWithConfig({
-      serverUrl: "https://door.casbin.com",
-      appName: "app-casbin-oa",
-      organizationName: "casbin-oa",
-    });
+    Auth.initAuthWithConfig(Conf.AuthConfig);
   }
 
   componentWillMount() {
