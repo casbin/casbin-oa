@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Col, Modal, Rate, Row, Switch, Table, Tag, Tooltip} from 'antd';
 import {CheckCircleOutlined, SyncOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
+import * as AuthBackend from "./auth/AuthBackend";
 import * as StudentBackend from "./backend/StudentBackend";
 import * as ProgramBackend from "./backend/ProgramBackend";
 import * as ReportBackend from "./backend/ReportBackend";
@@ -36,12 +37,12 @@ class RankingPage extends React.Component {
     return [
       {
         title: 'Name',
-        dataIndex: 'realName',
-        key: 'realName',
+        dataIndex: 'name',
+        key: 'name',
         width: '60px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(record.name)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
           )
         }
       },
@@ -64,7 +65,7 @@ class RankingPage extends React.Component {
         width: '70px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
           )
         }
       },
@@ -169,11 +170,12 @@ class RankingPage extends React.Component {
   }
 
   componentWillMount() {
-    Promise.all([this.getFilteredStudents(this.state.programName), this.getFilteredReports(this.state.programName), this.getFilteredRounds(this.state.programName), this.getProgram(this.state.programName)]).then((values) => {
-      let students = values[0];
-      let reports = values[1];
-      let rounds = values[2];
-      let program = values[3];
+    Promise.all([this.getUsers(), this.getFilteredStudents(this.state.programName), this.getFilteredReports(this.state.programName), this.getFilteredRounds(this.state.programName), this.getProgram(this.state.programName)]).then((values) => {
+      let users = values[0];
+      let students = values[1];
+      let reports = values[2];
+      let rounds = values[3];
+      let program = values[4];
 
       let roundColumns = [];
       rounds.forEach((round) => {
@@ -212,10 +214,18 @@ class RankingPage extends React.Component {
         );
       });
 
+      let userMap = new Map();
+      users.forEach(user => {
+        userMap.set(user.name, user);
+      });
+
       let studentMap = new Map();
-      students.forEach(student => {
-        student.score = 0;
-        studentMap.set(student.name, student);
+      students.forEach((student, i) => {
+        students[i].score = 0;
+        if (userMap.has(student.name)) {
+          students[i] = {...userMap.get(student.name), ...student};
+        }
+        studentMap.set(student.name, students[i]);
       });
       let roundMap = new Map();
       rounds.forEach(round => {
@@ -248,6 +258,13 @@ class RankingPage extends React.Component {
         program: program,
       });
     });
+  }
+
+  getUsers() {
+    return AuthBackend.getUsers(Conf.AuthConfig.organizationName)
+      .then((res) => {
+        return res;
+      });
   }
 
   getFilteredStudents(programName) {
