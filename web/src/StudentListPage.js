@@ -32,12 +32,8 @@ class StudentListPage extends React.Component {
       owner: "admin", // this.props.account.name,
       name: `student_${this.state.students.length}`,
       createdTime: moment().format(),
-      realName: "James Bond",
-      school: "Harvard University",
       program: "summer2020",
       mentor: "alice",
-      github: "jamesbond",
-      email: "jamesbond@gmail.com",
     }
   }
 
@@ -85,13 +81,6 @@ class StudentListPage extends React.Component {
         }
       },
       {
-        title: 'Real Name',
-        dataIndex: 'realName',
-        key: 'realName',
-        width: '150px',
-        sorter: (a, b) => a.realName.localeCompare(b.realName),
-      },
-      {
         title: 'Created Time',
         dataIndex: 'createdTime',
         key: 'createdTime',
@@ -102,17 +91,10 @@ class StudentListPage extends React.Component {
         }
       },
       {
-        title: 'School',
-        dataIndex: 'school',
-        key: 'school',
-        // width: '150px',
-        sorter: (a, b) => a.school.localeCompare(b.school),
-      },
-      {
         title: 'Program',
         dataIndex: 'program',
         key: 'program',
-        width: '120px',
+        // width: '120px',
         sorter: (a, b) => a.program.localeCompare(b.program),
         render: (text, record, index) => {
           return (
@@ -129,30 +111,6 @@ class StudentListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
-          )
-        }
-      },
-      {
-        title: 'GitHub',
-        dataIndex: 'github',
-        key: 'github',
-        width: '120px',
-        sorter: (a, b) => a.github.localeCompare(b.github),
-        render: (text, record, index) => {
-          return (
-            <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
-          )
-        }
-      },
-      {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-        width: '120px',
-        sorter: (a, b) => a.email.localeCompare(b.email),
-        render: (text, record, index) => {
-          return (
-            <a href={`mailto:${text}`}>{text}</a>
           )
         }
       },

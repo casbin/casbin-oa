@@ -65,26 +65,6 @@ class StudentEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            Real Name:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.student.realName} onChange={e => {
-              this.updateStudentField('realName', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            School:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.student.school} onChange={e => {
-              this.updateStudentField('school', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
             Program:
           </Col>
           <Col span={22} >
@@ -100,26 +80,6 @@ class StudentEditPage extends React.Component {
           <Col span={22} >
             <Input value={this.state.student.mentor} onChange={e => {
               this.updateStudentField('mentor', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            GitHub:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.student.github} onChange={e => {
-              this.updateStudentField('github', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            Email:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.student.email} onChange={e => {
-              this.updateStudentField('email', e.target.value);
             }} />
           </Col>
         </Row>
