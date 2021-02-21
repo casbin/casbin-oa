@@ -42,7 +42,7 @@ class RankingPage extends React.Component {
         width: '60px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text)}>{record.displayName}</a>
           )
         }
       },
@@ -241,6 +241,10 @@ class RankingPage extends React.Component {
         const studentName = report.student;
 
         let student = studentMap.get(studentName);
+        if (student === undefined) {
+          return;
+        }
+
         student[roundName] = report;
         student.score += report.score >= 0 ? report.score : 0;
       });
