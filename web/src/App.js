@@ -28,10 +28,9 @@ import ReportListPage from "./ReportListPage";
 import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
 import * as Conf from "./Conf";
+import * as AccountBackend from "./backend/AccountBackend";
 
 import * as Auth from "./auth/Auth";
-import LoginPage from "./auth/LoginPage";
-import * as AuthBackend from "./auth/AuthBackend";
 import AuthCallback from "./auth/AuthCallback";
 
 const { Header, Footer } = Layout;
@@ -77,7 +76,7 @@ class App extends Component {
   }
 
   getAccount() {
-    AuthBackend.getAccount()
+    AccountBackend.getAccount()
       .then((res) => {
         const account = Setting.parseJson(res.data);
         this.setState({
@@ -92,7 +91,7 @@ class App extends Component {
       submitted: false,
     });
 
-    AuthBackend.logout()
+    AccountBackend.logout()
       .then((res) => {
         if (res.status === 'ok') {
           this.setState({
@@ -155,9 +154,9 @@ class App extends Component {
     } else if (this.state.account === null) {
       res.push(
         <Menu.Item key="101" style={{float: 'right'}}>
-          <Link to="/login">
+          <a href={Auth.getAuthorizeUrl()}>
             Login
-          </Link>
+          </a>
         </Menu.Item>
       );
     } else {
@@ -249,8 +248,7 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
-          <Route exact path="/login" render={(props) => this.renderHomeIfLoggedIn(<LoginPage onLoggedIn={this.onLoggedIn.bind(this)} {...props} />)}/>
-          <Route exact path="/callback/:applicationName/:providerName/:method" component={AuthCallback}/>
+          <Route exact path="/login" component={AuthCallback}/>
           <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" render={(props) => <StudentListPage account={this.state.account} {...props} />}/>

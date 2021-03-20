@@ -13,48 +13,31 @@
 // limitations under the License.
 
 import React from "react";
-import {message, Spin} from "antd";
+import {Spin} from "antd";
 import {withRouter} from "react-router-dom";
-import * as AuthBackend from "./AuthBackend";
+import * as AccountBackend from "../backend/AccountBackend";
+import * as Util from "./Util";
 
 class AuthCallback extends React.Component {
   constructor(props) {
     super(props);
-    const params = new URLSearchParams(this.props.location.search);
     this.state = {
       classes: props,
-      applicationName: props.match.params.applicationName,
-      providerName: props.match.params.providerName,
-      method: props.match.params.method,
-      state: params.get("state"),
-      code: params.get("code"),
-      isAuthenticated: false,
-      isSignedUp: false,
-      email: ""
     };
   }
 
   componentWillMount() {
-    this.authLogin();
+    this.login();
   }
 
-  showMessage(type, text) {
-    if (type === "success") {
-      message.success(text);
-    } else if (type === "error") {
-      message.error(text);
-    }
-  }
-
-  authLogin() {
-    let redirectUrl;
-    redirectUrl = `${window.location.origin}/callback/${this.state.applicationName}/${this.state.providerName}/${this.state.method}`;
-    AuthBackend.authLogin(this.state.applicationName, this.state.providerName, this.state.code, this.state.state, redirectUrl, this.state.method)
+  login() {
+    const params = new URLSearchParams(this.props.location.search);
+    AccountBackend.login(params.get("code"), params.get("state"))
       .then((res) => {
         if (res.status === "ok") {
           window.location.href = '/';
         } else {
-          this.showMessage("error", res?.msg);
+          Util.showMessage("error", res?.msg);
         }
       });
   }

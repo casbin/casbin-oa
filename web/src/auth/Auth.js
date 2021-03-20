@@ -16,12 +16,20 @@ import {trim} from "./Util";
 
 export let authConfig = {
   serverUrl: "http://example.com", // your Casdoor URL, like the official one: https://door.casbin.com
+  clientId: "xxx", // your Casdoor OAuth Client ID
   appName: "app-example", // your Casdoor application name, like: "app-built-in"
   organizationName: "org-example", // your Casdoor organization name, like: "built-in"
 }
 
 export function initAuthWithConfig(config) {
   authConfig = config;
+}
+
+export function getAuthorizeUrl() {
+  const redirectUri = `${window.location.origin}/login`;
+  const scope = "read";
+  const state = "casbin-oa";
+  return `${trim(authConfig.serverUrl)}/login/oauth/authorize?client_id=${authConfig.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
 }
 
 export function getMyProfileUrl() {

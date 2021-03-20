@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Col, Modal, Rate, Row, Switch, Table, Tag, Tooltip} from 'antd';
 import {CheckCircleOutlined, SyncOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
-import * as AuthBackend from "./auth/AuthBackend";
+import * as AccountBackend from "./backend/AccountBackend";
 import * as StudentBackend from "./backend/StudentBackend";
 import * as ProgramBackend from "./backend/ProgramBackend";
 import * as ReportBackend from "./backend/ReportBackend";
@@ -265,7 +265,7 @@ class RankingPage extends React.Component {
   }
 
   getUsers() {
-    return AuthBackend.getUsers(Conf.AuthConfig.organizationName)
+    return AccountBackend.getUsers(Conf.AuthConfig.organizationName)
       .then((res) => {
         return res;
       });
