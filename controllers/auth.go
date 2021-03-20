@@ -15,18 +15,12 @@
 package controllers
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-
+	"github.com/casbin/casbin-oa/auth"
 	"github.com/casbin/casbin-oa/util"
-	"golang.org/x/oauth2"
 )
 
 var CasdoorEndpoint = "http://localhost:8000"
-var ClientId = "xxx"
+var ClientId = "0ba528121ea87b3eb54d"
 var ClientSecret = "xxx"
 
 type Response struct {
@@ -35,98 +29,62 @@ type Response struct {
 	Data   interface{} `json:"data"`
 }
 
-type User struct {
-	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
-	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
-
-	Id            string `xorm:"varchar(100)" json:"id"`
-	Password      string `xorm:"varchar(100)" json:"password"`
-	PasswordType  string `xorm:"varchar(100)" json:"passwordType"`
-	DisplayName   string `xorm:"varchar(100)" json:"displayName"`
-	Avatar        string `xorm:"varchar(255)" json:"avatar"`
-	Email         string `xorm:"varchar(100)" json:"email"`
-	Phone         string `xorm:"varchar(100)" json:"phone"`
-	Affiliation   string `xorm:"varchar(100)" json:"affiliation"`
-	Tag           string `xorm:"varchar(100)" json:"tag"`
-	IsAdmin       bool   `json:"isAdmin"`
-	IsGlobalAdmin bool   `json:"isGlobalAdmin"`
-
-	Github string `xorm:"varchar(100)" json:"github"`
-	Google string `xorm:"varchar(100)" json:"google"`
-}
-
-func getCasdoorOAuthToken(clientId string, clientSecret string, code string, state string) (*oauth2.Token, error) {
-	config := oauth2.Config{
-		ClientID:     clientId,
-		ClientSecret: clientSecret,
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  fmt.Sprintf("%s/api/login/oauth/authorize", CasdoorEndpoint),
-			TokenURL: fmt.Sprintf("%s/api/login/oauth/access_token", CasdoorEndpoint),
-		},
-		//RedirectURL: redirectUri,
-		Scopes:      nil,
-	}
-
-	token, err := config.Exchange(context.Background(), code)
-	return token, err
+func init() {
+	auth.InitConfig(CasdoorEndpoint)
 }
 
 func (c *ApiController) Login() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
-	token, err := getCasdoorOAuthToken(ClientId, ClientSecret, code, redirectUri)
+	token, err := auth.GetOAuthToken(ClientId, ClientSecret, code, state)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = token
+	claims, err := auth.ParseJwtToken(token.AccessToken)
+	if err != nil {
+		panic(err)
+	}
+
+	c.SetSessionUser(claims)
+
+	resp := &Response{Status: "ok", Msg: "", Data: claims}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *ApiController) Logout() {
+	var resp Response
+
+	c.SetSessionUser(nil)
+
+	resp = Response{Status: "ok", Msg: ""}
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
 func (c *ApiController) GetAccount() {
 	var resp Response
 
-	if c.GetSessionUser() == "" {
+	if c.GetSessionUser() == nil {
 		resp = Response{Status: "error", Msg: "please sign in first", Data: c.GetSessionUser()}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	}
 
-	username := c.GetSessionUser()
-	userObj := username
+	claims := c.GetSessionUser()
+	userObj := claims
 	resp = Response{Status: "ok", Msg: "", Data: util.StructToJson(userObj)}
 
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func getUsers(owner string) []*User {
-	url := fmt.Sprintf("%s/api/get-users?owner=%s", CasdoorEndpoint, owner)
-	resp, err := http.Get(url)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-
-	var users []*User
-	err = json.Unmarshal(bytes, &users)
-	if err != nil {
-		panic(err)
-	}
-	return users
-}
-
 func (c *ApiController) GetUsers() {
 	owner := c.Input().Get("owner")
 
-	c.Data["json"] = getUsers(owner)
+	c.Data["json"] = auth.GetUsers(owner)
 	c.ServeJSON()
 }

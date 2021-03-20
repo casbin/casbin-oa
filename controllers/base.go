@@ -14,21 +14,37 @@
 
 package controllers
 
-import "github.com/astaxie/beego"
+import (
+	"github.com/astaxie/beego"
+	"github.com/casbin/casbin-oa/auth"
+	"github.com/casbin/casbin-oa/util"
+)
 
 type ApiController struct {
 	beego.Controller
 }
 
-func (c *ApiController) GetSessionUser() string {
-	user := c.GetSession("username")
-	if user == nil {
-		return ""
+func (c *ApiController) GetSessionUser() *auth.Claims {
+	s := c.GetSession("user")
+	if s == nil {
+		return nil
 	}
 
-	return user.(string)
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
+	if err != nil {
+		panic(err)
+	}
+
+	return claims
 }
 
-func (c *ApiController) SetSessionUser(user string) {
-	c.SetSession("username", user)
+func (c *ApiController) SetSessionUser(claims *auth.Claims) {
+	if claims == nil {
+		c.DelSession("user")
+		return
+	}
+
+	s := util.StructToJson(claims)
+	c.SetSession("user", s)
 }

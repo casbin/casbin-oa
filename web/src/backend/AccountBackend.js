@@ -31,7 +31,7 @@ export function getUsers(owner) {
 
 export function login(code, state) {
   return fetch(`${Setting.ServerUrl}/api/login?code=${code}&state=${state}`, {
-    method: 'GET',
+    method: 'POST',
     credentials: 'include',
   }).then(res => res.json());
 }
