@@ -26,7 +26,7 @@ export function initAuthWithConfig(config) {
 }
 
 export function getAuthorizeUrl() {
-  const redirectUri = `${window.location.origin}/login`;
+  const redirectUri = `${window.location.origin}/callback`;
   const scope = "read";
   const state = authConfig.appName;
   return `${trim(authConfig.serverUrl)}/login/oauth/authorize?client_id=${authConfig.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;

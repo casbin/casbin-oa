@@ -248,7 +248,7 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
-          <Route exact path="/login" component={AuthCallback}/>
+          <Route exact path="/callback" component={AuthCallback}/>
           <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" render={(props) => <StudentListPage account={this.state.account} {...props} />}/>
