@@ -348,7 +348,7 @@ class RankingPage extends React.Component {
                )}
                loading={students === null}
                rowClassName={(record, index) => {
-                 if (record.name === this.props.account?.name || record.mentor === this.props.account?.name) {
+                 if (record.name === this.props.account?.name || record.mentor === this.props.account?.username) {
                    return "self-row";
                  } else {
                    return null;
