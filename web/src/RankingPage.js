@@ -95,16 +95,24 @@ class RankingPage extends React.Component {
     });
   }
 
+  isForAccount(name) {
+    return (name === this.props.account?.username || name === this.props.account?.name)
+  }
+
+  isSelfOrMentoredRow(record) {
+    return this.isForAccount(record.name) || this.isForAccount(record.mentor);
+  }
+
   isReportEmptyAndFromOthers(report) {
-    return report.text === "" && (report.student !== this.props.account?.name && !Setting.isAdminUser(this.props.account));
+    return report.text === "" && !this.isSelfReport(report);
   }
 
   isSelfReport(report) {
-    return report.student === this.props.account?.name || Setting.isAdminUser(this.props.account);
+    return this.isForAccount(report.student) || Setting.isAdminUser(this.props.account);
   }
 
   isMentoredReport(report) {
-    return report.mentor === this.props.account?.name || Setting.isAdminUser(this.props.account);
+    return this.isForAccount(report.mentor) || Setting.isAdminUser(this.props.account);
   }
 
   getTag(report) {
@@ -348,7 +356,7 @@ class RankingPage extends React.Component {
                )}
                loading={students === null}
                rowClassName={(record, index) => {
-                 if (record.name === this.props.account?.name || record.mentor === this.props.account?.username) {
+                 if (this.isSelfOrMentoredRow(record)) {
                    return "self-row";
                  } else {
                    return null;
