@@ -14,8 +14,8 @@
 
 import {message} from "antd";
 
-export function goToLink(link) {
-  window.location.href = link;
+export function goToLinkSoft(ths, link) {
+  ths.props.history.push(link);
 }
 
 export function showMessage(type, text) {

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Spin} from "antd";
+import {Button, Result, Spin} from "antd";
 import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as Util from "./Util";
@@ -23,6 +23,7 @@ class AuthCallback extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      msg: null,
     };
   }
 
@@ -35,9 +36,12 @@ class AuthCallback extends React.Component {
     AccountBackend.login(params.get("code"), params.get("state"))
       .then((res) => {
         if (res.status === "ok") {
-          window.location.href = '/';
+          Util.showMessage("success", `Logged in successfully`);
+          Util.goToLinkSoft(this, "/");
         } else {
-          Util.showMessage("error", res?.msg);
+          this.setState({
+            msg: res.msg,
+          });
         }
       });
   }
@@ -45,7 +49,26 @@ class AuthCallback extends React.Component {
   render() {
     return (
       <div style={{textAlign: "center"}}>
-        <Spin size="large" tip="Signing in..." style={{paddingTop: "10%"}} />
+        {
+          (this.state.msg === null) ? (
+            <Spin size="large" tip="Signing in..." style={{paddingTop: "10%"}} />
+          ) : (
+            <div style={{display: "inline"}}>
+              <Result
+                status="error"
+                title="Login Error"
+                subTitle={this.state.msg}
+                extra={[
+                  <Button type="primary" key="details">
+                    Details
+                  </Button>,
+                  <Button key="help">Help</Button>,
+                ]}
+              >
+              </Result>
+            </div>
+          )
+        }
       </div>
     )
   }
