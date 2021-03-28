@@ -37,7 +37,7 @@ class AuthCallback extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           Util.showMessage("success", `Logged in successfully`);
-          Util.goToLinkSoft(this, "/");
+          Util.goToLink("/");
         } else {
           this.setState({
             msg: res.msg,
