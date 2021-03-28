@@ -104,7 +104,7 @@ class App extends Component {
 
   handleRightDropdownClick(e) {
     if (e.key === '0') {
-      Setting.openLink(Auth.getUserProfileUrl(this.state.account.username, this.props.account));
+      Setting.openLink(Auth.getMyProfileUrl(this.state.account));
     } else if (e.key === '1') {
       this.logout();
     }

@@ -39,3 +39,11 @@ export function getUserProfileUrl(userName, account) {
   }
   return `${trim(authConfig.serverUrl)}/users/${authConfig.organizationName}/${userName}${param}`;
 }
+
+export function getMyProfileUrl(account) {
+  let param = "";
+  if (account !== undefined && account !== null) {
+    param = `?access_token=${account.accessToken}`;
+  }
+  return `${trim(authConfig.serverUrl)}/account${param}`;
+}
