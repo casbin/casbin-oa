@@ -76,7 +76,7 @@ func (c *ApiController) GetAccount() {
 
 	claims := c.GetSessionUser()
 	userObj := claims
-	resp = Response{Status: "ok", Msg: "", Data: util.StructToJson(userObj)}
+	resp = Response{Status: "ok", Msg: "", Data: userObj}
 
 	c.Data["json"] = resp
 	c.ServeJSON()
