@@ -42,7 +42,7 @@ class RankingPage extends React.Component {
         width: '60px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text)}>{record.displayName}</a>
+            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{record.displayName}</a>
           )
         }
       },
@@ -65,7 +65,7 @@ class RankingPage extends React.Component {
         width: '70px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },

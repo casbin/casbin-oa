@@ -76,7 +76,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },
@@ -110,7 +110,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.mentor.localeCompare(b.mentor),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text)}>{text}</a>
+            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },

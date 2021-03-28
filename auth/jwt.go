@@ -24,6 +24,7 @@ type Claims struct {
 	Name         string `json:"name"`
 	Email        string `json:"email"`
 	IsAdmin      bool   `json:"isAdmin"`
+	AccessToken  string `json:"accessToken"`
 	jwt.StandardClaims
 }
 

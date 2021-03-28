@@ -14,10 +14,7 @@
 
 package controllers
 
-import (
-	"github.com/casbin/casbin-oa/auth"
-	"github.com/casbin/casbin-oa/util"
-)
+import "github.com/casbin/casbin-oa/auth"
 
 var CasdoorEndpoint = "http://localhost:8000"
 var ClientId = "0ba528121ea87b3eb54d"
@@ -47,6 +44,7 @@ func (c *ApiController) Login() {
 		panic(err)
 	}
 
+	claims.AccessToken = token.AccessToken
 	c.SetSessionUser(claims)
 
 	resp := &Response{Status: "ok", Msg: "", Data: claims}

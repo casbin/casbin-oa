@@ -32,6 +32,10 @@ export function getAuthorizeUrl() {
   return `${trim(authConfig.serverUrl)}/login/oauth/authorize?client_id=${authConfig.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
 }
 
-export function getUserProfileUrl(userName) {
-  return `${trim(authConfig.serverUrl)}/users/${authConfig.organizationName}/${userName}`;
+export function getUserProfileUrl(userName, account) {
+  let param = "";
+  if (account !== undefined && account !== null) {
+    param = `?access_token=${account.accessToken}`;
+  }
+  return `${trim(authConfig.serverUrl)}/users/${authConfig.organizationName}/${userName}${param}`;
 }
