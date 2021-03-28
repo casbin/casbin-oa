@@ -110,6 +110,22 @@ class App extends Component {
     }
   }
 
+  renderAvatar() {
+    if (this.state.account.avatar === "") {
+      return (
+        <Avatar style={{ backgroundColor: Setting.getAvatarColor(this.state.account.name), verticalAlign: 'middle' }} size="large">
+          {Setting.getShortName(this.state.account.name)}
+        </Avatar>
+      )
+    } else {
+      return (
+        <Avatar src={this.state.account.avatar} style={{verticalAlign: 'middle' }} size="large">
+          {Setting.getShortName(this.state.account.name)}
+        </Avatar>
+      )
+    }
+  }
+
   renderRightDropdown() {
     const menu = (
       <Menu onClick={this.handleRightDropdownClick.bind(this)}>
@@ -127,9 +143,9 @@ class App extends Component {
     return (
       <Dropdown key="200" overlay={menu} >
         <a className="ant-dropdown-link" href="#" style={{float: 'right'}}>
-          <Avatar style={{ backgroundColor: Setting.getAvatarColor(this.state.account.name), verticalAlign: 'middle' }} size="large">
-            {Setting.getShortName(this.state.account.name)}
-          </Avatar>
+          {
+            this.renderAvatar()
+          }
           &nbsp;
           &nbsp;
           {Setting.isMobile() ? null : Setting.getShortName(this.state.account.name)} &nbsp; <DownOutlined />
