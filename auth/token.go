@@ -21,13 +21,13 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func GetOAuthToken(clientId string, clientSecret string, code string, state string) (*oauth2.Token, error) {
+func GetOAuthToken(code string, state string) (*oauth2.Token, error) {
 	config := oauth2.Config{
-		ClientID:     clientId,
-		ClientSecret: clientSecret,
+		ClientID:     authConfig.ClientId,
+		ClientSecret: authConfig.ClientSecret,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:   fmt.Sprintf("%s/api/login/oauth/authorize", Endpoint),
-			TokenURL:  fmt.Sprintf("%s/api/login/oauth/access_token", Endpoint),
+			AuthURL:   fmt.Sprintf("%s/api/login/oauth/authorize", authConfig.Endpoint),
+			TokenURL:  fmt.Sprintf("%s/api/login/oauth/access_token", authConfig.Endpoint),
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 		//RedirectURL: redirectUri,

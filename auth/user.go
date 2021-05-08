@@ -21,7 +21,14 @@ import (
 	"net/http"
 )
 
-var Endpoint string
+type AuthConfig struct {
+	Endpoint     string
+	ClientId     string
+	ClientSecret string
+	JwtSecret    string
+}
+
+var authConfig AuthConfig
 
 type User struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
@@ -29,11 +36,13 @@ type User struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	Id            string `xorm:"varchar(100)" json:"id"`
+	Type          string `xorm:"varchar(100)" json:"type"`
 	Password      string `xorm:"varchar(100)" json:"password"`
 	PasswordType  string `xorm:"varchar(100)" json:"passwordType"`
 	DisplayName   string `xorm:"varchar(100)" json:"displayName"`
 	Avatar        string `xorm:"varchar(255)" json:"avatar"`
 	Email         string `xorm:"varchar(100)" json:"email"`
+	PhonePrefix   string `xorm:"varchar(10)" json:"phonePrefix"`
 	Phone         string `xorm:"varchar(100)" json:"phone"`
 	Affiliation   string `xorm:"varchar(100)" json:"affiliation"`
 	Tag           string `xorm:"varchar(100)" json:"tag"`
@@ -44,12 +53,17 @@ type User struct {
 	Google string `xorm:"varchar(100)" json:"google"`
 }
 
-func InitConfig(endpoint string) {
-	Endpoint = endpoint
+func InitConfig(endpoint string, clientId string, clientSecret string, jwtSecret string) {
+	authConfig = AuthConfig{
+		Endpoint:     endpoint,
+		ClientId:     clientId,
+		ClientSecret: clientSecret,
+		JwtSecret:    jwtSecret,
+	}
 }
 
 func GetUsers(owner string) []*User {
-	url := fmt.Sprintf("%s/api/get-users?owner=%s", Endpoint, owner)
+	url := fmt.Sprintf("%s/api/get-users?owner=%s", authConfig.Endpoint, owner)
 	resp, err := http.Get(url)
 	if err != nil {
 		panic(err)

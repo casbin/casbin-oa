@@ -16,14 +16,16 @@ package auth
 
 import "github.com/dgrijalva/jwt-go"
 
-var jwtSecret = []byte("CasdoorSecret")
-
 type Claims struct {
 	Organization string `json:"organization"`
 	Username     string `json:"username"`
+	Type         string `json:"type"`
 	Name         string `json:"name"`
-	Email        string `json:"email"`
 	Avatar       string `json:"avatar"`
+	Email        string `json:"email"`
+	Phone        string `json:"phone"`
+	Affiliation  string `json:"affiliation"`
+	Tag          string `json:"tag"`
 	IsAdmin      bool   `json:"isAdmin"`
 	AccessToken  string `json:"accessToken"`
 	jwt.StandardClaims
@@ -31,7 +33,7 @@ type Claims struct {
 
 func ParseJwtToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return []byte(authConfig.JwtSecret), nil
 	})
 
 	if tokenClaims != nil {

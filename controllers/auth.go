@@ -14,11 +14,10 @@
 
 package controllers
 
-import "github.com/casbin/casbin-oa/auth"
-
-var CasdoorEndpoint = "http://localhost:8000"
-var ClientId = "0ba528121ea87b3eb54d"
-var ClientSecret = "xxx"
+import (
+	"github.com/astaxie/beego"
+	"github.com/casbin/casbin-oa/auth"
+)
 
 type Response struct {
 	Status string      `json:"status"`
@@ -26,15 +25,20 @@ type Response struct {
 	Data   interface{} `json:"data"`
 }
 
+var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
+var ClientId = beego.AppConfig.String("clientId")
+var ClientSecret = beego.AppConfig.String("clientSecret")
+var JwtSecret = beego.AppConfig.String("jwtSecret")
+
 func init() {
-	auth.InitConfig(CasdoorEndpoint)
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret)
 }
 
 func (c *ApiController) Login() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
-	token, err := auth.GetOAuthToken(ClientId, ClientSecret, code, state)
+	token, err := auth.GetOAuthToken(code, state)
 	if err != nil {
 		panic(err)
 	}
