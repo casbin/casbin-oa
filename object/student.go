@@ -30,7 +30,7 @@ type Student struct {
 
 func GetStudents(owner string) []*Student {
 	students := []*Student{}
-	err := adapter.engine.Desc("created_time").Find(&students, &Student{Owner: owner})
+	err := adapter.Engine.Desc("created_time").Find(&students, &Student{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +40,7 @@ func GetStudents(owner string) []*Student {
 
 func GetFilteredStudents(owner string, program string) []*Student {
 	students := []*Student{}
-	err := adapter.engine.Desc("created_time").Find(&students, &Student{Owner: owner, Program: program})
+	err := adapter.Engine.Desc("created_time").Find(&students, &Student{Owner: owner, Program: program})
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +50,7 @@ func GetFilteredStudents(owner string, program string) []*Student {
 
 func getStudent(owner string, name string) *Student {
 	student := Student{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&student)
+	existed, err := adapter.Engine.Get(&student)
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +73,7 @@ func UpdateStudent(id string, student *Student) bool {
 		return false
 	}
 
-	_, err := adapter.engine.Id(core.PK{owner, name}).AllCols().Update(student)
+	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(student)
 	if err != nil {
 		panic(err)
 	}
@@ -83,7 +83,7 @@ func UpdateStudent(id string, student *Student) bool {
 }
 
 func AddStudent(student *Student) bool {
-	affected, err := adapter.engine.Insert(student)
+	affected, err := adapter.Engine.Insert(student)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +92,7 @@ func AddStudent(student *Student) bool {
 }
 
 func DeleteStudent(student *Student) bool {
-	affected, err := adapter.engine.Id(core.PK{student.Owner, student.Name}).Delete(&Student{})
+	affected, err := adapter.Engine.Id(core.PK{student.Owner, student.Name}).Delete(&Student{})
 	if err != nil {
 		panic(err)
 	}

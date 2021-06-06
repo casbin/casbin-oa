@@ -32,7 +32,7 @@ type Program struct {
 
 func GetPrograms(owner string) []*Program {
 	programs := []*Program{}
-	err := adapter.engine.Desc("created_time").Find(&programs, &Program{Owner: owner})
+	err := adapter.Engine.Desc("created_time").Find(&programs, &Program{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +42,7 @@ func GetPrograms(owner string) []*Program {
 
 func getProgram(owner string, name string) *Program {
 	program := Program{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&program)
+	existed, err := adapter.Engine.Get(&program)
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func UpdateProgram(id string, program *Program) bool {
 		return false
 	}
 
-	_, err := adapter.engine.Id(core.PK{owner, name}).AllCols().Update(program)
+	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(program)
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +75,7 @@ func UpdateProgram(id string, program *Program) bool {
 }
 
 func AddProgram(program *Program) bool {
-	affected, err := adapter.engine.Insert(program)
+	affected, err := adapter.Engine.Insert(program)
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +84,7 @@ func AddProgram(program *Program) bool {
 }
 
 func DeleteProgram(program *Program) bool {
-	affected, err := adapter.engine.Id(core.PK{program.Owner, program.Name}).Delete(&Program{})
+	affected, err := adapter.Engine.Id(core.PK{program.Owner, program.Name}).Delete(&Program{})
 	if err != nil {
 		panic(err)
 	}

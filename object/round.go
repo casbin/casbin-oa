@@ -32,7 +32,7 @@ type Round struct {
 
 func GetRounds(owner string) []*Round {
 	rounds := []*Round{}
-	err := adapter.engine.Asc("created_time").Find(&rounds, &Round{Owner: owner})
+	err := adapter.Engine.Asc("created_time").Find(&rounds, &Round{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +42,7 @@ func GetRounds(owner string) []*Round {
 
 func GetFilteredRounds(owner string, program string) []*Round {
 	rounds := []*Round{}
-	err := adapter.engine.Asc("created_time").Find(&rounds, &Round{Owner: owner, Program: program})
+	err := adapter.Engine.Asc("created_time").Find(&rounds, &Round{Owner: owner, Program: program})
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +52,7 @@ func GetFilteredRounds(owner string, program string) []*Round {
 
 func getRound(owner string, name string) *Round {
 	round := Round{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&round)
+	existed, err := adapter.Engine.Get(&round)
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +75,7 @@ func UpdateRound(id string, round *Round) bool {
 		return false
 	}
 
-	_, err := adapter.engine.Id(core.PK{owner, name}).AllCols().Update(round)
+	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(round)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +85,7 @@ func UpdateRound(id string, round *Round) bool {
 }
 
 func AddRound(round *Round) bool {
-	affected, err := adapter.engine.Insert(round)
+	affected, err := adapter.Engine.Insert(round)
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +94,7 @@ func AddRound(round *Round) bool {
 }
 
 func DeleteRound(round *Round) bool {
-	affected, err := adapter.engine.Id(core.PK{round.Owner, round.Name}).Delete(&Round{})
+	affected, err := adapter.Engine.Id(core.PK{round.Owner, round.Name}).Delete(&Round{})
 	if err != nil {
 		panic(err)
 	}

@@ -34,7 +34,7 @@ type Report struct {
 
 func GetReports(owner string) []*Report {
 	reports := []*Report{}
-	err := adapter.engine.Desc("created_time").Find(&reports, &Report{Owner: owner})
+	err := adapter.Engine.Desc("created_time").Find(&reports, &Report{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ func GetReports(owner string) []*Report {
 
 func GetFilteredReports(owner string, program string) []*Report {
 	reports := []*Report{}
-	err := adapter.engine.Desc("created_time").Find(&reports, &Report{Owner: owner, Program: program})
+	err := adapter.Engine.Desc("created_time").Find(&reports, &Report{Owner: owner, Program: program})
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func GetFilteredReports(owner string, program string) []*Report {
 
 func getReport(owner string, name string) *Report {
 	report := Report{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&report)
+	existed, err := adapter.Engine.Get(&report)
 	if err != nil {
 		panic(err)
 	}
@@ -78,7 +78,7 @@ func UpdateReport(id string, report *Report) bool {
 		return true
 	}
 
-	_, err := adapter.engine.Id(core.PK{owner, name}).AllCols().Update(report)
+	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(report)
 	if err != nil {
 		panic(err)
 	}
@@ -88,7 +88,7 @@ func UpdateReport(id string, report *Report) bool {
 }
 
 func AddReport(report *Report) bool {
-	affected, err := adapter.engine.Insert(report)
+	affected, err := adapter.Engine.Insert(report)
 	if err != nil {
 		panic(err)
 	}
@@ -97,7 +97,7 @@ func AddReport(report *Report) bool {
 }
 
 func DeleteReport(report *Report) bool {
-	affected, err := adapter.engine.Id(core.PK{report.Owner, report.Name}).Delete(&Report{})
+	affected, err := adapter.Engine.Id(core.PK{report.Owner, report.Name}).Delete(&Report{})
 	if err != nil {
 		panic(err)
 	}
