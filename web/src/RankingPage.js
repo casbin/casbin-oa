@@ -12,6 +12,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
 import ReactMarkdown from "react-markdown";
+import * as Auth from "./auth/Auth";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
@@ -33,6 +34,10 @@ class RankingPage extends React.Component {
       reportEditable: false,
       report: null,
     };
+  }
+
+  isCandidateProgram() {
+    return this.state.programName.includes("-candidates");
   }
 
   getColumns(programName) {
@@ -89,7 +94,7 @@ class RankingPage extends React.Component {
         title: 'Score',
         dataIndex: 'score',
         key: 'score',
-        width: '45px',
+        width: '50px',
       },
     ];
 
@@ -98,7 +103,7 @@ class RankingPage extends React.Component {
         title: 'QQ',
         dataIndex: 'qq',
         key: 'qq',
-        width: '120px',
+        width: '150px',
         ellipsis: true,
         render: (text, record, index) => {
           let username = record.qq;
@@ -420,8 +425,21 @@ class RankingPage extends React.Component {
       });
   }
 
+  getSelfStudent() {
+    if (this.state.students === null) {
+      return null;
+    }
+
+    const students = this.state.students.filter(student => this.isForAccount(student.name));
+    if (students.length === 0) {
+      return null;
+    }
+
+    return students[0];
+  }
+
   renderTable(students) {
-    const applied = (students === null) ? true : students.filter(student => this.isForAccount(student.name)).length > 0;
+    const applied = this.getSelfStudent() !== null;
 
     return (
       <div>
@@ -434,12 +452,18 @@ class RankingPage extends React.Component {
                    {
                      this.renderDownloadCsvButton()
                    }
-                   &nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" disabled={this.props.account === undefined || this.props.account === null || applied} onClick={this.addStudent.bind(this)}>
-                     {
-                       this.props.account === null ? "Apply (Please login first)" : "Apply"
-                     }
-                   </Button>
+                   {
+                     !this.isCandidateProgram() ? null : (
+                       <React.Fragment>
+                         &nbsp;&nbsp;&nbsp;&nbsp;
+                         <Button type="primary" size="small" disabled={this.props.account === undefined || this.props.account === null || applied} onClick={this.addStudent.bind(this)}>
+                           {
+                             this.props.account === null ? "Apply (Please login first)" : "Apply"
+                           }
+                         </Button>
+                       </React.Fragment>
+                     )
+                   }
                  </div>
                )}
                loading={students === null}
@@ -584,6 +608,36 @@ class RankingPage extends React.Component {
     )
   }
 
+  renderLinkModal() {
+    if (!this.isCandidateProgram()) {
+      return null;
+    }
+
+    const student = this.getSelfStudent();
+    if (student === null || student.qq !== "") {
+      return null;
+    }
+
+    return (
+      <Modal
+        title={"Please Link your QQ"}
+        visible={true}
+        onOk={() => {
+          Setting.openLink(Auth.getMyProfileUrl(this.props.account));
+        }}
+        onCancel={() => {
+          window.location.reload();
+        }}
+        okText="Link QQ"
+        cancelText="Refresh"
+      >
+        <div>
+          Click the button to link your QQ, then refresh the page.
+        </div>
+      </Modal>
+    )
+  }
+
   render() {
     return (
       <div>
@@ -595,6 +649,9 @@ class RankingPage extends React.Component {
           </Col>
           {
             this.renderReportModal()
+          }
+          {
+            this.renderLinkModal()
           }
         </Row>
       </div>
