@@ -20,21 +20,23 @@ require("codemirror/mode/markdown/markdown");
 class RankingPage extends React.Component {
   constructor(props) {
     super(props);
+
+    const programName = props.match.params.programName !== undefined ? props.match.params.programName : Conf.DefaultProgramName;
     this.state = {
       classes: props,
-      programName: props.match.params.programName !== undefined ? props.match.params.programName : Conf.DefaultProgramName,
+      programName: programName,
       students: null,
       reports: null,
       program: null,
-      columns: this.getColumns(),
+      columns: this.getColumns(programName),
       reportVisible: false,
       reportEditable: false,
       report: null,
     };
   }
 
-  getColumns() {
-    return [
+  getColumns(programName) {
+    let columns = [
       {
         title: 'Name',
         dataIndex: 'name',
@@ -50,11 +52,25 @@ class RankingPage extends React.Component {
         title: 'GitHub',
         dataIndex: 'github',
         key: 'github',
-        width: '80px',
+        width: '120px',
         ellipsis: true,
         render: (text, record, index) => {
+          let username = record.github;
+          let avatarUrl = record.avatar;
+          if (record.properties?.oauth_GitHub_username !== undefined) {
+            username = record.properties.oauth_GitHub_username;
+            avatarUrl = record.properties.oauth_GitHub_avatarUrl;
+          }
+
+          if (username === "") {
+            return "(empty)";
+          }
+
           return (
-            <a target="_blank" href={`https://github.com/${text}`}>{text}</a>
+            <div>
+              <img style={{marginRight: '5px'}} width={30} height={30} src={avatarUrl} alt={username} />
+              <a target="_blank" href={`https://github.com/${username}`}>{username}</a>
+            </div>
           )
         }
       },
@@ -73,9 +89,40 @@ class RankingPage extends React.Component {
         title: 'Score',
         dataIndex: 'score',
         key: 'score',
-        width: '50px',
+        width: '45px',
       },
     ];
+
+    if (programName.includes("-candidates")) {
+      columns[2] = {
+        title: 'QQ',
+        dataIndex: 'qq',
+        key: 'qq',
+        width: '120px',
+        ellipsis: true,
+        render: (text, record, index) => {
+          let username = record.qq;
+          let avatarUrl = record.avatar;
+          if (record.properties?.oauth_QQ_displayName !== undefined) {
+            username = record.properties.oauth_QQ_displayName;
+            avatarUrl = record.properties.oauth_QQ_avatarUrl;
+          }
+
+          if (username === "") {
+            return "(empty)";
+          }
+
+          return (
+            <div>
+              <img style={{marginRight: '5px'}} width={30} height={30} src={avatarUrl} alt={username} />
+              {username}
+            </div>
+          )
+        }
+      };
+    }
+
+    return columns;
   }
 
   isCurrentRound(round) {
@@ -342,7 +389,36 @@ class RankingPage extends React.Component {
     )
   }
 
+  newStudent() {
+    return {
+      owner: "admin", // this.props.account.name,
+      name: this.props.account.username,
+      createdTime: moment().format(),
+      program: this.state.program.name,
+      // mentor: "alice",
+    }
+  }
+
+  addStudent() {
+    const newStudent = this.newStudent();
+    StudentBackend.addStudent(newStudent)
+      .then((res) => {
+          Setting.showMessage("success", `Student added successfully`);
+          this.setState({
+            students: Setting.prependRow(this.state.students, newStudent),
+          });
+
+          window.location.reload();
+        }
+      )
+      .catch(error => {
+        Setting.showMessage("error", `Student failed to add: ${error}`);
+      });
+  }
+
   renderTable(students) {
+    const applied = (students === null) ? true : students.filter(student => this.isForAccount(student.name)).length > 0;
+
     return (
       <div>
         <Table columns={this.state.columns} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
@@ -352,6 +428,12 @@ class RankingPage extends React.Component {
                    {
                      this.renderDownloadCsvButton()
                    }
+                   &nbsp;&nbsp;&nbsp;&nbsp;
+                   <Button type="primary" size="small" disabled={this.props.account === undefined || this.props.account === null || applied} onClick={this.addStudent.bind(this)}>
+                     {
+                       this.props.account === null ? "Apply (Please login first)" : "Apply"
+                     }
+                   </Button>
                  </div>
                )}
                loading={students === null}
