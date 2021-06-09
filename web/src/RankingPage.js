@@ -251,6 +251,10 @@ class RankingPage extends React.Component {
                 return null;
               }
 
+              if (report === undefined) {
+                return null;
+              }
+
               if (this.isReportEmptyAndFromOthers(report)) {
                 return this.getTag(report);
               } else {
@@ -424,7 +428,9 @@ class RankingPage extends React.Component {
         <Table columns={this.state.columns} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
                title={() => (
                  <div>
-                   {`"${this.state.program?.title}"`} Ranking&nbsp;&nbsp;&nbsp;&nbsp;
+                   <a target="_blank" href={this.state.program?.url}>
+                     {`"${this.state.program?.title}"`}
+                   </a> Ranking&nbsp;&nbsp;&nbsp;&nbsp;
                    {
                      this.renderDownloadCsvButton()
                    }
