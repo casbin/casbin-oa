@@ -146,3 +146,13 @@ export function getAvatarColor(s) {
   }
   return colorList[random % 4];
 }
+
+export function isChineseStr(s) {
+  if (s === undefined || s === null || s === "") {
+    return false;
+  }
+
+  // https://www.cnblogs.com/weihanli/p/validrealnameandidcardno.html
+  const re =/^[\u4E00-\u9FA5]{2,4}$/u;
+  return re.test(s);
+}

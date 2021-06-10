@@ -638,6 +638,40 @@ class RankingPage extends React.Component {
     )
   }
 
+  renderNameModal() {
+    if (!this.isCandidateProgram()) {
+      return null;
+    }
+
+    const student = this.getSelfStudent();
+    if (student === null || student.qq === "") {
+      return null;
+    }
+
+    if (Setting.isChineseStr(student.displayName)) {
+      return null;
+    }
+
+    return (
+      <Modal
+        title={"Please Change your display name to your real name"}
+        visible={true}
+        onOk={() => {
+          Setting.openLink(Auth.getMyProfileUrl(this.props.account));
+        }}
+        onCancel={() => {
+          window.location.reload();
+        }}
+        okText="Update Display Name"
+        cancelText="Refresh"
+      >
+        <div>
+          Click the button to change your display name, then refresh the page.
+        </div>
+      </Modal>
+    )
+  }
+
   render() {
     return (
       <div>
@@ -652,6 +686,9 @@ class RankingPage extends React.Component {
           }
           {
             this.renderLinkModal()
+          }
+          {
+            this.renderNameModal()
           }
         </Row>
       </div>
