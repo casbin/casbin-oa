@@ -14,18 +14,15 @@
 
 package object
 
-import (
-	"github.com/casbin/casbin-oa/util"
-	"xorm.io/core"
-)
+import "xorm.io/core"
 
 type Student struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
+	Program     string `xorm:"varchar(100) notnull pk" json:"program"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	Program string `xorm:"varchar(100)" json:"program"`
-	Mentor  string `xorm:"varchar(100)" json:"mentor"`
+	Mentor string `xorm:"varchar(100)" json:"mentor"`
 }
 
 func GetStudents(owner string) []*Student {
@@ -48,8 +45,8 @@ func GetFilteredStudents(owner string, program string) []*Student {
 	return students
 }
 
-func getStudent(owner string, name string) *Student {
-	student := Student{Owner: owner, Name: name}
+func GetStudent(owner string, name string, program string) *Student {
+	student := Student{Owner: owner, Name: name, Program: program}
 	existed, err := adapter.Engine.Get(&student)
 	if err != nil {
 		panic(err)
@@ -62,18 +59,12 @@ func getStudent(owner string, name string) *Student {
 	}
 }
 
-func GetStudent(id string) *Student {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	return getStudent(owner, name)
-}
-
-func UpdateStudent(id string, student *Student) bool {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	if getStudent(owner, name) == nil {
+func UpdateStudent(owner string, name string, program string, student *Student) bool {
+	if GetStudent(owner, name, program) == nil {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(student)
+	_, err := adapter.Engine.Id(core.PK{owner, name, program}).AllCols().Update(student)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +83,7 @@ func AddStudent(student *Student) bool {
 }
 
 func DeleteStudent(student *Student) bool {
-	affected, err := adapter.Engine.Id(core.PK{student.Owner, student.Name}).Delete(&Student{})
+	affected, err := adapter.Engine.Id(core.PK{student.Owner, student.Name, student.Program}).Delete(&Student{})
 	if err != nil {
 		panic(err)
 	}

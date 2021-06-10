@@ -263,7 +263,7 @@ class App extends Component {
           <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" render={(props) => <StudentListPage account={this.state.account} {...props} />}/>
-          <Route exact path="/students/:studentName" render={(props) => <StudentEditPage account={this.state.account} {...props} />}/>
+          <Route exact path="/students/:studentName/:programName" render={(props) => <StudentEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs" render={(props) => <ProgramListPage account={this.state.account} {...props} />}/>
           <Route exact path="/programs/:programName" render={(props) => <ProgramEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/rounds" render={(props) => <RoundListPage account={this.state.account} {...props} />}/>

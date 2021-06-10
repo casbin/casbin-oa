@@ -122,7 +122,7 @@ class StudentListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/students/${record.name}`)}>Edit</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/students/${record.name}/${record.program}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete student: ${record.name} ?`}
                 onConfirm={() => this.deleteStudent(index)}

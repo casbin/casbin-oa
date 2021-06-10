@@ -28,16 +28,16 @@ export function getFilteredStudents(owner, program) {
   }).then(res => res.json());
 }
 
-export function getStudent(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-student?id=${owner}/${encodeURIComponent(name)}`, {
+export function getStudent(owner, name, program) {
+  return fetch(`${Setting.ServerUrl}/api/get-student?owner=${owner}&name=${name}&program=${program}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());
 }
 
-export function updateStudent(owner, name, student) {
+export function updateStudent(owner, name, program, student) {
   let newStudent = Setting.deepCopy(student);
-  return fetch(`${Setting.ServerUrl}/api/update-student?id=${owner}/${encodeURIComponent(name)}`, {
+  return fetch(`${Setting.ServerUrl}/api/update-student?owner=${owner}&name=${name}&program=${program}`, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify(newStudent),

@@ -9,6 +9,7 @@ class StudentEditPage extends React.Component {
     this.state = {
       classes: props,
       studentName: props.match.params.studentName,
+      programName: props.match.params.programName,
       student: null,
       tasks: [],
       resources: [],
@@ -20,7 +21,7 @@ class StudentEditPage extends React.Component {
   }
 
   getStudent() {
-    StudentBackend.getStudent("admin", this.state.studentName)
+    StudentBackend.getStudent("admin", this.state.studentName, this.state.programName)
       .then((student) => {
         this.setState({
           student: student,
@@ -89,14 +90,14 @@ class StudentEditPage extends React.Component {
 
   submitStudentEdit() {
     let student = Setting.deepCopy(this.state.student);
-    StudentBackend.updateStudent(this.state.student.owner, this.state.studentName, student)
+    StudentBackend.updateStudent(this.state.student.owner, this.state.studentName, this.state.programName, student)
       .then((res) => {
         if (res) {
           Setting.showMessage("success", `Successfully saved`);
           this.setState({
             studentName: this.state.student.name,
           });
-          this.props.history.push(`/students/${this.state.student.name}`);
+          this.props.history.push(`/students/${this.state.student.name}/${this.state.student.program}`);
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
           this.updateStudentField('name', this.state.studentName);

@@ -36,14 +36,18 @@ func (c *ApiController) GetFilteredStudents() {
 }
 
 func (c *ApiController) GetStudent() {
-	id := c.Input().Get("id")
+	owner := c.Input().Get("owner")
+	name := c.Input().Get("name")
+	program := c.Input().Get("program")
 
-	c.Data["json"] = object.GetStudent(id)
+	c.Data["json"] = object.GetStudent(owner, name, program)
 	c.ServeJSON()
 }
 
 func (c *ApiController) UpdateStudent() {
-	id := c.Input().Get("id")
+	owner := c.Input().Get("owner")
+	name := c.Input().Get("name")
+	program := c.Input().Get("program")
 
 	var student object.Student
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &student)
@@ -51,7 +55,7 @@ func (c *ApiController) UpdateStudent() {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateStudent(id, &student)
+	c.Data["json"] = object.UpdateStudent(owner, name, program, &student)
 	c.ServeJSON()
 }
 
