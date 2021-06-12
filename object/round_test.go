@@ -34,7 +34,7 @@ func TestAddRounds(t *testing.T) {
 	InitConfig()
 	InitAdapter()
 
-	startDate := getDateFromString("2021-06-11")
+	startDate := getDateFromString("2021-06-08")
 
 	now := time.Now()
 	date := now.Format("2006-01-02")
