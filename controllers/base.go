@@ -16,8 +16,8 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/casbin/casbin-oa/auth"
 	"github.com/casbin/casbin-oa/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 type ApiController struct {
