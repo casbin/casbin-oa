@@ -1,8 +1,11 @@
 import React from "react";
-import {Button, Card, Col, DatePicker, Input, Row} from 'antd';
+import {Button, Card, Col, DatePicker, Select, Input, Row} from 'antd';
 import * as RoundBackend from "./backend/RoundBackend";
+import * as ProgramBackend from "./backend/ProgramBackend"
 import * as Setting from "./Setting";
 import moment from "moment";
+
+const { Option } = Select;
 
 class RoundEditPage extends React.Component {
   constructor(props) {
@@ -13,11 +16,22 @@ class RoundEditPage extends React.Component {
       round: null,
       tasks: [],
       resources: [],
+      programs: [],
     };
   }
 
   componentWillMount() {
     this.getRound();
+    this.getPrograms();
+  }
+
+  getPrograms() {
+    ProgramBackend.getPrograms("admin")
+        .then(res => {
+          this.setState({
+            programs: res,
+          });
+        });
   }
 
   getRound() {
@@ -76,6 +90,18 @@ class RoundEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
+            Program:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: '100%'}} value={this.state.round.program} onChange={(value => {this.updateRoundField('program', value);})}>
+              {
+                this.state.programs.map((program, index) => <Option key={index} value={program.name}>{program.name}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
             Start Date:
           </Col>
           <Col span={22} >
@@ -107,7 +133,7 @@ class RoundEditPage extends React.Component {
           this.setState({
             roundName: this.state.round.name,
           });
-          this.props.history.push(`/rounds/${this.state.round.name}`);
+          this.props.history.push(`/rounds`);
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
           this.updateRoundField('name', this.state.roundName);
