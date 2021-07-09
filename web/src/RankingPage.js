@@ -279,9 +279,11 @@ class RankingPage extends React.Component {
       });
 
       let userMap = new Map();
-      users.forEach(user => {
-        userMap.set(user.name, user);
-      });
+      if (users instanceof Array){
+        users.forEach(user => {
+          userMap.set(user.name, user);
+        });
+      }
 
       let studentMap = new Map();
       students.forEach((student, i) => {
