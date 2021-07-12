@@ -16,6 +16,7 @@ package object
 
 import (
 	"github.com/casbin/casbin-oa/util"
+	"time"
 	"xorm.io/core"
 )
 
@@ -30,6 +31,7 @@ type Report struct {
 	Mentor  string `xorm:"varchar(100)" json:"mentor"`
 	Text    string `xorm:"mediumtext" json:"text"`
 	Score   int    `json:"score"`
+	Prs     []*Pr  `xorm:"varchar(10000)" json:"prs"`
 }
 
 func GetReports(owner string) []*Report {
@@ -103,4 +105,22 @@ func DeleteReport(report *Report) bool {
 	}
 
 	return affected != 0
+}
+
+func AutoUpdateReport(id string, author string, startDate time.Time, endDate time.Time, student Student) bool {
+	var prs []*Pr
+	repositories := student.Repositories
+
+	for i := range repositories {
+		listPrs := ListPrs(author, "casbin", repositories[i], startDate, endDate)
+		prs = append(prs, listPrs...)
+	}
+
+	report := GetReport(id)
+	if report == nil {
+		return false
+	}
+	report.Prs = prs
+
+	return UpdateReport(id, report)
 }

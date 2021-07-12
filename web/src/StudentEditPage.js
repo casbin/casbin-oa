@@ -1,8 +1,10 @@
 import React from "react";
-import {Button, Card, Col, Input, Row} from 'antd';
+import {Button, Card, Col, Input, Row, Select} from 'antd';
 import * as StudentBackend from "./backend/StudentBackend";
 import * as Setting from "./Setting";
+import * as Conf from "./Conf";
 
+const {Option} = Select
 class StudentEditPage extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +25,7 @@ class StudentEditPage extends React.Component {
   getStudent() {
     StudentBackend.getStudent("admin", this.state.studentName, this.state.programName)
       .then((student) => {
+        student.repositories = student.repositories || []
         this.setState({
           student: student,
         });
@@ -47,6 +50,13 @@ class StudentEditPage extends React.Component {
   }
 
   renderStudent() {
+    const casbinRepositories = Conf.CasbinRepositories;
+    let repositories = [];
+
+    casbinRepositories.map((repository,index)=>{
+      repositories.push(<Option key={index} value={repository}>{repository}</Option>)
+    })
+
     return (
       <Card size="small" title={
         <div>
@@ -84,6 +94,23 @@ class StudentEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Repositories:
+          </Col>
+          <Col span={22} >
+            <Select
+                mode="multiple"
+                allowClear
+                style={{ width: '100%' }}
+                defaultValue={this.state.student.repositories}
+                placeholder="Please select"
+                onChange={value => this.updateStudentField('repositories',value)}
+            >
+              {repositories}
+            </Select>
+          </Col>
+        </Row>
       </Card>
     )
   }
@@ -97,7 +124,7 @@ class StudentEditPage extends React.Component {
           this.setState({
             studentName: this.state.student.name,
           });
-          this.props.history.push(`/students/${this.state.student.name}/${this.state.student.program}`);
+          this.props.history.push(`/students`);
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
           this.updateStudentField('name', this.state.studentName);
