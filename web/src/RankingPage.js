@@ -140,10 +140,12 @@ class RankingPage extends React.Component {
     return now < moment(round.startDate);
   }
 
-  openReport(report) {
+  openReport(round,report,student) {
     this.setState({
       reportVisible: true,
       report: report,
+      curStudent: student,
+      curRound: round,
     });
   }
 
@@ -168,7 +170,7 @@ class RankingPage extends React.Component {
   }
 
   getTag(report) {
-    if (report.text === "") {
+    if (report.text === "" && (report.prs === null || report.prs === undefined)) {
       if (this.isReportEmptyAndFromOthers(report)) {
         return (
           <Tag icon={<CloseCircleOutlined />} color="default">N/A</Tag>
@@ -265,7 +267,7 @@ class RankingPage extends React.Component {
               } else {
                 return (
                   <Tooltip title={this.getReportTooltip(report)}>
-                    <a onClick={() => this.openReport.bind(this)(report)}>
+                    <a onClick={() => this.openReport.bind(this)(round, report, student)}>
                       {
                         this.getTag(report)
                       }
@@ -533,6 +535,21 @@ class RankingPage extends React.Component {
     });
   }
 
+  getReportPrsAndText(){
+    const prs = this.state.report.prs || []
+    if (prs.length === 0){
+      return this.state.report.text
+    }
+    let prsText = "# Prs: \n"
+    prs.forEach(pr => {
+      prsText += `* [${pr.html_url}](${pr.html_url}) &nbsp; &nbsp; &nbsp; **creatTime: ${pr.create_at}**  &nbsp; &nbsp; &nbsp; **state: ${pr.state}**\n`
+    })
+
+    prsText += `# Others: \n`
+
+    return prsText + this.state.report.text
+  }
+
   renderReportTextEdit() {
     if (this.state.reportEditable) {
       return (
@@ -552,12 +569,46 @@ class RankingPage extends React.Component {
     } else {
       return (
         <ReactMarkdown
-          source={this.state.report.text !== "" ? this.state.report.text : "(empty)"}
+          source={this.getReportPrsAndText() !== "" ? this.getReportPrsAndText() : "(empty)"}
           renderers={{image: props => <img {...props} style={{maxWidth: '100%'}} alt="img" />}}
           escapeHtml={false}
         />
       )
     }
+  }
+
+  autoUpdate(){
+    this.setState({ loading: true });
+    ReportBackend.getReport(this.state.report.owner,this.state.report.name).then(res =>{
+      if (res != null){
+        this.getPrsFromGithub()
+      }else {
+        ReportBackend.updateReport(this.state.report.owner, this.state.report.name, this.state.report).then(res =>{
+          if (res){
+            console.log("成功")
+            this.getPrsFromGithub()
+          }else {
+            Setting.showMessage("error", `Unsuccessfully updated`);
+          }
+        })
+      }
+    })
+  }
+
+  getPrsFromGithub(){
+    ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, this.state.curRound).then(res =>{
+      this.setState({loading: false});
+      if (res){
+        Setting.showMessage("success", `Successfully updated`);
+        setTimeout(()=>{window.location.reload()},1000)
+      }else{
+        Setting.showMessage("error", `Unsuccessfully updated`);
+        setTimeout(()=>{window.location.reload()},1000)
+      }
+    }).catch(err=>{
+      this.setState({loading: false})
+      Setting.showMessage("error", `Unsuccessfully updated`);
+    })
   }
 
   renderReportModal() {
@@ -572,6 +623,8 @@ class RankingPage extends React.Component {
       '4 - Good: had made a good progress',
       '5 - Wonderful: you are a genius!'];
 
+    const {loading} = this.state
+
     return (
       <Modal
         title={
@@ -585,11 +638,21 @@ class RankingPage extends React.Component {
           </div>
         }
         visible={this.state.reportVisible}
-        onOk={this.handleReportOk.bind(this)}
-        onCancel={this.handleReportCancel.bind(this)}
+        onOk={()=>this.handleReportOk()}
+        onCancel={()=>this.handleReportCancel()}
         okText="Save"
-        okButtonProps={{disabled: !this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}}
         width={1000}
+        footer={[
+          <Button key="cancel" onClick={()=>this.handleReportCancel()}>
+            Cancel
+          </Button>,
+          <Button key="update" type="primary" loading={loading} onClick={()=>this.autoUpdate()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
+            Update Prs from github
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={()=>this.handleReportOk()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
+            Save
+          </Button>,
+        ]}
       >
         <div>
           {

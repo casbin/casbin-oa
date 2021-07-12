@@ -17,10 +17,11 @@ package object
 import "xorm.io/core"
 
 type Student struct {
-	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
-	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
-	Program     string `xorm:"varchar(100) notnull pk" json:"program"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	Owner        string   `xorm:"varchar(100) notnull pk" json:"owner"`
+	Name         string   `xorm:"varchar(100) notnull pk" json:"name"`
+	Program      string   `xorm:"varchar(100) notnull pk" json:"program"`
+	CreatedTime  string   `xorm:"varchar(100)" json:"createdTime"`
+	Repositories []string `xorm:"varchar(1000)" json:"repositories"`
 
 	Mentor string `xorm:"varchar(100)" json:"mentor"`
 }
