@@ -36,8 +36,11 @@ class RankingPage extends React.Component {
     };
   }
 
-  isCandidateProgram() {
-    return this.state.programName.includes("-candidates");
+  isCandidateProgram(programName) {
+    if (programName === undefined) {
+      programName = this.state.programName;
+    }
+    return programName.includes("-candidates");
   }
 
   getColumns(programName) {
@@ -98,7 +101,7 @@ class RankingPage extends React.Component {
       },
     ];
 
-    if (programName.includes("-candidates")) {
+    if (this.isCandidateProgram(programName)) {
       columns[2] = {
         title: 'QQ',
         dataIndex: 'qq',
