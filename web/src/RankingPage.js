@@ -53,6 +53,10 @@ class RankingPage extends React.Component {
         key: 'name',
         width: '60px',
         render: (text, record, index) => {
+          if (record.displayName === undefined) {
+            return `User: ${record.name} not found`;
+          }
+
           return (
             <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{record.displayName}</a>
           )
@@ -119,6 +123,10 @@ class RankingPage extends React.Component {
         render: (text, record, index) => {
           let username = record[this.additionalProvider.toLowerCase()];
           let avatarUrl = record.avatar;
+
+          if (record.properties === undefined) {
+            return "";
+          }
           if (record.properties[`oauth_${this.additionalProvider}_displayName`] !== undefined) {
             username = record.properties[`oauth_${this.additionalProvider}_displayName`];
             avatarUrl = record.properties[`oauth_${this.additionalProvider}_avatarUrl`];
