@@ -22,6 +22,8 @@ class RankingPage extends React.Component {
   constructor(props) {
     super(props);
 
+    this.additionalProvider = "QQ";
+
     const programName = props.match.params.programName !== undefined ? props.match.params.programName : Conf.DefaultProgramName;
     this.state = {
       classes: props,
@@ -83,6 +85,12 @@ class RankingPage extends React.Component {
         }
       },
       {
+        title: 'Placeholder',
+        dataIndex: 'placeholder',
+        key: 'placeholder',
+        width: '70px',
+      },
+      {
         title: 'Mentor',
         dataIndex: 'mentor',
         key: 'mentor',
@@ -103,17 +111,17 @@ class RankingPage extends React.Component {
 
     if (this.isCandidateProgram(programName)) {
       columns[2] = {
-        title: 'QQ',
-        dataIndex: 'qq',
-        key: 'qq',
+        title: this.additionalProvider,
+        dataIndex: this.additionalProvider.toLowerCase(),
+        key: this.additionalProvider.toLowerCase(),
         width: '150px',
         ellipsis: true,
         render: (text, record, index) => {
-          let username = record.qq;
+          let username = record[this.additionalProvider.toLowerCase()];
           let avatarUrl = record.avatar;
-          if (record.properties?.oauth_QQ_displayName !== undefined) {
-            username = record.properties.oauth_QQ_displayName;
-            avatarUrl = record.properties.oauth_QQ_avatarUrl;
+          if (record.properties[`oauth_${this.additionalProvider}_displayName`] !== undefined) {
+            username = record.properties[`oauth_${this.additionalProvider}_displayName`];
+            avatarUrl = record.properties[`oauth_${this.additionalProvider}_avatarUrl`];
           }
 
           if (username === "") {
@@ -617,13 +625,13 @@ class RankingPage extends React.Component {
     }
 
     const student = this.getSelfStudent();
-    if (student === null || student.qq !== "") {
+    if (student === null || student[this.additionalProvider.toLowerCase()] !== "") {
       return null;
     }
 
     return (
       <Modal
-        title={"Please Link your QQ"}
+        title={`Please Link your ${this.additionalProvider}`}
         visible={true}
         onOk={() => {
           Setting.openLink(Auth.getMyProfileUrl(this.props.account));
@@ -631,11 +639,11 @@ class RankingPage extends React.Component {
         onCancel={() => {
           window.location.reload();
         }}
-        okText="Link QQ"
+        okText={`Link ${this.additionalProvider}`}
         cancelText="Refresh"
       >
         <div>
-          Click the button to link your QQ, then refresh the page.
+          Click the button to link your {this.additionalProvider}, then refresh the page.
         </div>
       </Modal>
     )
@@ -647,7 +655,7 @@ class RankingPage extends React.Component {
     }
 
     const student = this.getSelfStudent();
-    if (student === null || student.qq === "") {
+    if (student === null || student[this.additionalProvider.toLowerCase()] === "") {
       return null;
     }
 
