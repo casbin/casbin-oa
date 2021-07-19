@@ -150,12 +150,6 @@ class StudentEditPage extends React.Component {
   }
 
   renderStudent() {
-    const casbinOrgs = Conf.CasbinOrgs;
-    let orgs = [];
-    casbinOrgs.map((repository,index)=>{
-      orgs.push(<Option key={index} value={repository}>{repository}</Option>)
-    })
-
     const columns = [
       {
         title: "Organization",
@@ -163,11 +157,6 @@ class StudentEditPage extends React.Component {
         key: "organization",
         width: "30%",
         render: (text, record, index) => {
-          let orgs = Conf.CasbinOrgs;
-          let options = [];
-          orgs.map((item, index) => {
-            options.push(<Option value={item} key={index}>{item}</Option>);
-          })
           return (
               <Search
                   loading={this.state.orgAndRepositories[index].loading}
