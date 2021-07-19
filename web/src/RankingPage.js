@@ -480,14 +480,13 @@ class RankingPage extends React.Component {
       </div>
     );
   }
-
   submitReportEdit() {
     let report = Setting.deepCopy(this.state.report);
     ReportBackend.updateReport(this.state.report.owner, this.state.report.name, report)
       .then((res) => {
         if (res) {
           Setting.showMessage("success", `Successfully saved`);
-          window.location.reload();
+          setTimeout(()=>window.location.reload(), 1000)
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
         }
@@ -535,19 +534,68 @@ class RankingPage extends React.Component {
     });
   }
 
-  getReportPrsAndText(){
-    const prs = this.state.report.prs || []
-    if (prs.length === 0){
-      return this.state.report.text
+  getReportTextByEvents(){
+    const events = this.state.report.events || []
+
+    if (events.length === 0){
+      return ""
     }
-    let prsText = "# Prs: \n"
-    prs.forEach(pr => {
-      prsText += `* [${pr.html_url}](${pr.html_url}) &nbsp; &nbsp; &nbsp; **creatTime: ${pr.create_at}**  &nbsp; &nbsp; &nbsp; **state: ${pr.state}**\n`
-    })
 
-    prsText += `# Others: \n`
+    let PREvents = []
+    let IssueCommentEvents = []
+    let CodeReviewEvents = []
 
-    return prsText + this.state.report.text
+    for(let i = events.length-1; i>=0; i--){
+      if (events[i].type === 'PR'){
+        PREvents.push(events[i])
+      }else if (events[i].type === 'IssueComment'){
+        IssueCommentEvents.push(events[i])
+      }else if (events[i].type === 'CodeReview'){
+        CodeReviewEvents.push(events[i])
+      }
+    }
+
+    let PRsText
+    if (PREvents.length === 0){
+      PRsText = "# PRs: \n empty"
+    }else {
+      PRsText = '# PRs: \n | Day | Repo | Title | Statues | \n | :--: | :------------: | :-------: | \n';
+      PREvents.map(item => {
+        PRsText += `| ${item.create_at} | [${item.repo_name}#${item.number}](${item.html_url}) | <img width="20">${item.title}<img width="20">`
+        if (item.state === 'open'){
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Open-green?style=for-the-badge&logo=appveyor) | \n`
+        }else if (item.state === 'Draft'){
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Draft-gray?style=for-the-badge&logo=appveyor) | \n`
+        }else if(item.state === 'Merged'){
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Merged-blueviolet?style=for-the-badge&logo=appveyor) | \n`
+        }else {
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Close-red?style=for-the-badge&logo=appveyor) | \n`
+        }
+      })
+    }
+
+
+    let IssuesCommentText
+    if (IssueCommentEvents.length === 0){
+      IssuesCommentText = '# Issues: \n empty'
+    }else {
+      IssuesCommentText = '# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n';
+      IssueCommentEvents.map(item => {
+        IssuesCommentText += `| ${item.create_at} | [${item.repo_name}# ${item.number}](${item.html_url}) | <img width="20"> ${item.title} | \n`
+      })
+    }
+
+    let CodeReviewText
+    if (CodeReviewEvents.length === 0){
+      CodeReviewText = '# CodeReview: \n empty'
+    }else {
+      CodeReviewText = '# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n';
+      CodeReviewEvents.map(item => {
+        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | [${item.html_url}](${item.html_url}) | \n`
+      })
+    }
+
+    return PRsText + IssuesCommentText + CodeReviewText;
   }
 
   renderReportTextEdit() {
@@ -569,7 +617,7 @@ class RankingPage extends React.Component {
     } else {
       return (
         <ReactMarkdown
-          source={this.getReportPrsAndText() !== "" ? this.getReportPrsAndText() : "(empty)"}
+          source={this.state.report.text !== "" ? this.state.report.text : "(empty)"}
           renderers={{image: props => <img {...props} style={{maxWidth: '100%'}} alt="img" />}}
           escapeHtml={false}
         />
@@ -585,9 +633,8 @@ class RankingPage extends React.Component {
       }else {
         ReportBackend.updateReport(this.state.report.owner, this.state.report.name, this.state.report).then(res =>{
           if (res){
-            console.log("成功")
             this.getPrsFromGithub()
-          }else {
+          }else{
             Setting.showMessage("error", `Unsuccessfully updated`);
           }
         })
@@ -598,12 +645,12 @@ class RankingPage extends React.Component {
   getPrsFromGithub(){
     ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, this.state.curRound).then(res =>{
       this.setState({loading: false});
-      if (res){
-        Setting.showMessage("success", `Successfully updated`);
-        setTimeout(()=>{window.location.reload()},1000)
+      if (res != null){
+        this.state.report.events = res
+        this.state.report.text = this.getReportTextByEvents()
+        this.submitReportEdit();
       }else{
-        Setting.showMessage("error", `Unsuccessfully updated`);
-        setTimeout(()=>{window.location.reload()},1000)
+        Setting.showMessage("warn", "Get Empty");
       }
     }).catch(err=>{
       this.setState({loading: false})
@@ -647,7 +694,7 @@ class RankingPage extends React.Component {
             Cancel
           </Button>,
           <Button key="update" type="primary" loading={loading} onClick={()=>this.autoUpdate()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
-            Update Prs from github
+            Update Events
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={()=>this.handleReportOk()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
             Save

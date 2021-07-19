@@ -74,3 +74,14 @@ export function autoUpdateReport(owner, name, student,curRound){
   }).then(res => res.json());
 
 }
+
+export function getRepositoriesByOrg(org){
+  if (org === ""){
+    return false
+  }
+  return fetch(`${Setting.ServerUrl}/api/get-repositories?org=${org}`,{
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json())
+
+}

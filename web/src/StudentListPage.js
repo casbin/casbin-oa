@@ -104,13 +104,18 @@ class StudentListPage extends React.Component {
       },
       {
         title: 'Repositories',
-        dataIndex: 'repositories',
+        dataIndex: 'org_repositories',
         key: 'createdTime',
         width: '160px',
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
-          if (text !== null && text !== undefined)
-            return text.join("----")
+          let repositories = ''
+          if (text !== null && text !== undefined){
+            text.map(item => {
+              repositories += item.organization+'[' +item.repositories+']\n'
+            })
+            return repositories
+          }
           else
             return ""
         }

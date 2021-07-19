@@ -1,4 +1,4 @@
-// Copyright 2021 The casbin Authors. All Rights Reserved.
+// Copyright 2020 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+package controllers
 
-import (
-	"context"
-	"github.com/astaxie/beego"
-	"github.com/google/go-github/v37/github"
-	"golang.org/x/oauth2"
-)
+import "github.com/casbin/casbin-oa/object"
 
-func GetClient() *github.Client {
-	accessToken := beego.AppConfig.String("githubAccessToken")
-	if len(accessToken) == 0 {
-		return github.NewClient(nil)
-	} else {
-		ts := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: accessToken},
-		)
-		tc := oauth2.NewClient(context.Background(), ts)
-		return github.NewClient(tc)
-	}
+func (c *ApiController) GetRepositoryByOrg() {
+	org := c.Input().Get("org")
+
+	c.Data["json"] = object.GetRepositoryByOrganization(org)
+	c.ServeJSON()
 }

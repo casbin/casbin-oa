@@ -14,8 +14,6 @@
 
 export const DefaultProgramName = "talent2021";
 
-export const CasbinRepositories = ["casnode", "casdoor", "casbin-oa", "node-casbin", "casnode-website"]
-
 export const AuthConfig = {
   serverUrl: "https://door.casbin.com",
   clientId: "0ba528121ea87b3eb54d",

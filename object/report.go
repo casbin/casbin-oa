@@ -15,6 +15,7 @@
 package object
 
 import (
+	"fmt"
 	"github.com/casbin/casbin-oa/util"
 	"time"
 	"xorm.io/core"
@@ -25,13 +26,13 @@ type Report struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	Program string `xorm:"varchar(100)" json:"program"`
-	Round   string `xorm:"varchar(100)" json:"round"`
-	Student string `xorm:"varchar(100)" json:"student"`
-	Mentor  string `xorm:"varchar(100)" json:"mentor"`
-	Text    string `xorm:"mediumtext" json:"text"`
-	Score   int    `json:"score"`
-	Prs     []*Pr  `xorm:"varchar(10000)" json:"prs"`
+	Program string   `xorm:"varchar(100)" json:"program"`
+	Round   string   `xorm:"varchar(100)" json:"round"`
+	Student string   `xorm:"varchar(100)" json:"student"`
+	Mentor  string   `xorm:"varchar(100)" json:"mentor"`
+	Text    string   `xorm:"mediumtext" json:"text"`
+	Score   int      `json:"score"`
+	Events  []*Event `json:"events"`
 }
 
 func GetReports(owner string) []*Report {
@@ -107,20 +108,29 @@ func DeleteReport(report *Report) bool {
 	return affected != 0
 }
 
-func AutoUpdateReport(id string, author string, startDate time.Time, endDate time.Time, student Student) bool {
-	var prs []*Pr
-	repositories := student.Repositories
+func UpdateReportEvents(id string, author string, startDate time.Time, endDate time.Time, student Student) []*Event {
+	orgAndRepositories := student.OrgRepositories
+	orgOrRepoMap := getDefaultOrg()
+	for i := range orgAndRepositories {
+		org := orgAndRepositories[i].Organization
+		repositories := orgAndRepositories[i].Repositories
 
-	for i := range repositories {
-		listPrs := ListPrs(author, "casbin", repositories[i], startDate, endDate)
-		prs = append(prs, listPrs...)
+		for j := range repositories {
+			fullName := fmt.Sprintf("%s/%s", org, repositories[j])
+			orgOrRepoMap[fullName] = true
+		}
 	}
 
 	report := GetReport(id)
 	if report == nil {
-		return false
+		return nil
 	}
-	report.Prs = prs
 
-	return UpdateReport(id, report)
+	events := GetEvents(author, orgOrRepoMap, startDate, endDate)
+	report.Events = events
+	if UpdateReport(id, report) {
+		return events
+	}
+	return nil
+
 }

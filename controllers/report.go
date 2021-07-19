@@ -16,9 +16,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"time"
-
 	"github.com/casbin/casbin-oa/object"
+	"time"
 )
 
 func (c *ApiController) GetReports() {
@@ -91,9 +90,9 @@ func (c *ApiController) AutoUpdateReport() {
 	}
 
 	layout := "2006-01-02"
-	startDateT, _ := time.ParseInLocation(layout, startDate, time.Local)
-	endDateT, _ := time.ParseInLocation(layout, endDate, time.Local)
+	startDateT, _ := time.ParseInLocation(layout, startDate, time.UTC)
+	endDateT, _ := time.ParseInLocation(layout, endDate, time.UTC)
 
-	c.Data["json"] = object.AutoUpdateReport(id, author, startDateT, endDateT, student)
+	c.Data["json"] = object.UpdateReportEvents(id, author, startDateT, endDateT, student)
 	c.ServeJSON()
 }

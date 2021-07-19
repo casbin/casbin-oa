@@ -12,24 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+package object
 
-import (
-	"context"
-	"github.com/astaxie/beego"
-	"github.com/google/go-github/v37/github"
-	"golang.org/x/oauth2"
-)
+import "github.com/google/go-github/v37/github"
 
-func GetClient() *github.Client {
-	accessToken := beego.AppConfig.String("githubAccessToken")
-	if len(accessToken) == 0 {
-		return github.NewClient(nil)
-	} else {
-		ts := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: accessToken},
-		)
-		tc := oauth2.NewClient(context.Background(), ts)
-		return github.NewClient(tc)
-	}
+type PayLoad struct {
+	Review      github.PullRequestReview  `json:"review"`
+	PullRequest github.PullRequest        `json:"pull_request"`
+	Issue       github.Issue              `json:"issue"`
+	Comment     github.PullRequestComment `json:"comment"`
 }
