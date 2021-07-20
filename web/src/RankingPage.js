@@ -580,7 +580,7 @@ class RankingPage extends React.Component {
     }else {
       IssuesCommentText = '# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n';
       IssueCommentEvents.map(item => {
-        IssuesCommentText += `| ${item.create_at} | <a href=${item.html_url}>${item.repo_name}#${item.number}</a> | <img width="20"> ${item.title} | \n`
+        IssuesCommentText += `| ${item.create_at} | <a href=${item.html_url} target="_blank">${item.repo_name}#${item.number}</a> | <img width="20"> ${item.title} | \n`
       })
     }
 
@@ -590,7 +590,7 @@ class RankingPage extends React.Component {
     }else {
       CodeReviewText = '# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n';
       CodeReviewEvents.map(item => {
-        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | <a href=${item.html_url}>${item.html_url}</a> | \n`
+        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | <a href=${item.html_url} target="_blank">${item.html_url}</a> | \n`
       })
     }
 
