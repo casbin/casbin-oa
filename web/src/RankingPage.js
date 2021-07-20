@@ -11,7 +11,7 @@ import * as Conf from "./Conf";
 import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown from "react-markdown/with-html";
 import * as Auth from "./auth/Auth";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
@@ -559,9 +559,9 @@ class RankingPage extends React.Component {
     if (PREvents.length === 0){
       PRsText = "# PRs: \n empty \n"
     }else {
-      PRsText = '# PRs: \n | Day | Repo | Title | Statues | \n | :--: | :------------: | :-------: | \n';
+      PRsText = '# PRs: \n | Day | Repo | Title | Status | \n | :--: | :------------: | :-------: | \n';
       PREvents.map(item => {
-        PRsText += `| ${item.create_at} | [${item.repo_name}#${item.number}](${item.html_url}) | <img width="20">${item.title}<img width="20">`
+        PRsText += `| ${item.create_at} | <a href="${item.html_url}" target="_blank">${item.repo_name}#${item.number}</a> | <img width="20">${item.title}<img width="20">`
         if (item.state === 'open'){
           PRsText += `| ![badge](https://img.shields.io/badge/PR-Open-green?style=for-the-badge&logo=appveyor) | \n`
         }else if (item.state === 'Draft'){
@@ -574,14 +574,13 @@ class RankingPage extends React.Component {
       })
     }
 
-
     let IssuesCommentText
     if (IssueCommentEvents.length === 0){
       IssuesCommentText = '# Issues: \n empty \n'
     }else {
       IssuesCommentText = '# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n';
       IssueCommentEvents.map(item => {
-        IssuesCommentText += `| ${item.create_at} | [${item.repo_name}# ${item.number}](${item.html_url}) | <img width="20"> ${item.title} | \n`
+        IssuesCommentText += `| ${item.create_at} | <a href=${item.html_url}>${item.repo_name}#${item.number}</a> | <img width="20"> ${item.title} | \n`
       })
     }
 
@@ -591,7 +590,7 @@ class RankingPage extends React.Component {
     }else {
       CodeReviewText = '# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n';
       CodeReviewEvents.map(item => {
-        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | [${item.html_url}](${item.html_url}) | \n`
+        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | <a href=${item.html_url}>${item.html_url}</a> | \n`
       })
     }
 
