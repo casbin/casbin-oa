@@ -557,7 +557,7 @@ class RankingPage extends React.Component {
 
     let PRsText
     if (PREvents.length === 0){
-      PRsText = "# PRs: \n empty"
+      PRsText = "# PRs: \n empty \n"
     }else {
       PRsText = '# PRs: \n | Day | Repo | Title | Statues | \n | :--: | :------------: | :-------: | \n';
       PREvents.map(item => {
@@ -577,7 +577,7 @@ class RankingPage extends React.Component {
 
     let IssuesCommentText
     if (IssueCommentEvents.length === 0){
-      IssuesCommentText = '# Issues: \n empty'
+      IssuesCommentText = '# Issues: \n empty \n'
     }else {
       IssuesCommentText = '# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n';
       IssueCommentEvents.map(item => {
@@ -587,7 +587,7 @@ class RankingPage extends React.Component {
 
     let CodeReviewText
     if (CodeReviewEvents.length === 0){
-      CodeReviewText = '# CodeReview: \n empty'
+      CodeReviewText = '# CodeReview: \n empty \n'
     }else {
       CodeReviewText = '# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n';
       CodeReviewEvents.map(item => {
@@ -595,7 +595,7 @@ class RankingPage extends React.Component {
       })
     }
 
-    return PRsText + IssuesCommentText + CodeReviewText;
+    return PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
   }
 
   renderReportTextEdit() {
@@ -648,7 +648,17 @@ class RankingPage extends React.Component {
       if (res != null){
         this.state.report.events = res
         this.state.report.text = this.getReportTextByEvents()
-        this.submitReportEdit();
+        let report = Setting.deepCopy(this.state.report);
+        ReportBackend.updateReport(this.state.report.owner, this.state.report.name, report).then(res => {
+          if (res){
+            Setting.showMessage("success", "Successfully saved")
+            this.setState({
+              report: report
+            })
+          }else {
+            Setting.showMessage("error",  "Unsuccessfully saved");
+          }
+        })
       }else{
         Setting.showMessage("warn", "Get Empty");
       }
@@ -696,7 +706,7 @@ class RankingPage extends React.Component {
           <Button key="update" type="primary" loading={loading} onClick={()=>this.autoUpdate()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
             Update Events
           </Button>,
-          <Button key="submit" type="primary" loading={loading} onClick={()=>this.handleReportOk()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
+          <Button key="submit" type="primary" onClick={()=>this.handleReportOk()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
             Save
           </Button>,
         ]}

@@ -50,6 +50,7 @@ func GetEvents(author string, orgMap map[string]bool, startDate time.Time, endDa
 	i := 0
 
 	var authorEvents []*Event
+	prMap := make(map[string]bool)
 	issueMap := make(map[string]bool)
 	reviewMap := make(map[string]bool)
 	for {
@@ -93,7 +94,12 @@ func GetEvents(author string, orgMap map[string]bool, startDate time.Time, endDa
 			json.Unmarshal(*curEvent.RawPayload, &payLoad)
 			request := payLoad.PullRequest
 			state := GetPRState(orgName, repoName, request.GetNumber())
-
+			_, ok := prMap[*request.HTMLURL]
+			if ok {
+				continue
+			} else {
+				prMap[*request.HTMLURL] = true
+			}
 			event := Event{Type: "PR", Title: *request.Title, HtmlURL: *request.HTMLURL, CreateAt: Date, State: state, OrgName: orgName, RepoName: repoName, Number: *request.Number}
 			authorEvents = append(authorEvents, &event)
 
