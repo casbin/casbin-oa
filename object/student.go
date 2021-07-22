@@ -17,12 +17,12 @@ package object
 import "xorm.io/core"
 
 type Student struct {
-	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
-	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
-	Program     string `xorm:"varchar(100) notnull pk" json:"program"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
-
-	Mentor string `xorm:"varchar(100)" json:"mentor"`
+	Owner           string             `xorm:"varchar(100) notnull pk" json:"owner"`
+	Name            string             `xorm:"varchar(100) notnull pk" json:"name"`
+	Program         string             `xorm:"varchar(100) notnull pk" json:"program"`
+	CreatedTime     string             `xorm:"varchar(100)" json:"createdTime"`
+	OrgRepositories []*OrgRepositories `xorm:"varchar(1000)" json:"org_repositories"`
+	Mentor          string             `xorm:"varchar(100)" json:"mentor"`
 }
 
 func GetStudents(owner string) []*Student {

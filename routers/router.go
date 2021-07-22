@@ -64,4 +64,8 @@ func initAPI() {
 	beego.Router("/api/update-report", &controllers.ApiController{}, "POST:UpdateReport")
 	beego.Router("/api/add-report", &controllers.ApiController{}, "POST:AddReport")
 	beego.Router("/api/delete-report", &controllers.ApiController{}, "POST:DeleteReport")
+	beego.Router("/api/auto-update-report", &controllers.ApiController{}, "POST:AutoUpdateReport")
+
+	beego.Router("/api/get-repositories", &controllers.ApiController{}, "Get:GetRepositoryByOrg")
+
 }

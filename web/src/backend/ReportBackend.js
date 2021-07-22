@@ -61,3 +61,27 @@ export function deleteReport(report) {
     body: JSON.stringify(newReport),
   }).then(res => res.json());
 }
+
+export function autoUpdateReport(owner, name, student,curRound){
+  const githubUsername = student?.properties.oauth_GitHub_username || ""
+  if (githubUsername === ""){
+    return false
+  }
+  return fetch(`${Setting.ServerUrl}/api/auto-update-report?id=${owner}/${encodeURIComponent(name)}&startDate=${curRound.startDate}&endDate=${curRound.endDate}&author=${githubUsername}`, {
+    method: 'Post',
+    credentials: 'include',
+    body: JSON.stringify(student)
+  }).then(res => res.json());
+
+}
+
+export function getRepositoriesByOrg(org){
+  if (org === ""){
+    return false
+  }
+  return fetch(`${Setting.ServerUrl}/api/get-repositories?org=${org}`,{
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json())
+
+}

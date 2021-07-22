@@ -94,12 +94,30 @@ class StudentListPage extends React.Component {
         title: 'Program',
         dataIndex: 'program',
         key: 'program',
-        // width: '120px',
+        width: '120px',
         sorter: (a, b) => a.program.localeCompare(b.program),
         render: (text, record, index) => {
           return (
             <a href={`/programs/${text}`}>{text}</a>
           )
+        }
+      },
+      {
+        title: 'Repositories',
+        dataIndex: 'org_repositories',
+        key: 'createdTime',
+        width: '160px',
+        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
+        render: (text, record, index) => {
+          let repositories = ''
+          if (text !== null && text !== undefined){
+            text.map(item => {
+              repositories += item.organization+'[' +item.repositories+']\n'
+            })
+            return repositories
+          }
+          else
+            return ""
         }
       },
       {

@@ -11,7 +11,7 @@ import * as Conf from "./Conf";
 import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown from "react-markdown/with-html";
 import * as Auth from "./auth/Auth";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
@@ -159,10 +159,12 @@ class RankingPage extends React.Component {
     return now < moment(round.startDate);
   }
 
-  openReport(report) {
+  openReport(round,report,student) {
     this.setState({
       reportVisible: true,
       report: report,
+      curStudent: student,
+      curRound: round,
     });
   }
 
@@ -187,7 +189,7 @@ class RankingPage extends React.Component {
   }
 
   getTag(report) {
-    if (report.text === "") {
+    if (report.text === "" && (report.prs === null || report.prs === undefined)) {
       if (this.isReportEmptyAndFromOthers(report)) {
         return (
           <Tag icon={<CloseCircleOutlined />} color="default">N/A</Tag>
@@ -284,7 +286,7 @@ class RankingPage extends React.Component {
               } else {
                 return (
                   <Tooltip title={this.getReportTooltip(report)}>
-                    <a onClick={() => this.openReport.bind(this)(report)}>
+                    <a onClick={() => this.openReport.bind(this)(round, report, student)}>
                       {
                         this.getTag(report)
                       }
@@ -497,14 +499,13 @@ class RankingPage extends React.Component {
       </div>
     );
   }
-
   submitReportEdit() {
     let report = Setting.deepCopy(this.state.report);
     ReportBackend.updateReport(this.state.report.owner, this.state.report.name, report)
       .then((res) => {
         if (res) {
           Setting.showMessage("success", `Successfully saved`);
-          window.location.reload();
+          setTimeout(()=>window.location.reload(), 1000)
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
         }
@@ -552,6 +553,69 @@ class RankingPage extends React.Component {
     });
   }
 
+  getReportTextByEvents(){
+    const events = this.state.report.events || []
+
+    if (events.length === 0){
+      return ""
+    }
+
+    let PREvents = []
+    let IssueCommentEvents = []
+    let CodeReviewEvents = []
+
+    for(let i = events.length-1; i>=0; i--){
+      if (events[i].type === 'PR'){
+        PREvents.push(events[i])
+      }else if (events[i].type === 'IssueComment'){
+        IssueCommentEvents.push(events[i])
+      }else if (events[i].type === 'CodeReview'){
+        CodeReviewEvents.push(events[i])
+      }
+    }
+
+    let PRsText
+    if (PREvents.length === 0){
+      PRsText = "# PRs: \n empty \n"
+    }else {
+      PRsText = '# PRs: \n | Day | Repo | Title | Status | \n | :--: | :------------: | :-------: | \n';
+      PREvents.map(item => {
+        PRsText += `| ${item.create_at} | <a href="${item.html_url}" target="_blank">${item.repo_name}#${item.number}</a> | <img width="20">${item.title}<img width="20">`
+        if (item.state === 'open'){
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Open-green?style=for-the-badge&logo=appveyor) | \n`
+        }else if (item.state === 'Draft'){
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Draft-gray?style=for-the-badge&logo=appveyor) | \n`
+        }else if(item.state === 'Merged'){
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Merged-blueviolet?style=for-the-badge&logo=appveyor) | \n`
+        }else {
+          PRsText += `| ![badge](https://img.shields.io/badge/PR-Close-red?style=for-the-badge&logo=appveyor) | \n`
+        }
+      })
+    }
+
+    let IssuesCommentText
+    if (IssueCommentEvents.length === 0){
+      IssuesCommentText = '# Issues: \n empty \n'
+    }else {
+      IssuesCommentText = '# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n';
+      IssueCommentEvents.map(item => {
+        IssuesCommentText += `| ${item.create_at} | <a href=${item.html_url} target="_blank">${item.repo_name}#${item.number}</a> | <img width="20"> ${item.title} | \n`
+      })
+    }
+
+    let CodeReviewText
+    if (CodeReviewEvents.length === 0){
+      CodeReviewText = '# CodeReview: \n empty \n'
+    }else {
+      CodeReviewText = '# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n';
+      CodeReviewEvents.map(item => {
+        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | <a href=${item.html_url} target="_blank">${item.html_url}</a> | \n`
+      })
+    }
+
+    return PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
+  }
+
   renderReportTextEdit() {
     if (this.state.reportEditable) {
       return (
@@ -579,6 +643,49 @@ class RankingPage extends React.Component {
     }
   }
 
+  autoUpdate(){
+    this.setState({ loading: true });
+    ReportBackend.getReport(this.state.report.owner,this.state.report.name).then(res =>{
+      if (res != null){
+        this.getPrsFromGithub()
+      }else {
+        ReportBackend.updateReport(this.state.report.owner, this.state.report.name, this.state.report).then(res =>{
+          if (res){
+            this.getPrsFromGithub()
+          }else{
+            Setting.showMessage("error", `Unsuccessfully updated`);
+          }
+        })
+      }
+    })
+  }
+
+  getPrsFromGithub(){
+    ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, this.state.curRound).then(res =>{
+      this.setState({loading: false});
+      if (res != null){
+        this.state.report.events = res
+        this.state.report.text = this.getReportTextByEvents()
+        let report = Setting.deepCopy(this.state.report);
+        ReportBackend.updateReport(this.state.report.owner, this.state.report.name, report).then(res => {
+          if (res){
+            Setting.showMessage("success", "Successfully saved")
+            this.setState({
+              report: report
+            })
+          }else {
+            Setting.showMessage("error",  "Unsuccessfully saved");
+          }
+        })
+      }else{
+        Setting.showMessage("warn", "Get Empty");
+      }
+    }).catch(err=>{
+      this.setState({loading: false})
+      Setting.showMessage("error", `Unsuccessfully updated`);
+    })
+  }
+
   renderReportModal() {
     if (this.state.report === null) {
       return null;
@@ -590,6 +697,8 @@ class RankingPage extends React.Component {
       '3 - Normal: just so so',
       '4 - Good: had made a good progress',
       '5 - Wonderful: you are a genius!'];
+
+    const {loading} = this.state
 
     return (
       <Modal
@@ -604,11 +713,21 @@ class RankingPage extends React.Component {
           </div>
         }
         visible={this.state.reportVisible}
-        onOk={this.handleReportOk.bind(this)}
-        onCancel={this.handleReportCancel.bind(this)}
+        onOk={()=>this.handleReportOk()}
+        onCancel={()=>this.handleReportCancel()}
         okText="Save"
-        okButtonProps={{disabled: !this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}}
         width={1000}
+        footer={[
+          <Button key="cancel" onClick={()=>this.handleReportCancel()}>
+            Cancel
+          </Button>,
+          <Button key="update" type="primary" loading={loading} onClick={()=>this.autoUpdate()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
+            Update Events
+          </Button>,
+          <Button key="submit" type="primary" onClick={()=>this.handleReportOk()} disabled={!this.isMentoredReport(this.state.report) && !this.isSelfReport(this.state.report)}>
+            Save
+          </Button>,
+        ]}
       >
         <div>
           {

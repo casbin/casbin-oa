@@ -16,8 +16,8 @@ package controllers
 
 import (
 	"encoding/json"
-
 	"github.com/casbin/casbin-oa/object"
+	"time"
 )
 
 func (c *ApiController) GetReports() {
@@ -74,5 +74,25 @@ func (c *ApiController) DeleteReport() {
 	}
 
 	c.Data["json"] = object.DeleteReport(&report)
+	c.ServeJSON()
+}
+
+func (c *ApiController) AutoUpdateReport() {
+	id := c.Input().Get("id")
+	startDate := c.Input().Get("startDate")
+	endDate := c.Input().Get("endDate")
+	author := c.Input().Get("author")
+
+	var student object.Student
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &student)
+	if err != nil {
+		panic(err)
+	}
+
+	layout := "2006-01-02"
+	startDateT, _ := time.ParseInLocation(layout, startDate, time.UTC)
+	endDateT, _ := time.ParseInLocation(layout, endDate, time.UTC)
+
+	c.Data["json"] = object.UpdateReportEvents(id, author, startDateT, endDateT, student)
 	c.ServeJSON()
 }
