@@ -16,6 +16,7 @@ package util
 
 import (
 	"context"
+
 	"github.com/astaxie/beego"
 	"github.com/google/go-github/v37/github"
 	"golang.org/x/oauth2"

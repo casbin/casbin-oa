@@ -18,10 +18,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/casbin/casbin-oa/util"
-	"github.com/google/go-github/v37/github"
 	"strings"
 	"time"
+
+	"github.com/casbin/casbin-oa/util"
+	"github.com/google/go-github/v37/github"
 )
 
 type Event struct {

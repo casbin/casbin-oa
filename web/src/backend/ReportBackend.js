@@ -62,11 +62,7 @@ export function deleteReport(report) {
   }).then(res => res.json());
 }
 
-export function autoUpdateReport(owner, name, student,curRound){
-  const githubUsername = student?.properties.oauth_GitHub_username || ""
-  if (githubUsername === ""){
-    return false
-  }
+export function autoUpdateReport(owner, name, student, githubUsername, curRound){
   return fetch(`${Setting.ServerUrl}/api/auto-update-report?id=${owner}/${encodeURIComponent(name)}&startDate=${curRound.startDate}&endDate=${curRound.endDate}&author=${githubUsername}`, {
     method: 'Post',
     credentials: 'include',

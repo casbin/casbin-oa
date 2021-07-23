@@ -16,6 +16,8 @@ package object
 
 import (
 	"context"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/casbin/casbin-oa/util"
 	"github.com/google/go-github/v37/github"
@@ -46,7 +48,11 @@ func GetRepositoryByOrganization(org string) OrgRepositories {
 func getDefaultOrg() map[string]bool {
 
 	defaultOrgMap := make(map[string]bool)
-	organizations := beego.AppConfig.Strings("defaultOrg")
+	orgStr := beego.AppConfig.String("defaultOrg")
+
+	orgStr = strings.Replace(orgStr, " ", "", -1)
+	orgStr = strings.Replace(orgStr, "\n", "", -1)
+	organizations := strings.Split(orgStr, ",")
 	for i := range organizations {
 		defaultOrgMap[organizations[i]] = true
 	}
