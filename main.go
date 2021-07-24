@@ -19,7 +19,6 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/routers"
-
 	_ "github.com/casbin/casbin-oa/routers"
 )
 

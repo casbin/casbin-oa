@@ -16,8 +16,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/casbin/casbin-oa/object"
 	"time"
+
+	"github.com/casbin/casbin-oa/object"
 )
 
 func (c *ApiController) GetReports() {

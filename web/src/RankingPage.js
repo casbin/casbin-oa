@@ -613,7 +613,10 @@ class RankingPage extends React.Component {
       })
     }
 
-    return PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
+    if (this.state.report.text !== ""){
+      return this.state.report.text + '\n' + '***' + '\n' + PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
+    }else
+      return PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
   }
 
   renderReportTextEdit() {
@@ -661,11 +664,21 @@ class RankingPage extends React.Component {
   }
 
   getPrsFromGithub(){
-    ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, this.state.curRound).then(res =>{
+
+    let githubUsername = this.state.curStudent.github;
+    if (this.state.curStudent.properties?.oauth_GitHub_username !== undefined) {
+      githubUsername = this.state.curStudent.properties.oauth_GitHub_username;
+    }
+    if (githubUsername === "") {
+      this.setState({ loading: false });
+      Setting.showMessage("error", "No Github Account!");
+      return;
+    }
+    ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, githubUsername, this.state.curRound).then(res =>{
       this.setState({loading: false});
       if (res != null){
-        this.state.report.events = res
-        this.state.report.text = this.getReportTextByEvents()
+        this.state.report.events = res;
+        this.state.report.text = this.getReportTextByEvents();
         let report = Setting.deepCopy(this.state.report);
         ReportBackend.updateReport(this.state.report.owner, this.state.report.name, report).then(res => {
           if (res){

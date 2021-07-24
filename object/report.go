@@ -16,8 +16,9 @@ package object
 
 import (
 	"fmt"
-	"github.com/casbin/casbin-oa/util"
 	"time"
+
+	"github.com/casbin/casbin-oa/util"
 	"xorm.io/core"
 )
 
