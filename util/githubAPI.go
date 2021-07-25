@@ -16,6 +16,7 @@ package util
 
 import (
 	"context"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/google/go-github/v37/github"
@@ -33,4 +34,59 @@ func GetClient() *github.Client {
 		tc := oauth2.NewClient(context.Background(), ts)
 		return github.NewClient(tc)
 	}
+}
+
+func SetIssueLabel(owner string, repo string, number int, label string) bool {
+	client := GetClient()
+	issueService := client.Issues
+	_, response, err := issueService.AddLabelsToIssue(context.Background(), owner, repo, number, []string{label})
+
+	if err != nil {
+		panic(err)
+	}
+	if response.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
+func SetIssueAssignee(owner string, repo string, number int, assignee string) bool {
+	client := GetClient()
+	issueService := client.Issues
+	_, response, err := issueService.AddAssignees(context.Background(), owner, repo, number, []string{assignee})
+
+	if err != nil {
+		panic(err)
+	}
+	if response.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
+func GetIssueLabel(title string, content string) string {
+	title = strings.ToLower(title)
+	content = strings.ToLower(content)
+
+	enhancementWords := []string{"make", "support", "add", "allow", "enable", "design", "use", "extract"}
+	for i := range enhancementWords {
+		if strings.Contains(title, enhancementWords[i]) {
+			return "enhancement"
+		}
+	}
+
+	bugWords := []string{"bug", "wrong", "error", "broken"}
+	for i := range bugWords {
+		if strings.Contains(title, bugWords[i]) {
+			return "bug"
+		}
+	}
+	questionWords := []string{"?", "what", "how", "why"}
+	for i := range questionWords {
+		if strings.Contains(title, questionWords[i]) || strings.Contains(content, questionWords[i]) {
+			return "question"
+		}
+	}
+
+	return ""
 }
