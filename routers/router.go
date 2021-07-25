@@ -68,4 +68,6 @@ func initAPI() {
 
 	beego.Router("/api/get-repositories", &controllers.ApiController{}, "Get:GetRepositoryByOrg")
 
+	beego.Router("/api/Issue-open", &controllers.ApiController{}, "Post:IssueOpen")
+
 }
