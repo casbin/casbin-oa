@@ -157,7 +157,7 @@ func GetPRState(org string, repo string, pullNumber int) string {
 	if pr.MergedAt != nil {
 		return "Merged"
 	}
-	if *pr.Draft {
+	if *pr.Draft && *pr.State == "open" {
 		return "Draft"
 	}
 

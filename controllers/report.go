@@ -94,6 +94,6 @@ func (c *ApiController) AutoUpdateReport() {
 	startDateT, _ := time.ParseInLocation(layout, startDate, time.UTC)
 	endDateT, _ := time.ParseInLocation(layout, endDate, time.UTC)
 
-	c.Data["json"] = object.UpdateReportEvents(id, author, startDateT, endDateT, student)
+	c.Data["json"] = object.AutoUpdateReportText(id, author, startDateT, endDateT, student)
 	c.ServeJSON()
 }

@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/casbin/casbin-oa/util"
@@ -109,7 +110,79 @@ func DeleteReport(report *Report) bool {
 	return affected != 0
 }
 
-func UpdateReportEvents(id string, author string, startDate time.Time, endDate time.Time, student Student) []*Event {
+func GetReportTextByEvents(events []*Event) string {
+
+	if len(events) == 0 {
+		return ""
+	}
+
+	var PREvents []*Event
+	var IssueCommentEvents []*Event
+	var CodeReviewEvents []*Event
+
+	for i := len(events) - 1; i >= 0; i-- {
+		if events[i].Type == "PR" {
+			PREvents = append(PREvents, events[i])
+		} else if events[i].Type == "IssueComment" {
+			IssueCommentEvents = append(IssueCommentEvents, events[i])
+		} else if events[i].Type == "CodeReview" {
+			CodeReviewEvents = append(CodeReviewEvents, events[i])
+		}
+	}
+
+	//`| ${item.create_at} | <a href="${item.html_url}" target="_blank">${item.repo_name}#${item.number}</a> | <img width="20">${item.title}<img width="20">`
+
+	var PRsText string
+	if len(PREvents) == 0 {
+		PRsText = "# PRs: \n empty \n"
+	} else {
+		PRsText = "# PRs: \n | Day | Repo | Title | Status | \n | :--: | :------------: | :-------: | \n"
+		for i := range PREvents {
+			curEvent := PREvents[i]
+			PRsText = fmt.Sprintf("%s| %s | <a href=%s target=_blank>%s#%v</a> | <img width=20>%s<img width=20>", PRsText, curEvent.CreateAt, curEvent.HtmlURL,
+				curEvent.RepoName, curEvent.Number, curEvent.Title)
+			if curEvent.State == "open" {
+				PRsText = fmt.Sprintf("%s%s", PRsText, "| ![badge](https://img.shields.io/badge/PR-Open-green?style=for-the-badge&logo=appveyor) | \n")
+			} else if curEvent.State == "Draft" {
+				PRsText = fmt.Sprintf("%s%s", PRsText, "| ![badge](https://img.shields.io/badge/PR-Draft-gray?style=for-the-badge&logo=appveyor) | \n")
+			} else if curEvent.State == "Merged" {
+				PRsText = fmt.Sprintf("%s%s", PRsText, "| ![badge](https://img.shields.io/badge/PR-Merged-blueviolet?style=for-the-badge&logo=appveyor) | \n")
+			} else {
+				PRsText = fmt.Sprintf("%s%s", PRsText, "| ![badge](https://img.shields.io/badge/PR-Close-red?style=for-the-badge&logo=appveyor) | \n")
+			}
+		}
+	}
+
+	var IssuesCommentText string
+
+	if len(IssueCommentEvents) == 0 {
+		IssuesCommentText = "# Issues: \n empty \n"
+	} else {
+		IssuesCommentText = "# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n"
+		for i := range IssueCommentEvents {
+			curEvent := IssueCommentEvents[i]
+			IssuesCommentText = fmt.Sprintf("%s| %s | <a href=%s target=_blank>%s#%v</a> | <img width=20> %s | \n",
+				IssuesCommentText, curEvent.CreateAt, curEvent.HtmlURL, curEvent.RepoName, curEvent.Number, curEvent.Title)
+		}
+	}
+
+	var CodeReviewText string
+
+	if len(CodeReviewEvents) == 0 {
+		CodeReviewText = "# CodeReview: \n empty \n"
+	} else {
+		CodeReviewText = "# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n"
+		for i := range CodeReviewEvents {
+			curEvent := CodeReviewEvents[i]
+			CodeReviewText = fmt.Sprintf("%s| %s | %s <img width=20> | <a href = %s target=_blank> %s </a> | \n",
+				CodeReviewText, curEvent.CreateAt, curEvent.RepoName, curEvent.HtmlURL, curEvent.HtmlURL)
+		}
+	}
+
+	return fmt.Sprintf("%s\n%s\n%s", PRsText, IssuesCommentText, CodeReviewText)
+}
+
+func AutoUpdateReportText(id string, author string, startDate time.Time, endDate time.Time, student Student) string {
 	orgAndRepositories := student.OrgRepositories
 	orgOrRepoMap := getDefaultOrg()
 	for i := range orgAndRepositories {
@@ -123,15 +196,25 @@ func UpdateReportEvents(id string, author string, startDate time.Time, endDate t
 	}
 
 	report := GetReport(id)
-	if report == nil {
-		return nil
-	}
 
 	events := GetEvents(author, orgOrRepoMap, startDate, endDate)
 	report.Events = events
-	if UpdateReport(id, report) {
-		return events
-	}
-	return nil
+	text := report.Text
+	textByEvents := GetReportTextByEvents(events)
 
+	if textByEvents == "" {
+		return ""
+	}
+
+	splitsArr := strings.Split(text, "\n***\n")
+	if len(splitsArr) == 0 || text == "" {
+		report.Text = fmt.Sprintf("%s \n***\n %s", report.Text, GetReportTextByEvents(events))
+	} else {
+		report.Text = fmt.Sprintf("%s \n***\n %s", splitsArr[0], GetReportTextByEvents(events))
+	}
+
+	if UpdateReport(id, report) {
+		return report.Text
+	}
+	return ""
 }
