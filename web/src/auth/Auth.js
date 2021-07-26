@@ -19,13 +19,17 @@ export let authConfig = {
   clientId: "xxx", // your Casdoor OAuth Client ID
   appName: "app-example", // your Casdoor application name, like: "app-built-in"
   organizationName: "org-example", // your Casdoor organization name, like: "built-in"
-}
+};
 
 export function initAuthWithConfig(config) {
   authConfig = config;
 }
 
-export function getAuthorizeUrl() {
+export function getSignupUrl() {
+  return `${trim(authConfig.serverUrl)}/signup/${authConfig.appName}`;
+}
+
+export function getSigninUrl() {
   const redirectUri = `${window.location.origin}/callback`;
   const scope = "read";
   const state = authConfig.appName;

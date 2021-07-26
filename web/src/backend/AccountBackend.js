@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import * as Setting from "../Setting";
-import {authConfig} from "../auth/Auth";
 
 export function getAccount() {
   return fetch(`${Setting.ServerUrl}/api/get-account`, {

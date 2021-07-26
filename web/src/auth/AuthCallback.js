@@ -27,6 +27,7 @@ class AuthCallback extends React.Component {
     };
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     this.login();
   }
@@ -64,13 +65,12 @@ class AuthCallback extends React.Component {
                   </Button>,
                   <Button key="help">Help</Button>,
                 ]}
-              >
-              </Result>
+              />
             </div>
           )
         }
       </div>
-    )
+    );
   }
 }
 

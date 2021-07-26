@@ -165,7 +165,7 @@ class App extends Component {
     } else if (this.state.account === null) {
       res.push(
         <Menu.Item key="101" style={{float: 'right'}}>
-          <a href={Auth.getAuthorizeUrl()}>
+          <a href={Auth.getSigninUrl()}>
             Login
           </a>
         </Menu.Item>
@@ -223,20 +223,6 @@ class App extends Component {
     return res;
   }
 
-  isStartPages() {
-    return window.location.pathname.startsWith('/login') ||
-      window.location.pathname.startsWith('/register') ||
-      window.location.pathname === '/';
-  }
-
-  renderHomeIfLoggedIn(component) {
-    if (this.state.account !== null && this.state.account !== undefined) {
-      return <Redirect to='/' />
-    } else {
-      return component;
-    }
-  }
-
   renderContent() {
     return (
       <div>
@@ -246,7 +232,7 @@ class App extends Component {
           }
           <Menu
             // theme="dark"
-            mode={(Setting.isMobile() && this.isStartPages()) ? "inline" : "horizontal"}
+            mode={"horizontal"}
             defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
             style={{ lineHeight: '64px' }}
           >
