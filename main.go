@@ -17,6 +17,7 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	_ "github.com/astaxie/beego/session/redis"
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/routers"
 	_ "github.com/casbin/casbin-oa/routers"
@@ -40,9 +41,14 @@ func main() {
 	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)
 
 	beego.BConfig.WebConfig.Session.SessionName = "casbin_oa_session_id"
-	beego.BConfig.WebConfig.Session.SessionProvider = "file"
-	beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
-	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+	if beego.AppConfig.String("redisEndpoint") == "" {
+		beego.BConfig.WebConfig.Session.SessionProvider = "file"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
+	} else {
+		beego.BConfig.WebConfig.Session.SessionProvider = "redis"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("redisEndpoint")
+	}
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
 
 	beego.Run()
 }
