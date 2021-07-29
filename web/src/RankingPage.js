@@ -553,72 +553,6 @@ class RankingPage extends React.Component {
     });
   }
 
-  getReportTextByEvents(){
-    const events = this.state.report.events || []
-
-    if (events.length === 0){
-      return ""
-    }
-
-    let PREvents = []
-    let IssueCommentEvents = []
-    let CodeReviewEvents = []
-
-    for(let i = events.length-1; i>=0; i--){
-      if (events[i].type === 'PR'){
-        PREvents.push(events[i])
-      }else if (events[i].type === 'IssueComment'){
-        IssueCommentEvents.push(events[i])
-      }else if (events[i].type === 'CodeReview'){
-        CodeReviewEvents.push(events[i])
-      }
-    }
-
-    let PRsText
-    if (PREvents.length === 0){
-      PRsText = "# PRs: \n empty \n"
-    }else {
-      PRsText = '# PRs: \n | Day | Repo | Title | Status | \n | :--: | :------------: | :-------: | \n';
-      PREvents.map(item => {
-        PRsText += `| ${item.create_at} | <a href="${item.html_url}" target="_blank">${item.repo_name}#${item.number}</a> | <img width="20">${item.title}<img width="20">`
-        if (item.state === 'open'){
-          PRsText += `| ![badge](https://img.shields.io/badge/PR-Open-green?style=for-the-badge&logo=appveyor) | \n`
-        }else if (item.state === 'Draft'){
-          PRsText += `| ![badge](https://img.shields.io/badge/PR-Draft-gray?style=for-the-badge&logo=appveyor) | \n`
-        }else if(item.state === 'Merged'){
-          PRsText += `| ![badge](https://img.shields.io/badge/PR-Merged-blueviolet?style=for-the-badge&logo=appveyor) | \n`
-        }else {
-          PRsText += `| ![badge](https://img.shields.io/badge/PR-Close-red?style=for-the-badge&logo=appveyor) | \n`
-        }
-      })
-    }
-
-    let IssuesCommentText
-    if (IssueCommentEvents.length === 0){
-      IssuesCommentText = '# Issues: \n empty \n'
-    }else {
-      IssuesCommentText = '# Issues: \n | Day | Repo | Content \n | :--: | :--: | :-------: | \n';
-      IssueCommentEvents.map(item => {
-        IssuesCommentText += `| ${item.create_at} | <a href=${item.html_url} target="_blank">${item.repo_name}#${item.number}</a> | <img width="20"> ${item.title} | \n`
-      })
-    }
-
-    let CodeReviewText
-    if (CodeReviewEvents.length === 0){
-      CodeReviewText = '# CodeReview: \n empty \n'
-    }else {
-      CodeReviewText = '# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n';
-      CodeReviewEvents.map(item => {
-        CodeReviewText += `| ${item.create_at} | ${item.repo_name} <img width="20"> | <a href=${item.html_url} target="_blank">${item.html_url}</a> | \n`
-      })
-    }
-
-    if (this.state.report.text !== ""){
-      return this.state.report.text + '\n' + '***' + '\n' + PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
-    }else
-      return PRsText +'\n'+ IssuesCommentText + '\n' + CodeReviewText;
-  }
-
   renderReportTextEdit() {
     if (this.state.reportEditable) {
       return (
@@ -676,19 +610,12 @@ class RankingPage extends React.Component {
     }
     ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, githubUsername, this.state.curRound).then(res =>{
       this.setState({loading: false});
-      if (res != null){
-        this.state.report.events = res;
-        this.state.report.text = this.getReportTextByEvents();
+      if (res !== ""){
+        this.state.report.text = res;
         let report = Setting.deepCopy(this.state.report);
-        ReportBackend.updateReport(this.state.report.owner, this.state.report.name, report).then(res => {
-          if (res){
-            Setting.showMessage("success", "Successfully saved")
-            this.setState({
-              report: report
-            })
-          }else {
-            Setting.showMessage("error",  "Unsuccessfully saved");
-          }
+        Setting.showMessage("success","Successfully saved");
+        this.setState({
+          report: report
         })
       }else{
         Setting.showMessage("warn", "Get Empty");
