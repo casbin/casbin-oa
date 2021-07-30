@@ -15,6 +15,9 @@
 package object
 
 import (
+	"math"
+	"time"
+
 	"github.com/casbin/casbin-oa/util"
 	"xorm.io/core"
 )
@@ -48,6 +51,26 @@ func GetFilteredRounds(owner string, program string) []*Round {
 	}
 
 	return rounds
+}
+
+func GetLateRound(owner string, program string) *Round {
+
+	DateTemplate := "2006-01-02"
+	round := Round{Owner: owner, Program: program}
+	now := time.Now().Format(DateTemplate)
+	has, err := adapter.Engine.Where("end_date < ?", now).Desc("end_date").Limit(1).Get(&round)
+	if err != nil {
+		panic(err)
+	}
+	if !has {
+		return nil
+	}
+
+	EndDate, _ := time.ParseInLocation(DateTemplate, round.EndDate, time.UTC)
+	if math.Abs(float64(time.Now().YearDay()-EndDate.YearDay())) < 2 {
+		return &round
+	}
+	return nil
 }
 
 func getRound(owner string, name string) *Round {

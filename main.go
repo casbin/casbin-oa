@@ -21,6 +21,7 @@ import (
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/routers"
 	_ "github.com/casbin/casbin-oa/routers"
+	"github.com/mileusna/crontab"
 )
 
 func main() {
@@ -50,5 +51,12 @@ func main() {
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
 
+	timingUpdate()
+
 	beego.Run()
+}
+
+func timingUpdate() {
+	ctab := crontab.New()
+	ctab.MustAddJob("0 2 * * *", object.TimingAutoUpdate)
 }
