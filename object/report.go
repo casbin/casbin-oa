@@ -19,7 +19,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/casbin/casbin-oa/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/mileusna/crontab"
 	"xorm.io/core"
 )
 
@@ -169,7 +172,7 @@ func GetReportTextByEvents(events []*Event) string {
 	var CodeReviewText string
 
 	if len(CodeReviewEvents) == 0 {
-		CodeReviewText = "# CodeReview: \n empty \n"
+		CodeReviewText = "# CodeReview: \n empty"
 	} else {
 		CodeReviewText = "# CodeReview: \n | Day | Repo | URL \n | :--: | :--: | :-------: | \n"
 		for i := range CodeReviewEvents {
@@ -179,7 +182,7 @@ func GetReportTextByEvents(events []*Event) string {
 		}
 	}
 
-	return fmt.Sprintf("%s\n%s\n%s", PRsText, IssuesCommentText, CodeReviewText)
+	return fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s", "<!--PR_TABLE_START-->", "***\n", PRsText, IssuesCommentText, CodeReviewText, "\n***", "<!--PR_TABLE_END-->")
 }
 
 func AutoUpdateReportText(id string, author string, startDate time.Time, endDate time.Time, student Student) string {
@@ -206,15 +209,76 @@ func AutoUpdateReportText(id string, author string, startDate time.Time, endDate
 		return ""
 	}
 
-	splitsArr := strings.Split(text, "\n***\n")
-	if len(splitsArr) == 0 || text == "" {
-		report.Text = fmt.Sprintf("%s \n***\n %s", report.Text, GetReportTextByEvents(events))
+	splitsArr := strings.Split(text, "<!--PR_TABLE_START-->")
+	if text == "" {
+		report.Text = GetReportTextByEvents(events)
+	} else if len(splitsArr) == 1 {
+		report.Text = fmt.Sprintf("%s\n%s", text, GetReportTextByEvents(events))
 	} else {
-		report.Text = fmt.Sprintf("%s \n***\n %s", splitsArr[0], GetReportTextByEvents(events))
+		afterSplits := strings.Split(text, "<!--PR_TABLE_END-->")
+		if len(splitsArr[0]) == 0 {
+			report.Text = fmt.Sprintf("%s%s", GetReportTextByEvents(events), afterSplits[1])
+		} else {
+			report.Text = fmt.Sprintf("%s%s%s", splitsArr[0], GetReportTextByEvents(events), afterSplits[1])
+		}
+
 	}
 
 	if UpdateReport(id, report) {
 		return report.Text
 	}
 	return ""
+}
+
+func TimingAutoUpdate() {
+	owner := beego.AppConfig.String("defaultOwner")
+	program := beego.AppConfig.String("defaultProgram")
+	round := GetLateRound(owner, program)
+	if round == nil {
+		return
+	}
+
+	layout := "2006-01-02"
+	startDate, _ := time.ParseInLocation(layout, round.StartDate, time.UTC)
+	endDate, _ := time.ParseInLocation(layout, round.EndDate, time.UTC)
+
+	students := GetFilteredStudents(owner, program)
+	users, err := auth.GetUsers()
+	if err != nil {
+		panic(err)
+	}
+	studentGithubMap := GetStudentGithubMap(students, users)
+
+	for i := range students {
+		curStudent := students[i]
+		id := fmt.Sprintf("%s/report_%s_%s_%s", owner, program, round.Name, curStudent.Name)
+		if GetReport(id) == nil {
+			AddReport(GetNewReport(round.Name, *curStudent))
+		}
+
+		githubUserName, ok := studentGithubMap[curStudent.Name]
+		if ok && githubUserName != "" {
+			go AutoUpdateReportText(id, githubUserName, startDate, endDate, *curStudent)
+		}
+
+	}
+}
+
+func GetNewReport(roundName string, student Student) *Report {
+	owner := beego.AppConfig.String("defaultOwner")
+	program := beego.AppConfig.String("defaultProgram")
+	name := fmt.Sprintf("report_%s_%s_%s", program, roundName, student.Name)
+	createdTime := time.Now().Format("")
+	round := roundName
+	studentName := student.Name
+	mentor := student.Mentor
+	text := ""
+	score := -1
+
+	return &Report{Owner: owner, Program: program, Name: name, CreatedTime: createdTime, Round: round, Student: studentName, Mentor: mentor, Text: text, Score: score}
+}
+
+func RegularUpdate() {
+	ctab := crontab.New()
+	ctab.MustAddJob("0 2 * * *", TimingAutoUpdate)
 }

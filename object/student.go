@@ -14,7 +14,10 @@
 
 package object
 
-import "xorm.io/core"
+import (
+	"github.com/casdoor/casdoor-go-sdk/auth"
+	"xorm.io/core"
+)
 
 type Student struct {
 	Owner           string             `xorm:"varchar(100) notnull pk" json:"owner"`
@@ -89,4 +92,29 @@ func DeleteStudent(student *Student) bool {
 	}
 
 	return affected != 0
+}
+
+func GetStudentGithubMap(students []*Student, users []*auth.User) map[string]string {
+
+	userMap := make(map[string]*auth.User)
+	studentGithubMap := make(map[string]string)
+
+	for i := range users {
+		userMap[users[i].Name] = users[i]
+	}
+
+	for i := range students {
+		var githubUsername string
+		studentName := students[i].Name
+
+		user, ok := userMap[studentName]
+		if ok {
+			githubUsername, ok = user.Properties["oauth_GitHub_username"]
+			if !ok {
+				githubUsername = user.Github
+			}
+			studentGithubMap[studentName] = githubUsername
+		}
+	}
+	return studentGithubMap
 }

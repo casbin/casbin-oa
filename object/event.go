@@ -121,6 +121,7 @@ func GetEvents(author string, orgMap map[string]bool, startDate time.Time, endDa
 				body = fmt.Sprintf("%s%s", body[0:99], ". . .")
 			}
 			body = strings.ReplaceAll(body, "\r\n", " ")
+			body = strings.ReplaceAll(body, "\n", "")
 			event := Event{Type: "IssueComment", Title: body, HtmlURL: *comment.HTMLURL, CreateAt: Date, OrgName: orgName, RepoName: repoName, Number: *issue.Number}
 			authorEvents = append(authorEvents, &event)
 		} else if *curEvent.Type == "PullRequestReviewEvent" {
