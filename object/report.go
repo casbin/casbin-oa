@@ -22,6 +22,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/casbin/casbin-oa/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/mileusna/crontab"
 	"xorm.io/core"
 )
 
@@ -275,4 +276,9 @@ func GetNewReport(roundName string, student Student) *Report {
 	score := -1
 
 	return &Report{Owner: owner, Program: program, Name: name, CreatedTime: createdTime, Round: round, Student: studentName, Mentor: mentor, Text: text, Score: score}
+}
+
+func RegularUpdate() {
+	ctab := crontab.New()
+	ctab.MustAddJob("0 2 * * *", TimingAutoUpdate)
 }
