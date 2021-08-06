@@ -67,7 +67,15 @@ func initAPI() {
 	beego.Router("/api/auto-update-report", &controllers.ApiController{}, "POST:AutoUpdateReport")
 
 	beego.Router("/api/get-repositories", &controllers.ApiController{}, "Get:GetRepositoryByOrg")
+	beego.Router("/api/get-project-columns", &controllers.ApiController{}, "Get:GetProjectColumns")
+	beego.Router("/api/get-github-user", &controllers.ApiController{}, "Get:GetGithubUserByUsername")
 
-	beego.Router("/api/Issue-open", &controllers.ApiController{}, "Post:IssueOpen")
+	beego.Router("/api/get-issue-webhooks", &controllers.ApiController{}, "GET:GetIssueWebhooks")
+	beego.Router("/api/get-filtered-issue-webhook", &controllers.ApiController{}, "Get:GetIssueWebhookByName")
+	beego.Router("/api/update-issue-webhook", &controllers.ApiController{}, "POST:UpdateIssueWebhook")
+	beego.Router("/api/add-issue-webhook", &controllers.ApiController{}, "POST:AddIssueWebhook")
+	beego.Router("/api/delete-issue-webhook", &controllers.ApiController{}, "POST:DeleteIssueWebhook")
+
+	beego.Router("/api/webhook", &controllers.ApiController{}, "Post:IssueOpen")
 
 }

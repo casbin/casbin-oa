@@ -27,6 +27,8 @@ import RoundEditPage from "./RoundEditPage";
 import ReportListPage from "./ReportListPage";
 import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
+import IssueWebhookListPage from "./IssueWebhookListPage"
+import IssueWebhookEditPage from "./IssueWebhookEditPage"
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 
@@ -66,6 +68,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: 3 });
     } else if (uri.includes('reports')) {
       this.setState({ selectedMenuKey: 4 });
+    } else if (uri.includes('issueWebhooks')){
+      this.setState({ selectedMenuKey: 5})
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -219,6 +223,13 @@ class App extends Component {
         </a>
       </Menu.Item>
     );
+    res.push(
+        <Menu.Item key="5">
+          <a href="/issueWebhooks">
+            IssueWebhooks
+          </a>
+        </Menu.Item>
+    );
 
     return res;
   }
@@ -256,6 +267,8 @@ class App extends Component {
           <Route exact path="/rounds/:roundName" render={(props) => <RoundEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/reports" render={(props) => <ReportListPage account={this.state.account} {...props} />}/>
           <Route exact path="/reports/:reportName" render={(props) => <ReportEditPage account={this.state.account} {...props} />}/>
+          <Route exact path="/issueWebhooks" render={ (props) => <IssueWebhookListPage account={this.state.account} {...props} />} />
+          <Route exct path="/issueWebhooks/:issueWebhookName" render={ (props) => <IssueWebhookEditPage account={this.state.account} {...props} /> } />
         </Switch>
       </div>
     )

@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,29 @@
 
 package controllers
 
-import "github.com/casbin/casbin-oa/object"
+import (
+	"github.com/casbin/casbin-oa/object"
+	"github.com/casbin/casbin-oa/util"
+)
+
+var projectId int64 = 7961866
 
 func (c *ApiController) GetRepositoryByOrg() {
 	org := c.Input().Get("org")
 
 	c.Data["json"] = object.GetRepositoryByOrganization(org)
+	c.ServeJSON()
+}
+
+func (c *ApiController) GetProjectColumns() {
+
+	c.Data["json"] = util.GetProjectColumns(projectId)
+	c.ServeJSON()
+}
+
+func (c *ApiController) GetGithubUserByUsername() {
+	username := c.Input().Get("username")
+
+	c.Data["json"] = util.GetUserByUsername(username)
 	c.ServeJSON()
 }

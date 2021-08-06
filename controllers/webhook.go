@@ -17,7 +17,7 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/util"
 	"github.com/google/go-github/v37/github"
 )
@@ -29,16 +29,40 @@ func (c *ApiController) IssueOpen() {
 		panic(err)
 	}
 
-	owner, repo := util.GetOwnerAndNameFromId(*issueEvent.Repo.FullName)
-	issueNumber := *issueEvent.Issue.Number
-	if *issueEvent.Action == "opened" {
-		label := util.GetIssueLabel(*issueEvent.Issue.Title, *issueEvent.Issue.Body)
-
-		if label != "" {
-			setLabelOk := util.SetIssueLabel(owner, repo, issueNumber, label)
-			setAssigneeOk := util.SetIssueAssignee(owner, repo, issueNumber, beego.AppConfig.String("defaultAssignee"))
-
-			c.Data["json"] = setLabelOk && setAssigneeOk
-		}
+	if issueEvent.GetAction() != "opened" {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
 	}
+
+	owner, repo := util.GetOwnerAndNameFromId(*issueEvent.Repo.FullName)
+	issueWebhook := object.GetIssueWebhookByOrgAndRepo(owner, repo)
+	if issueWebhook == nil {
+		issueWebhook = object.GetIssueWebhookByOrgAndRepo(owner, "")
+	}
+	if issueWebhook != nil {
+		issueNumber := *issueEvent.Issue.Number
+
+		label := util.GetIssueLabel(*issueEvent.Issue.Title, *issueEvent.Issue.Body)
+		if label != "" {
+			go util.SetIssueLabel(owner, repo, issueNumber, label)
+		}
+
+		if issueWebhook.ProjectId != -1 {
+			go util.AddIssueToProjectCard(issueWebhook.ProjectId, issueEvent.GetIssue().GetID())
+		}
+
+		if issueWebhook.Assignee != "" {
+			go util.SetIssueAssignee(owner, repo, issueNumber, issueWebhook.Assignee)
+
+			if len(issueWebhook.AtPeople) != 0 {
+				go util.AtPeople(issueWebhook.AtPeople, owner, repo, issueNumber)
+			}
+
+		}
+
+	}
+
+	c.Data["json"] = true
+	c.ServeJSON()
 }

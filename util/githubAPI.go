@@ -16,6 +16,7 @@ package util
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -42,8 +43,9 @@ func SetIssueLabel(owner string, repo string, number int, label string) bool {
 	_, response, err := issueService.AddLabelsToIssue(context.Background(), owner, repo, number, []string{label})
 
 	if err != nil {
-		panic(err)
+		return false
 	}
+
 	if response.StatusCode == 200 {
 		return true
 	}
@@ -56,12 +58,43 @@ func SetIssueAssignee(owner string, repo string, number int, assignee string) bo
 	_, response, err := issueService.AddAssignees(context.Background(), owner, repo, number, []string{assignee})
 
 	if err != nil {
-		panic(err)
+		return false
 	}
+
 	if response.StatusCode == 200 {
 		return true
 	}
 	return false
+}
+
+func AddIssueToProjectCard(cardId int64, issueId int64) bool {
+	client := GetClient()
+	cardOption := github.ProjectCardOptions{ContentType: "Issue", ContentID: issueId}
+	projects := client.Projects
+	_, response, err := projects.CreateProjectCard(context.Background(), cardId, &cardOption)
+	if err != nil {
+		return false
+	}
+
+	if response.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
+func AtPeople(people []string, org string, repo string, number int) bool {
+	client := GetClient()
+	issues := client.Issues
+
+	var commentStr string
+	for i := range people {
+		commentStr = fmt.Sprintf("%s@%s", commentStr, people[i])
+	}
+
+	comment := github.IssueComment{Body: &commentStr}
+	_, response, _ := issues.CreateComment(context.Background(), org, repo, number, &comment)
+	return response.StatusCode == 201
+
 }
 
 func GetIssueLabel(title string, content string) string {
@@ -89,4 +122,30 @@ func GetIssueLabel(title string, content string) string {
 	}
 
 	return ""
+}
+
+func GetProjectColumns(projectId int64) []*github.ProjectColumn {
+	client := GetClient()
+	projects := client.Projects
+	columns, _, err := projects.ListProjectColumns(context.Background(), projectId, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	return columns
+}
+
+func GetUserByUsername(githubUsername string) *github.User {
+	client := GetClient()
+	users := client.Users
+
+	user, response, err := users.Get(context.Background(), githubUsername)
+	if response.StatusCode == 404 {
+		return nil
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	return user
 }
