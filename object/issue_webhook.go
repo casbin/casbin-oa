@@ -96,7 +96,7 @@ func UpdateIssueWebHook(name string, issueWebhook *IssueWebhook) bool {
 }
 
 func DeleteIssueWebHook(issueWebhook *IssueWebhook) bool {
-	affected, err := adapter.Engine.Id(core.PK{issueWebhook.Org, issueWebhook.Repo}).Delete(&IssueWebhook{})
+	affected, err := adapter.Engine.Id(core.PK{issueWebhook.Name}).Delete(&IssueWebhook{})
 	if err != nil {
 		panic(err)
 	}

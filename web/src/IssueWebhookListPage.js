@@ -59,7 +59,7 @@ class IssueWebhookListPage extends React.Component{
             .then((res) => {
                     Setting.showMessage("success", `IssueWebhook deleted successfully`);
                     this.setState({
-                        programs: Setting.deleteRow(this.state.programs, index),
+                        issueWebhooks: Setting.deleteRow(this.state.issueWebhooks, index),
                     });
                 }
             )
