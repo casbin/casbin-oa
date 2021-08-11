@@ -123,7 +123,7 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
-	err = a.Engine.Sync2(new(IssueWebhook))
+	err = a.Engine.Sync2(new(Issue))
 	if err != nil {
 		panic(err)
 	}

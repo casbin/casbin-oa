@@ -16,7 +16,7 @@ package object
 
 import "xorm.io/core"
 
-type IssueWebhook struct {
+type Issue struct {
 	Name        string   `xorm:"varchar(100) notnull pk" json:"name"`
 	Org         string   `xorm:"varchar(100)" json:"org"`
 	Repo        string   `xorm:"varchar(100)"  json:"repo"`
@@ -24,11 +24,10 @@ type IssueWebhook struct {
 	ProjectName string   `xorm:"varchar(1000)" json:"project_name"`
 	ProjectId   int64    `xorm:"varchar(100)"  json:"project_id"`
 	AtPeople    []string `xorm:"varchar(1000)" json:"at_people"`
-	Url         string   `xorm:"varchar(1000)" json:"url"`
 }
 
-func GetIssueWebhooks() []*IssueWebhook {
-	issueWebhooks := []*IssueWebhook{}
+func GetIssues() []*Issue {
+	issueWebhooks := []*Issue{}
 	err := adapter.Engine.Find(&issueWebhooks)
 	if err != nil {
 		panic(err)
@@ -37,9 +36,9 @@ func GetIssueWebhooks() []*IssueWebhook {
 	return issueWebhooks
 }
 
-func GetIssueWebhookByName(name string) *IssueWebhook {
+func GetIssueByName(name string) *Issue {
 
-	issueWebhook := IssueWebhook{Name: name}
+	issueWebhook := Issue{Name: name}
 	existed, err := adapter.Engine.Get(&issueWebhook)
 	if err != nil {
 		panic(err)
@@ -51,16 +50,16 @@ func GetIssueWebhookByName(name string) *IssueWebhook {
 	}
 }
 
-func GetIssueWebhookByOrgAndRepo(org string, repo string) *IssueWebhook {
+func GetIssueByOrgAndRepo(org string, repo string) *Issue {
 	var existed bool
 	var err error
-	var issueWebhook IssueWebhook
-	if repo != "" {
-		issueWebhook = IssueWebhook{Org: org, Repo: repo}
+	var issueWebhook Issue
+	if repo != "All" {
+		issueWebhook = Issue{Org: org, Repo: repo}
 		existed, err = adapter.Engine.Get(&issueWebhook)
 	} else {
-		issueWebhook = IssueWebhook{Org: org}
-		existed, err = adapter.Engine.Where("repo = '' ").Get(&issueWebhook)
+		issueWebhook = Issue{Org: org}
+		existed, err = adapter.Engine.Where("repo = 'All' ").Get(&issueWebhook)
 	}
 
 	if err != nil {
@@ -73,7 +72,7 @@ func GetIssueWebhookByOrgAndRepo(org string, repo string) *IssueWebhook {
 	}
 }
 
-func AddIssueWebHook(issueWebhook *IssueWebhook) bool {
+func AddIssue(issueWebhook *Issue) bool {
 	affected, err := adapter.Engine.Insert(issueWebhook)
 	if err != nil {
 		panic(err)
@@ -82,8 +81,8 @@ func AddIssueWebHook(issueWebhook *IssueWebhook) bool {
 	return affected != 0
 }
 
-func UpdateIssueWebHook(name string, issueWebhook *IssueWebhook) bool {
-	if GetIssueWebhookByName(name) == nil {
+func UpdateIssue(name string, issueWebhook *Issue) bool {
+	if GetIssueByName(name) == nil {
 		return false
 	}
 
@@ -95,8 +94,8 @@ func UpdateIssueWebHook(name string, issueWebhook *IssueWebhook) bool {
 	return true
 }
 
-func DeleteIssueWebHook(issueWebhook *IssueWebhook) bool {
-	affected, err := adapter.Engine.Id(core.PK{issueWebhook.Name}).Delete(&IssueWebhook{})
+func DeleteIssue(issueWebhook *Issue) bool {
+	affected, err := adapter.Engine.Id(core.PK{issueWebhook.Name}).Delete(&Issue{})
 	if err != nil {
 		panic(err)
 	}

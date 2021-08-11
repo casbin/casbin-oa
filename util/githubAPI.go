@@ -88,7 +88,7 @@ func AtPeople(people []string, org string, repo string, number int) bool {
 
 	var commentStr string
 	for i := range people {
-		commentStr = fmt.Sprintf("%s@%s", commentStr, people[i])
+		commentStr = fmt.Sprintf("%s @%s", commentStr, people[i])
 	}
 
 	comment := github.IssueComment{Body: &commentStr}

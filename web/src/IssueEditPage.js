@@ -1,34 +1,36 @@
 import React from 'react'
 import {Button, Card, AutoComplete, Col, Input, Row, Select, Tooltip} from "antd";
 import * as Setting from "./Setting";
-import * as IssueWebhookBackend from "./backend/IssueWebhookBackend";
+import * as issueBackend from "./backend/issueBackend";
 import {CloseCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
 import * as ReportBackend from "./backend/ReportBackend"
 import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
 import * as StudentBackend from "./backend/StudentBackend";
+import {map} from "codemirror/src/util/misc";
 
 const {Option} = Select
 
-class IssueWebhookEditPage extends React.Component{
+class IssueEditPage extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             classes: props,
-            issueWebhookName: props.match.params.issueWebhookName,
+            issueName: props.match.params.issueName,
             assigneeAvatar: "",
-            issueWebhook: null,
+            issue: null,
             organizations: [],
             repositories: [],
             students: [],
             projectColumns: [],
+            mentorsGithub: [],
             loading: false,
         };
     }
 
     componentWillMount() {
         this.getOrganizations();
-        this.getIssueWebhook();
+        this.getIssue();
         this.getAssignees();
         this.getAtPeople();
         this.getProjectColumns();
@@ -41,7 +43,7 @@ class IssueWebhookEditPage extends React.Component{
     }
 
     getAtPeople(){
-        Promise.all([this.getUsers(),this.getFilteredStudents(Conf.DefaultProgramName)]).then(values => {
+        Promise.all([this.getUsers(),this.getStudents()]).then(values => {
             let users = values[0];
             let students = values[1];
 
@@ -50,29 +52,37 @@ class IssueWebhookEditPage extends React.Component{
                 userMap.set(user.name, user);
             });
             let studentMap = new Map();
+            let mentorMap = new Map();
+            let mentorsGithub = [];
             students.forEach((student, i) => {
                 if (userMap.has(student.name)) {
                     students[i] = {...userMap.get(student.name), ...student};
+                }
+                let mentor = student.mentor;
+                if (mentor !== "" && mentor !== null && mentorMap.get(mentor) === undefined){
+                    mentorsGithub.push(student.mentor);
+                    mentorMap.set(mentor,true);
                 }
                 studentMap.set(student.name, students[i]);
             });
 
             this.setState({
                 students: students,
+                mentorsGithub: mentorsGithub
             })
 
         })
     }
 
     getUserByUsername(){
-        let username = this.state.issueWebhook.assignee;
+        let username = this.state.issue.assignee;
         if (username === ""){
             this.setState({
                 assigneeAvatar: ""
             })
             return;
         }
-        IssueWebhookBackend.getAvatarByUsername(username).then(res => {
+        issueBackend.getAvatarByUsername(username).then(res => {
             if (res !== null && res !== undefined){
                 this.setState({
                     assigneeAvatar : res.avatar_url
@@ -86,13 +96,19 @@ class IssueWebhookEditPage extends React.Component{
     }
 
     getProjectColumns(){
-        IssueWebhookBackend.getProjectColumns().then(res => {
+        issueBackend.getProjectColumns().then(res => {
             this.setState({
                 projectColumns: res,
             })
         });
     }
 
+    getStudents() {
+        return StudentBackend.getStudents("admin")
+            .then((res) => {
+                return res;
+            });
+    }
     getFilteredStudents(programName) {
         return StudentBackend.getFilteredStudents("admin", programName)
             .then((res) => {
@@ -107,13 +123,13 @@ class IssueWebhookEditPage extends React.Component{
             });
     }
 
-    getIssueWebhook() {
-        IssueWebhookBackend.getIssueWebhook(this.state.issueWebhookName).then(issueWebhook => {
+    getIssue() {
+        issueBackend.getIssue(this.state.issueName).then(issue => {
             this.setState({
-                issueWebhook: issueWebhook
+                issue: issue
             })
-            this.getRepositories(this.state.issueWebhook.org);
-            this.getUserByUsername(this.state.issueWebhook.assignee);
+            this.getRepositories(this.state.issue.org);
+            this.getUserByUsername(this.state.issue.assignee);
         })
     }
 
@@ -159,36 +175,36 @@ class IssueWebhookEditPage extends React.Component{
     }
 
     selectOrg(value){
-        this.updateIssueWebhookField("org", value);
-        this.updateIssueWebhookField("repo", "");
+        this.updateIssueField("org", value);
+        this.updateIssueField("repo", "All");
         this.setState({
             repositories: [],
         })
     }
 
-    updateIssueWebhookField(key, value) {
-        let issueWebhook = this.state.issueWebhook;
-        issueWebhook[key] = value;
+    updateIssueField(key, value) {
+        let issue = this.state.issue;
+        issue[key] = value;
         this.setState({
-            issueWebhook: issueWebhook,
+            issue: issue,
         });
     }
 
     projectChange(value, option){
-        this.updateIssueWebhookField("project_name", option.children);
-        this.updateIssueWebhookField("project_id", value);
+        this.updateIssueField("project_name", option.children);
+        this.updateIssueField("project_id", value);
     }
 
-    submitIssueWebhookEdit() {
-        let issueWebhook = Setting.deepCopy(this.state.issueWebhook);
-        IssueWebhookBackend.updateIssueWebhook(this.state.issueWebhookName, issueWebhook)
+    submitIssueEdit() {
+        let issue = Setting.deepCopy(this.state.issue);
+        issueBackend.updateIssue(this.state.issueName, issue)
             .then((res) => {
                 if (res) {
                     Setting.showMessage("success", `Successfully saved`);
                     this.setState({
-                        issueWebhookName: this.state.issueWebhookName.name,
+                        issueName: this.state.issueName.name,
                     });
-                    this.props.history.push(`/issueWebhooks/${this.state.issueWebhook.name}`);
+                    this.props.history.push(`/issues/${this.state.issue.name}`);
                 } else {
                     Setting.showMessage("error", `failed to save: server side failure`);
                 }
@@ -198,7 +214,7 @@ class IssueWebhookEditPage extends React.Component{
             });
     }
 
-    renderIssueWebhook() {
+    renderIssue() {
 
         let orgOptions = [];
         this.state.organizations.map((item) => {
@@ -206,6 +222,7 @@ class IssueWebhookEditPage extends React.Component{
         })
 
         let repoOptions = [];
+        repoOptions.push(<Option value={'All'} key={'ALl'}>All</Option> )
         this.state.repositories.map((item ,index) => {
             repoOptions.push(<Option value={item} key={index}>{item}</Option>)
         })
@@ -217,23 +234,31 @@ class IssueWebhookEditPage extends React.Component{
 
         let atPeople = [];
         this.state.students.map((item) => {
-            let githubUsername = item.properties.oauth_GitHub_username !== "" ? item.properties.oauth_GitHub_username : item.github;
+            let githubUsername
+            if (item.properties === undefined && item.github === undefined)
+                githubUsername = ""
+            else
+                githubUsername = item.properties.oauth_GitHub_username !== "" ? item.properties.oauth_GitHub_username : item.github;
 
             if (githubUsername !== ""){
-                atPeople.push(<Option value={githubUsername} key={githubUsername}>{item.displayName}({githubUsername})</Option> )
+                atPeople.push(<Option value={githubUsername} key={githubUsername}>{item.displayName} ({githubUsername})</Option> )
             }
+        })
+        this.state.mentorsGithub.map((item) => {
+            atPeople.push(<Option value={item} key={item}>(mentor) {item}</Option> )
         })
 
         let projectColumns = [];
         this.state.projectColumns.map(item => {
-            projectColumns.push(<Option value={item.id} key={item.id}>{item.name}</Option> )
+            projectColumns.push(<Option value={item.id} key={item.id}>{item.name}</Option> );
         })
+
 
         return (
             <Card size="small" title={
                 <div>
-                    Edit Program&nbsp;&nbsp;&nbsp;&nbsp;
-                    <Button type="primary" disabled={!Setting.isAdminUser(this.props.account)} onClick={() => this.submitIssueWebhookEdit()}>Save</Button>
+                    Edit Issue&nbsp;&nbsp;&nbsp;&nbsp;
+                    <Button type="primary" disabled={!Setting.isAdminUser(this.props.account)} onClick={() => this.submitissueEdit()}>Save</Button>
                 </div>
             } style={{marginLeft: '5px'}} type="inner">
 
@@ -242,8 +267,8 @@ class IssueWebhookEditPage extends React.Component{
                         Name:
                     </Col>
                     <Col span={22} >
-                        <Input value={this.state.issueWebhook.name} onChange={e => {
-                            this.updateIssueWebhookField('name', e.target.value);
+                        <Input value={this.state.issue.name} onChange={e => {
+                            this.updateIssueField('name', e.target.value);
                         }} />
                     </Col>
                 </Row>
@@ -251,31 +276,30 @@ class IssueWebhookEditPage extends React.Component{
                     <Col style={{marginTop: '5px'}} span={2}>
                         Org:
                     </Col>
-                    <Col span={12} >
+                    <Col span={10} >
                         <AutoComplete
-                            defaultValue={this.state.issueWebhook.org}
+                            defaultValue={this.state.issue.org}
                             size={"large"}
                             style={{ width: '80%' }}
                             placeholder="Organization"
                             options={orgOptions}
                             onChange={(value => {this.selectOrg(value)})}
                         />
-                        <Button type={"primary"} size={"large"} loading={this.state.loading} onClick={() => {this.searchRepositories(this.state.issueWebhook.org)}}>Search</Button>
+                        <Button type={"primary"} size={"large"} loading={this.state.loading} onClick={() => {this.searchRepositories(this.state.issue.org)}}>Search</Button>
                     </Col>
                     <Col style={{marginTop: '5px'}} span={1}>
                         <p style={{marginLeft: 10}}>
                             Repo:
                         </p>
                     </Col>
-                    <Col span={8} style={{marginLeft: '10px'}}>
+                    <Col span={10} style={{marginLeft: '10px'}}>
                         <Select
-                            value={this.state.issueWebhook.repo}
-                            defaultValue={this.state.issueWebhook.repo}
-                            style={{ width: 300 }}
-                            allowClear
+                            value={this.state.issue.repo}
+                            defaultValue={this.state.issue.repo}
+                            style={{ width: '80%' }}
                             autoClearSearchValue={true} size={"large"}
                             showSearch
-                            onChange={(value => this.updateIssueWebhookField("repo", value))}
+                            onChange={(value => this.updateIssueField("repo", value))}
                         >
                             {repoOptions}
                         </Select>
@@ -290,11 +314,11 @@ class IssueWebhookEditPage extends React.Component{
                         <AutoComplete
 
                             onBlur={() => this.getUserByUsername()}
-                            defaultValue={this.state.issueWebhook.assignee}
+                            defaultValue={this.state.issue.assignee}
                             style={{ width: '100%' }}
                             placeholder="Assignee"
                             options={assignees}
-                            onChange={value => {this.updateIssueWebhookField('assignee', value)}}
+                            onChange={value => {this.updateIssueField('assignee', value)}}
                         />
                     </Col>
                     <Col span={1} style={{marginLeft: '10px'}}>
@@ -315,16 +339,15 @@ class IssueWebhookEditPage extends React.Component{
                     </Col>
                     <Col span={22} >
                         <Select
-                            defaultValue={this.state.issueWebhook.at_people}
+                            defaultValue={this.state.issue.at_people}
                             mode="tags"
                             style={{ width: '100%' }}
-                            placeholder="Tags Mode"
                             tokenSeparators={[',']}
                             optionLabelProp="value"
-                            onChange={value => {this.updateIssueWebhookField('at_people', value)}}
+                            onChange={value => {this.updateIssueField('at_people', value)}}
                         >
                             {atPeople}
-                        </Select>,
+                        </Select>
                     </Col>
                 </Row>
                 <Row style={{marginTop: '20px'}} >
@@ -333,7 +356,7 @@ class IssueWebhookEditPage extends React.Component{
                     </Col>
                     <Col span={22} >
                         <Select
-                            defaultValue={this.state.issueWebhook.project_name}
+                            defaultValue={this.state.issue.project_name}
                             style={{ width: 300 }}
                             onChange={(value, option) => {this.projectChange(value, option)}}
                         >
@@ -354,7 +377,7 @@ class IssueWebhookEditPage extends React.Component{
                     </Col>
                     <Col span={22}>
                         {
-                            this.state.issueWebhook !== null ? this.renderIssueWebhook() : null
+                            this.state.issue !== null ? this.renderIssue() : null
                         }
                     </Col>
                     <Col span={1}>
@@ -364,7 +387,7 @@ class IssueWebhookEditPage extends React.Component{
                     <Col span={2}>
                     </Col>
                     <Col span={18}>
-                        <Button type="primary" size="large" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.submitIssueWebhookEdit.bind(this)}>Save</Button>
+                        <Button type="primary" size="large" disabled={!Setting.isAdminUser(this.props.account)} onClick={this.submitIssueEdit.bind(this)}>Save</Button>
                     </Col>
                 </Row>
             </div>
@@ -372,4 +395,4 @@ class IssueWebhookEditPage extends React.Component{
     }
 }
 
-export default IssueWebhookEditPage
+export default IssueEditPage

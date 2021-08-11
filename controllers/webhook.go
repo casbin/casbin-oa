@@ -36,9 +36,9 @@ func (c *ApiController) IssueOpen() {
 	}
 
 	owner, repo := util.GetOwnerAndNameFromId(*issueEvent.Repo.FullName)
-	issueWebhook := object.GetIssueWebhookByOrgAndRepo(owner, repo)
+	issueWebhook := object.GetIssueByOrgAndRepo(owner, repo)
 	if issueWebhook == nil {
-		issueWebhook = object.GetIssueWebhookByOrgAndRepo(owner, "")
+		issueWebhook = object.GetIssueByOrgAndRepo(owner, "All")
 	}
 	if issueWebhook != nil {
 		issueNumber := *issueEvent.Issue.Number

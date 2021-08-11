@@ -70,11 +70,11 @@ func initAPI() {
 	beego.Router("/api/get-project-columns", &controllers.ApiController{}, "Get:GetProjectColumns")
 	beego.Router("/api/get-github-user", &controllers.ApiController{}, "Get:GetGithubUserByUsername")
 
-	beego.Router("/api/get-issue-webhooks", &controllers.ApiController{}, "GET:GetIssueWebhooks")
-	beego.Router("/api/get-filtered-issue-webhook", &controllers.ApiController{}, "Get:GetIssueWebhookByName")
-	beego.Router("/api/update-issue-webhook", &controllers.ApiController{}, "POST:UpdateIssueWebhook")
-	beego.Router("/api/add-issue-webhook", &controllers.ApiController{}, "POST:AddIssueWebhook")
-	beego.Router("/api/delete-issue-webhook", &controllers.ApiController{}, "POST:DeleteIssueWebhook")
+	beego.Router("/api/get-issue", &controllers.ApiController{}, "GET:GetIssue")
+	beego.Router("/api/get-filtered-issue", &controllers.ApiController{}, "Get:GetIssueByName")
+	beego.Router("/api/update-issue", &controllers.ApiController{}, "POST:UpdateIssue")
+	beego.Router("/api/add-issue", &controllers.ApiController{}, "POST:AddIssue")
+	beego.Router("/api/delete-issue", &controllers.ApiController{}, "POST:DeleteIssue")
 
 	beego.Router("/api/webhook", &controllers.ApiController{}, "Post:IssueOpen")
 

@@ -1,47 +1,47 @@
 import React from 'react'
 import {Button, Col, Popconfirm, Row, Table} from "antd";
 import * as Setting from "./Setting";
-import * as IssueWebhookBackend from "./backend/IssueWebhookBackend"
+import * as issueBackend from "./backend/issueBackend"
 
-class IssueWebhookListPage extends React.Component{
+class IssueListPage extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             classes: props,
-            issueWebhooks: null,
+            issues: null,
         };
     }
 
     componentWillMount() {
-        this.getIssueWebhooks();
+        this.getIssues();
     }
 
-    getIssueWebhooks() {
-        IssueWebhookBackend.getIssueWebhooks().then(issueWebhooks => {
+    getIssues() {
+        issueBackend.getIssues().then(issues => {
             this.setState({
-                issueWebhooks: issueWebhooks,
+                issues: issues,
             });
         });
     }
 
 
-    addNewIssueWebhook() {
-        const newIssueWebhook = this.newIssueWebhook()
-        IssueWebhookBackend.addIssueWebhook(newIssueWebhook).then(res => {
-            Setting.showMessage("success", "IssueWebhook added successfully");
+    addNewIssue() {
+        const newIssue = this.newIssue()
+        issueBackend.addIssue(newIssue).then(res => {
+            Setting.showMessage("success", "issue added successfully");
             this.setState({
-                issueWebhooks: Setting.prependRow(this.state.issueWebhooks, newIssueWebhook),
+                issues: Setting.prependRow(this.state.issues, newIssue),
             })
         }).catch(error => {
-            Setting.showMessage("error", `IssueWebhook failed to add: ${error}`)
+            Setting.showMessage("error", `issue failed to add: ${error}`)
         })
     }
 
-    newIssueWebhook() {
+    newIssue() {
         return {
-            name: `issueWebhook_${this.state.issueWebhooks.length}`,
+            name: `issue_${this.state.issues.length}`,
             org: `casbin`,
-            repo: '',
+            repo: 'All',
             assignee: 'hsluoyz',
             project_name: '',
             project_id: -1,
@@ -54,21 +54,21 @@ class IssueWebhookListPage extends React.Component{
 
     }
 
-    deleteIssueWebhook(index) {
-        IssueWebhookBackend.deleteIssueWebhook(this.state.issueWebhooks[index])
+    deleteIssue(index) {
+        issueBackend.deleteIssue(this.state.issues[index])
             .then((res) => {
-                    Setting.showMessage("success", `IssueWebhook deleted successfully`);
+                    Setting.showMessage("success", `issue deleted successfully`);
                     this.setState({
-                        issueWebhooks: Setting.deleteRow(this.state.issueWebhooks, index),
+                        issues: Setting.deleteRow(this.state.issues, index),
                     });
                 }
             )
             .catch(error => {
-                Setting.showMessage("error", `IssueWebhook failed to delete: ${error}`);
+                Setting.showMessage("error", `issue failed to delete: ${error}`);
             });
     }
 
-    renderTable(issueWebhooks) {
+    renderTable(issues) {
         const columns = [
             {
                 title: 'Name',
@@ -101,12 +101,12 @@ class IssueWebhookListPage extends React.Component{
                 width: '200px',
                 sorter: (a, b) => a.repo.localeCompare(b.repo),
                 render: (text, record, index) => {
-                    if (text !== ""){
+                    if (text !== "All"){
                         return (
                             <a href={`https://github.com/${record.org}/${text}`} target={"_blank"}>{text}</a>
                         )
                     }else {
-                        return ""
+                        return "All"
                     }
                 }
             },
@@ -148,10 +148,10 @@ class IssueWebhookListPage extends React.Component{
                 render: (text, record, index) => {
                     return (
                         <div>
-                            <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.goToLink(`/issueWebhooks/${record.name}`)}>Edit</Button>
+                            <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.goToLink(`/issues/${record.name}`)}>Edit</Button>
                             <Popconfirm
                                 title={`Sure to delete issue webhook: ${record.name} ?`}
-                                onConfirm={() => this.deleteIssueWebhook(index)}
+                                onConfirm={() => this.deleteIssue(index)}
                                 disabled={!Setting.isAdminUser(this.props.account)}
                             >
                                 <Button style={{marginBottom: '10px'}} type="danger" disabled={!Setting.isAdminUser(this.props.account)}>Delete</Button>
@@ -164,14 +164,14 @@ class IssueWebhookListPage extends React.Component{
 
         return (
             <div>
-                <Table columns={columns} dataSource={issueWebhooks} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+                <Table columns={columns} dataSource={issues} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
                        title={() => (
                            <div>
-                               Programs&nbsp;&nbsp;&nbsp;&nbsp;
-                               <Button type="primary" size="small" disabled={!Setting.isAdminUser(this.props.account)} onClick={() => this.addNewIssueWebhook()} >Add</Button>
+                               Issues&nbsp;&nbsp;&nbsp;&nbsp;
+                               <Button type="primary" size="small" disabled={!Setting.isAdminUser(this.props.account)} onClick={() => this.addNewIssue()} >Add</Button>
                            </div>
                        )}
-                       loading={issueWebhooks=== null}
+                       loading={issues=== null}
                 />
             </div>
         );
@@ -185,7 +185,7 @@ class IssueWebhookListPage extends React.Component{
                     </Col>
                     <Col span={22}>
                         {
-                            this.renderTable(this.state.issueWebhooks)
+                            this.renderTable(this.state.issues)
                         }
                     </Col>
                     <Col span={1}>
@@ -196,4 +196,4 @@ class IssueWebhookListPage extends React.Component{
     }
 }
 
-export default IssueWebhookListPage
+export default IssueListPage

@@ -14,41 +14,41 @@
 
 import * as Setting from "../Setting";
 
-export function getIssueWebhooks() {
-    return fetch(`${Setting.ServerUrl}/api/get-issue-webhooks`, {
+export function getIssues() {
+    return fetch(`${Setting.ServerUrl}/api/get-issue`, {
         method: "GET",
         credentials: "include"
     }).then(res => res.json());
 }
 
-export function getIssueWebhook(name) {
-    return fetch(`${Setting.ServerUrl}/api/get-filtered-issue-webhook?name=${name}`, {
+export function getIssue(name) {
+    return fetch(`${Setting.ServerUrl}/api/get-filtered-issue?name=${name}`, {
         method: "Get",
         credentials: "include"
     }).then(res => res.json())
 }
 
-export function addIssueWebhook(issueWebhook) {
+export function addIssue(issueWebhook) {
     let newIssueWebhook = Setting.deepCopy(issueWebhook);
-    return fetch(`${Setting.ServerUrl}/api/add-issue-webhook`, {
+    return fetch(`${Setting.ServerUrl}/api/add-issue`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(newIssueWebhook),
     }).then(res => res.json());
 }
 
-export function updateIssueWebhook(name, issueWebhook) {
+export function updateIssue(name, issueWebhook) {
     let newIssueWebhook = Setting.deepCopy(issueWebhook);
-    return fetch(`${Setting.ServerUrl}/api/update-issue-webhook?name=${name}`, {
+    return fetch(`${Setting.ServerUrl}/api/update-issue?name=${name}`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(newIssueWebhook),
     }).then(res => res.json());
 }
 
-export function deleteIssueWebhook(issueWebhook) {
+export function deleteIssue(issueWebhook) {
     let newIssueWebhook = Setting.deepCopy(issueWebhook);
-    return fetch(`${Setting.ServerUrl}/api/delete-issue-webhook`, {
+    return fetch(`${Setting.ServerUrl}/api/delete-issue`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(newIssueWebhook),

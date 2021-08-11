@@ -20,48 +20,48 @@ import (
 	"github.com/casbin/casbin-oa/object"
 )
 
-func (c *ApiController) GetIssueWebhooks() {
-	c.Data["json"] = object.GetIssueWebhooks()
+func (c *ApiController) GetIssue() {
+	c.Data["json"] = object.GetIssues()
 	c.ServeJSON()
 }
 
-func (c *ApiController) GetIssueWebhookByName() {
+func (c *ApiController) GetIssueByName() {
 	name := c.Input().Get("name")
 
-	c.Data["json"] = object.GetIssueWebhookByName(name)
+	c.Data["json"] = object.GetIssueByName(name)
 	c.ServeJSON()
 }
 
-func (c *ApiController) UpdateIssueWebhook() {
+func (c *ApiController) UpdateIssue() {
 	name := c.Input().Get("name")
-	var issueWebhook object.IssueWebhook
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueWebhook)
+	var issue object.Issue
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issue)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateIssueWebHook(name, &issueWebhook)
+	c.Data["json"] = object.UpdateIssue(name, &issue)
 	c.ServeJSON()
 }
 
-func (c *ApiController) AddIssueWebhook() {
-	var issueWebhook object.IssueWebhook
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueWebhook)
+func (c *ApiController) AddIssue() {
+	var issue object.Issue
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issue)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddIssueWebHook(&issueWebhook)
+	c.Data["json"] = object.AddIssue(&issue)
 	c.ServeJSON()
 }
 
-func (c *ApiController) DeleteIssueWebhook() {
-	var issueWebHook object.IssueWebhook
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueWebHook)
+func (c *ApiController) DeleteIssue() {
+	var issue object.Issue
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issue)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.DeleteIssueWebHook(&issueWebHook)
+	c.Data["json"] = object.DeleteIssue(&issue)
 	c.ServeJSON()
 }
