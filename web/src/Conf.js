@@ -20,3 +20,7 @@ export const AuthConfig = {
   appName: "app-casbin-oa",
   organizationName: "casbin-oa",
 };
+
+export const Assignees = ["hsluoyz"]
+
+export const defaultOrgs = ["casbin", "casdoor" ,"casnode", "casbin-lua", "casbin-net", "casbin-rs", "casbin-ex", "casbin-ruby", "casbin-cpp", "casbin-js", "casbin4d", "node-casbin", "scala-casbin", "dart-casbin", "pycasbin", "jcasbin", "php-casbin", "SwiftCasbin", "k8s-authz"]

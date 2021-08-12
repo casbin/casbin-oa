@@ -16,6 +16,8 @@ package util
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/google/go-github/v37/github"
@@ -33,4 +35,117 @@ func GetClient() *github.Client {
 		tc := oauth2.NewClient(context.Background(), ts)
 		return github.NewClient(tc)
 	}
+}
+
+func SetIssueLabel(owner string, repo string, number int, label string) bool {
+	client := GetClient()
+	issueService := client.Issues
+	_, response, err := issueService.AddLabelsToIssue(context.Background(), owner, repo, number, []string{label})
+
+	if err != nil {
+		return false
+	}
+
+	if response.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
+func SetIssueAssignee(owner string, repo string, number int, assignee string) bool {
+	client := GetClient()
+	issueService := client.Issues
+	_, response, err := issueService.AddAssignees(context.Background(), owner, repo, number, []string{assignee})
+
+	if err != nil {
+		return false
+	}
+
+	if response.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
+func AddIssueToProjectCard(cardId int64, issueId int64) bool {
+	client := GetClient()
+	cardOption := github.ProjectCardOptions{ContentType: "Issue", ContentID: issueId}
+	projects := client.Projects
+	_, response, err := projects.CreateProjectCard(context.Background(), cardId, &cardOption)
+	if err != nil {
+		return false
+	}
+
+	if response.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
+func AtPeople(people []string, org string, repo string, number int) bool {
+	client := GetClient()
+	issues := client.Issues
+
+	var commentStr string
+	for i := range people {
+		commentStr = fmt.Sprintf("%s @%s", commentStr, people[i])
+	}
+
+	comment := github.IssueComment{Body: &commentStr}
+	_, response, _ := issues.CreateComment(context.Background(), org, repo, number, &comment)
+	return response.StatusCode == 201
+
+}
+
+func GetIssueLabel(title string, content string) string {
+	title = strings.ToLower(title)
+	content = strings.ToLower(content)
+
+	enhancementWords := []string{"make", "support", "add", "allow", "enable", "design", "use", "extract"}
+	for i := range enhancementWords {
+		if strings.Contains(title, enhancementWords[i]) {
+			return "enhancement"
+		}
+	}
+
+	bugWords := []string{"bug", "wrong", "error", "broken"}
+	for i := range bugWords {
+		if strings.Contains(title, bugWords[i]) {
+			return "bug"
+		}
+	}
+	questionWords := []string{"?", "what", "how", "why"}
+	for i := range questionWords {
+		if strings.Contains(title, questionWords[i]) || strings.Contains(content, questionWords[i]) {
+			return "question"
+		}
+	}
+
+	return ""
+}
+
+func GetProjectColumns(projectId int64) []*github.ProjectColumn {
+	client := GetClient()
+	projects := client.Projects
+	columns, _, err := projects.ListProjectColumns(context.Background(), projectId, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	return columns
+}
+
+func GetUserByUsername(githubUsername string) *github.User {
+	client := GetClient()
+	users := client.Users
+
+	user, response, err := users.Get(context.Background(), githubUsername)
+	if response.StatusCode == 404 {
+		return nil
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	return user
 }
