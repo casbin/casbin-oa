@@ -268,7 +268,7 @@ class App extends Component {
           <Route exact path="/reports" render={(props) => <ReportListPage account={this.state.account} {...props} />}/>
           <Route exact path="/reports/:reportName" render={(props) => <ReportEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/issues" render={ (props) => <IssueListPage account={this.state.account} {...props} />} />
-          <Route exct path="/issues/:issueName" render={ (props) => <IssueEditPage account={this.state.account} {...props} /> } />
+          <Route exact path="/issues/:issueName" render={ (props) => <IssueEditPage account={this.state.account} {...props} /> } />
         </Switch>
       </div>
     )

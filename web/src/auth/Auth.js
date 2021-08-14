@@ -13,6 +13,8 @@
 // limitations under the License.
 
 import {trim} from "./Util";
+import Sdk from "casdoor-js-sdk";
+import * as Setting from "../Setting";
 
 export let authConfig = {
   serverUrl: "http://example.com", // your Casdoor URL, like the official one: https://door.casbin.com
@@ -21,33 +23,29 @@ export let authConfig = {
   organizationName: "org-example", // your Casdoor organization name, like: "built-in"
 };
 
+let casdoorSdk;
+
 export function initAuthWithConfig(config) {
   authConfig = config;
+  casdoorSdk = new Sdk(config);
 }
 
 export function getSignupUrl() {
-  return `${trim(authConfig.serverUrl)}/signup/${authConfig.appName}`;
+  return casdoorSdk.getSignupUrl();
 }
 
 export function getSigninUrl() {
-  const redirectUri = `${window.location.origin}/callback`;
-  const scope = "read";
-  const state = authConfig.appName;
-  return `${trim(authConfig.serverUrl)}/login/oauth/authorize?client_id=${authConfig.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+  return casdoorSdk.getSigninUrl();
 }
 
 export function getUserProfileUrl(userName, account) {
-  let param = "";
-  if (account !== undefined && account !== null) {
-    param = `?access_token=${account.accessToken}`;
-  }
-  return `${trim(authConfig.serverUrl)}/users/${authConfig.organizationName}/${userName}${param}`;
+  return casdoorSdk.getUserProfileUrl(userName, account);
 }
 
 export function getMyProfileUrl(account) {
-  let param = "";
-  if (account !== undefined && account !== null) {
-    param = `?access_token=${account.accessToken}`;
-  }
-  return `${trim(authConfig.serverUrl)}/account${param}`;
+  return casdoorSdk.getMyProfileUrl(account);
+}
+
+export function signin() {
+  return casdoorSdk.signin(Setting.ServerUrl);
 }

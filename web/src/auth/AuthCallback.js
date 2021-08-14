@@ -15,8 +15,8 @@
 import React from "react";
 import {Button, Result, Spin} from "antd";
 import {withRouter} from "react-router-dom";
-import * as AccountBackend from "../backend/AccountBackend";
 import * as Util from "./Util";
+import * as Auth from "./Auth";
 
 class AuthCallback extends React.Component {
   constructor(props) {
@@ -33,9 +33,7 @@ class AuthCallback extends React.Component {
   }
 
   login() {
-    const params = new URLSearchParams(this.props.location.search);
-    AccountBackend.login(params.get("code"), params.get("state"))
-      .then((res) => {
+    Auth.signin().then((res) => {
         if (res.status === "ok") {
           Util.showMessage("success", `Logged in successfully`);
           Util.goToLink("/");
