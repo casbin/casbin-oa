@@ -292,6 +292,10 @@ class App extends Component {
   }
 
   render() {
+    let nodeId = `${window.location.protocol}//${window.location.host}`;
+    nodeId = encodeURIComponent(nodeId);
+    let title = encodeURIComponent(document.title);
+    let urlPath = encodeURIComponent(window.location.pathname);
     return (
       <div id="parent-area">
         <BackTop />
@@ -300,6 +304,13 @@ class App extends Component {
             this.renderContent()
           }
         </div>
+        <iframe
+          style={{
+            width: "100%",
+            height: 500,
+          }}
+          src={`${Conf.CasnodeEndpoint}/embedded-replies?nodeId=${nodeId}&title=${title}&urlPath=${urlPath}`}
+        />
         {
           this.renderFooter()
         }
