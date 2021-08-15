@@ -3,7 +3,6 @@ import {Button, Col, Popconfirm, Row, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ReportBackend from "./backend/ReportBackend";
-import {getUserProfileUrl} from "./auth/Auth";
 
 class ReportListPage extends React.Component {
   constructor(props) {
@@ -126,7 +125,7 @@ class ReportListPage extends React.Component {
         sorter: (a, b) => a.student.localeCompare(b.student),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{text}</a>
+            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },

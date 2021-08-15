@@ -28,15 +28,8 @@ export function getUsers(owner) {
   }).then(res => res.json());
 }
 
-export function login(code, state) {
-  return fetch(`${Setting.ServerUrl}/api/login?code=${code}&state=${state}`, {
-    method: 'POST',
-    credentials: 'include',
-  }).then(res => res.json());
-}
-
-export function logout() {
-  return fetch(`${Setting.ServerUrl}/api/logout`, {
+export function signout() {
+  return fetch(`${Setting.ServerUrl}/api/signout`, {
     method: 'POST',
     credentials: "include",
   }).then(res => res.json());

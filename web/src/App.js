@@ -17,7 +17,7 @@ import './App.css';
 import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
-import {Switch, Route, withRouter, Redirect, Link} from 'react-router-dom';
+import {Switch, Route, withRouter} from 'react-router-dom';
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
 import StudentListPage from "./StudentListPage";
@@ -31,9 +31,7 @@ import IssueListPage from "./IssueListPage"
 import IssueEditPage from "./IssueEditPage"
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
-
-import * as Auth from "./auth/Auth";
-import AuthCallback from "./auth/AuthCallback";
+import AuthCallback from "./AuthCallback";
 
 const { Header, Footer } = Layout;
 
@@ -47,7 +45,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
-    Auth.initAuthWithConfig(Conf.AuthConfig);
+    Setting.initCasdoorSdk(Conf.AuthConfig);
   }
 
   componentWillMount() {
@@ -84,33 +82,32 @@ class App extends Component {
       });
   }
 
-  logout() {
+  signout() {
     this.setState({
       expired: false,
       submitted: false,
     });
 
-    AccountBackend.logout()
+    AccountBackend.signout()
       .then((res) => {
         if (res.status === 'ok') {
           this.setState({
             account: null
           });
 
-          Setting.showMessage("success", `Successfully logged out, redirected to homepage`);
-
+          Setting.showMessage("success", `Successfully signed out, redirected to homepage`);
           Setting.goToLink("/");
         } else {
-          Setting.showMessage("error", `Logout failed: ${res.msg}`);
+          Setting.showMessage("error", `Failed to sign out: ${res.msg}`);
         }
       });
   }
 
   handleRightDropdownClick(e) {
     if (e.key === '0') {
-      Setting.openLink(Auth.getMyProfileUrl(this.state.account));
+      Setting.openLink(Setting.getMyProfileUrl(this.state.account));
     } else if (e.key === '1') {
-      this.logout();
+      this.signout();
     }
   }
 
@@ -139,7 +136,7 @@ class App extends Component {
         </Menu.Item>
         <Menu.Item key='1'>
           <LogoutOutlined />
-          Logout
+          Sign Out
         </Menu.Item>
       </Menu>
     );
@@ -169,8 +166,8 @@ class App extends Component {
     } else if (this.state.account === null) {
       res.push(
         <Menu.Item key="101" style={{float: 'right'}}>
-          <a href={Auth.getSigninUrl()}>
-            Login
+          <a href={Setting.getSigninUrl()}>
+            Sign In
           </a>
         </Menu.Item>
       );

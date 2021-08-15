@@ -6,13 +6,11 @@ import * as StudentBackend from "./backend/StudentBackend";
 import * as ProgramBackend from "./backend/ProgramBackend";
 import * as ReportBackend from "./backend/ReportBackend";
 import * as RoundBackend from "./backend/RoundBackend";
-import {getUserProfileUrl} from "./auth/Auth";
 import * as Conf from "./Conf";
 import moment from "moment";
 import * as Setting from "./Setting";
 import {CSVLink} from "react-csv";
 import ReactMarkdown from "react-markdown/with-html";
-import * as Auth from "./auth/Auth";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
@@ -58,7 +56,7 @@ class RankingPage extends React.Component {
           }
 
           return (
-            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{record.displayName}</a>
+            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{record.displayName}</a>
           )
         }
       },
@@ -101,7 +99,7 @@ class RankingPage extends React.Component {
         width: '70px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={getUserProfileUrl(text, this.props.account)}>{text}</a>
+            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },
@@ -701,7 +699,7 @@ class RankingPage extends React.Component {
         title={`Please Link your ${this.additionalProvider}`}
         visible={true}
         onOk={() => {
-          Setting.openLink(Auth.getMyProfileUrl(this.props.account));
+          Setting.openLink(Setting.getMyProfileUrl(this.props.account));
         }}
         onCancel={() => {
           window.location.reload();
@@ -735,7 +733,7 @@ class RankingPage extends React.Component {
         title={"Please Change your display name to your real name"}
         visible={true}
         onOk={() => {
-          Setting.openLink(Auth.getMyProfileUrl(this.props.account));
+          Setting.openLink(Setting.getMyProfileUrl(this.props.account));
         }}
         onCancel={() => {
           window.location.reload();

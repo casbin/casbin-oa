@@ -35,7 +35,7 @@ func init() {
 	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
 }
 
-func (c *ApiController) Login() {
+func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
@@ -57,7 +57,7 @@ func (c *ApiController) Login() {
 	c.ServeJSON()
 }
 
-func (c *ApiController) Logout() {
+func (c *ApiController) Signout() {
 	var resp Response
 
 	c.SetSessionUser(nil)
