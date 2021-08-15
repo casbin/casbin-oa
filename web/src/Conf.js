@@ -24,4 +24,5 @@ export const AuthConfig = {
 
 export const Assignees = ["hsluoyz"]
 export const defaultOrgs = ["casbin", "casdoor" ,"casnode", "casbin-lua", "casbin-net", "casbin-rs", "casbin-ex", "casbin-ruby", "casbin-cpp", "casbin-js", "casbin4d", "node-casbin", "scala-casbin", "dart-casbin", "pycasbin", "jcasbin", "php-casbin", "SwiftCasbin", "k8s-authz"]
+
 export const CasnodeEndpoint = "http://localhost:3000";

@@ -289,8 +289,7 @@ class App extends Component {
   }
 
   render() {
-    let nodeId = `${window.location.protocol}//${window.location.host}`;
-    nodeId = encodeURIComponent(nodeId);
+    const nodeId = "casbin-oa";
     let title = encodeURIComponent(document.title);
     let urlPath = encodeURIComponent(window.location.pathname);
     return (
