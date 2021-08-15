@@ -288,10 +288,35 @@ class App extends Component {
     )
   }
 
-  render() {
+  renderComments() {
+    if (this.state.account === undefined) {
+      return null;
+    }
+
     const nodeId = "casbin-oa";
-    let title = encodeURIComponent(document.title);
-    let urlPath = encodeURIComponent(window.location.pathname);
+    const title = encodeURIComponent(document.title);
+    const urlPath = encodeURIComponent(window.location.pathname);
+
+    let accessToken;
+    if (this.state.account === null) {
+      // Casbin-OA is signed out, also sign out Casnode.
+      accessToken = "signout";
+    } else {
+      accessToken = this.state.account.accessToken;
+    }
+
+    return (
+      <iframe
+        style={{
+          width: "100%",
+          height: 500,
+        }}
+        src={`${Conf.CasnodeEndpoint}/embedded-replies?nodeId=${nodeId}&title=${title}&urlPath=${urlPath}&accessToken=${accessToken}`}
+      />
+    )
+  }
+
+  render() {
     return (
       <div id="parent-area">
         <BackTop />
@@ -300,13 +325,9 @@ class App extends Component {
             this.renderContent()
           }
         </div>
-        <iframe
-          style={{
-            width: "100%",
-            height: 500,
-          }}
-          src={`${Conf.CasnodeEndpoint}/embedded-replies?nodeId=${nodeId}&title=${title}&urlPath=${urlPath}`}
-        />
+        {
+          this.renderComments()
+        }
         {
           this.renderFooter()
         }
