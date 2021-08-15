@@ -2,12 +2,11 @@ import React from 'react'
 import {Button, Card, AutoComplete, Col, Input, Row, Select, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import * as issueBackend from "./backend/issueBackend";
-import {CloseCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons'
+import {CloseCircleTwoTone, CheckCircleTwoTone, LoadingOutlined} from '@ant-design/icons'
 import * as ReportBackend from "./backend/ReportBackend"
 import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
 import * as StudentBackend from "./backend/StudentBackend";
-import {map} from "codemirror/src/util/misc";
 
 const {Option} = Select
 
@@ -24,7 +23,7 @@ class IssueEditPage extends React.Component{
             students: [],
             projectColumns: [],
             mentorsGithub: [],
-            loading: false,
+            getOrg: false,
         };
     }
 
@@ -130,6 +129,7 @@ class IssueEditPage extends React.Component{
             })
             this.getRepositories(this.state.issue.org);
             this.getUserByUsername(this.state.issue.assignee);
+            this.searchRepositories(this.state.issue.org);
         })
     }
 
@@ -145,25 +145,25 @@ class IssueEditPage extends React.Component{
 
     searchRepositories(org) {
         if (org === ""){
+            this.setState({
+                getOrg: false,
+            })
             Setting.showMessage("warn", "No Organization");
             return;
         }
         this.setState({
-            loading: true,
+            getOrg: false,
         })
         ReportBackend.getRepositoriesByOrg(org).then(res => {
             if (res){
                 this.setState({
                     repositories: res.repositories,
+                    getOrg: true,
                 })
-                Setting.showMessage("success", "Search Successfully")
             }
         }).catch(err => {
-            Setting.showMessage("error", "Search Unsuccessfully")
-        }).finally(() => {
-            this.setState({
-                loading: false
-            })
+
+            Setting.showMessage("error", "Search Org Unsuccessfully")
         })
 
     }
@@ -174,12 +174,22 @@ class IssueEditPage extends React.Component{
         })
     }
 
+
+    orgChange(value){
+        this.updateIssueField("org", value);
+        this.updateIssueField("repo", "All");
+        this.setState({
+            repositories: [],
+        })
+    }
+
     selectOrg(value){
         this.updateIssueField("org", value);
         this.updateIssueField("repo", "All");
         this.setState({
             repositories: [],
         })
+        this.searchRepositories(value);
     }
 
     updateIssueField(key, value) {
@@ -258,7 +268,7 @@ class IssueEditPage extends React.Component{
             <Card size="small" title={
                 <div>
                     Edit Issue&nbsp;&nbsp;&nbsp;&nbsp;
-                    <Button type="primary" disabled={!Setting.isAdminUser(this.props.account)} onClick={() => this.submitissueEdit()}>Save</Button>
+                    <Button type="primary" disabled={!Setting.isAdminUser(this.props.account)} onClick={() => this.submitIssueEdit()}>Save</Button>
                 </div>
             } style={{marginLeft: '5px'}} type="inner">
 
@@ -280,12 +290,19 @@ class IssueEditPage extends React.Component{
                         <AutoComplete
                             defaultValue={this.state.issue.org}
                             size={"large"}
-                            style={{ width: '80%' }}
+                            style={{ width: '80%', marginRight: '10px' }}
                             placeholder="Organization"
                             options={orgOptions}
-                            onChange={(value => {this.selectOrg(value)})}
+                            onBlur={() => this.searchRepositories(this.state.issue.org)}
+                            onChange={value => {this.orgChange(value)}}
                         />
-                        <Button type={"primary"} size={"large"} loading={this.state.loading} onClick={() => {this.searchRepositories(this.state.issue.org)}}>Search</Button>
+                        {
+                            this.state.getOrg  ?
+                                (<CheckCircleTwoTone twoToneColor="#52c41a"/>) :
+                                (<CloseCircleTwoTone twoToneColor="#ff0000"/>)
+                        }
+
+                        {/*<Button type={"primary"} size={"large"} loading={this.state.loading} onClick={() => {this.searchRepositories(this.state.issue.org)}}>Search</Button>*/}
                     </Col>
                     <Col style={{marginTop: '5px'}} span={1}>
                         <p style={{marginLeft: 10}}>
@@ -312,7 +329,6 @@ class IssueEditPage extends React.Component{
                     </Col>
                     <Col span={10} >
                         <AutoComplete
-
                             onBlur={() => this.getUserByUsername()}
                             defaultValue={this.state.issue.assignee}
                             style={{ width: '100%' }}
