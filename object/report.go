@@ -268,7 +268,7 @@ func GetNewReport(roundName string, student Student) *Report {
 	owner := beego.AppConfig.String("defaultOwner")
 	program := beego.AppConfig.String("defaultProgram")
 	name := fmt.Sprintf("report_%s_%s_%s", program, roundName, student.Name)
-	createdTime := time.Now().Format("")
+	createdTime := time.Now().Format("2006-01-02 15:04:05")
 	round := roundName
 	studentName := student.Name
 	mentor := student.Mentor
