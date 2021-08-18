@@ -30,18 +30,27 @@ type OrgRepositories struct {
 
 func GetRepositoryByOrganization(org string) OrgRepositories {
 	client := util.GetClient()
-	options := github.RepositoryListByOrgOptions{Sort: "pushed", ListOptions: github.ListOptions{PerPage: 100}}
-	lists, _, err := client.Repositories.ListByOrg(context.Background(), org, &options)
-
-	if err != nil {
-		panic(err)
-	}
-
+	curPage := 1
 	var repositories []string
+	options := github.RepositoryListByOrgOptions{ListOptions: github.ListOptions{PerPage: 100, Page: curPage}}
 
-	for i := range lists {
-		repositories = append(repositories, *lists[i].Name)
+	lists, _, err := client.Repositories.ListByOrg(context.Background(), org, &options)
+	for {
+		if err != nil {
+			panic(err)
+		}
+		if len(lists) != 0 {
+			for i := range lists {
+				repositories = append(repositories, *lists[i].Name)
+			}
+			curPage++
+			options = github.RepositoryListByOrgOptions{ListOptions: github.ListOptions{PerPage: 100, Page: curPage}}
+			lists, _, err = client.Repositories.ListByOrg(context.Background(), org, &options)
+		} else {
+			break
+		}
 	}
+
 	return OrgRepositories{Organization: org, Repositories: repositories}
 }
 
