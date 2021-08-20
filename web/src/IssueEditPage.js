@@ -214,7 +214,7 @@ class IssueEditPage extends React.Component {
         if (res) {
           Setting.showMessage("success", `Successfully saved`);
           this.setState({
-            issueName: this.state.issueName.name,
+            issueName: this.state.issue.name,
           });
           this.props.history.push(`/issues/${this.state.issue.name}`);
         } else {
