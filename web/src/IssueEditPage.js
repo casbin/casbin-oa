@@ -45,6 +45,7 @@ class IssueEditPage extends React.Component {
     Promise.all([this.getUsers(), this.getStudents()]).then(values => {
       let users = values[0];
       let students = values[1];
+      students = students.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i);
 
       let userMap = new Map();
       users.forEach(user => {
@@ -226,7 +227,6 @@ class IssueEditPage extends React.Component {
   }
 
   renderIssue() {
-
     let orgOptions = [];
     this.state.organizations.map((item) => {
       orgOptions.push({value: item});
@@ -244,16 +244,16 @@ class IssueEditPage extends React.Component {
     })
 
     let atPeople = [];
-    this.state.students.map((item) => {
+    this.state.students.map((student) => {
       let githubUsername
-      if (item.properties === undefined && item.github === undefined)
+      if (student.properties === undefined && student.github === undefined)
         githubUsername = ""
       else
-        githubUsername = item.properties.oauth_GitHub_username !== "" ? item.properties.oauth_GitHub_username : item.github;
+        githubUsername = student.properties.oauth_GitHub_username !== "" ? student.properties.oauth_GitHub_username : student.github;
 
-      if (githubUsername !== "") {
+      if (githubUsername !== "" && githubUsername !== undefined) {
         atPeople.push(<Option value={githubUsername}
-                              key={githubUsername}>{item.displayName} ({githubUsername})</Option>)
+                              key={githubUsername}>{student.displayName} ({githubUsername})</Option>)
       }
     })
     this.state.mentorsGithub.map((item) => {
@@ -364,7 +364,7 @@ class IssueEditPage extends React.Component {
           <Col span={22}>
             <Select
               virtual={false}
-              defaultValue={this.state.issue.at_people}
+              value={this.state.issue.at_people}
               mode="tags"
               style={{width: '100%'}}
               tokenSeparators={[',']}
