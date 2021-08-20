@@ -316,6 +316,7 @@ class IssueEditPage extends React.Component {
           </Col>
           <Col span={10} style={{marginLeft: '10px'}}>
             <Select
+              virtual={false}
               value={this.state.issue.repo}
               defaultValue={this.state.issue.repo}
               style={{width: '80%'}}
@@ -362,6 +363,7 @@ class IssueEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <Select
+              virtual={false}
               defaultValue={this.state.issue.at_people}
               mode="tags"
               style={{width: '100%'}}
@@ -381,6 +383,7 @@ class IssueEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <Select
+              virtual={false}
               defaultValue={this.state.issue.project_name}
               style={{width: 300}}
               onChange={(value, option) => {

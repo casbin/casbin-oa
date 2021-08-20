@@ -35,7 +35,7 @@ class StudentEditPage extends React.Component {
       this.updateRepositoriesMap(item.organization)
     })
   }
-  
+
   async updateRepositoriesMap(orgName){
     let orgRepositoriesMap = this.state.orgRepositoriesMap;
     if (orgRepositoriesMap.get(orgName) === undefined) {
@@ -82,7 +82,7 @@ class StudentEditPage extends React.Component {
       })
     }
   }
-  
+
   updateRepositories(index, newRepositories){
     let orgAndRepositories = [...this.state.orgAndRepositories];
     orgAndRepositories[index].repositories = newRepositories;
@@ -100,7 +100,7 @@ class StudentEditPage extends React.Component {
       this.updateRepositories(index,[])
     }
   }
-  
+
   changeRepository(value, index){
     this.updateRepositories(index, value)
   }
@@ -186,13 +186,14 @@ class StudentEditPage extends React.Component {
           }
           return (
               <Select
-                  onChange={(value) => this.changeRepository(value, index)}
-                  value={text}
-                  allowClear={true}
-                  mode="multiple"
-                  placeholder="Please select"
-                  size={"default"}
-                  style={{width: '100%'}}
+                virtual={false}
+                onChange={(value) => this.changeRepository(value, index)}
+                value={text}
+                allowClear={true}
+                mode="multiple"
+                placeholder="Please select"
+                size={"default"}
+                style={{width: '100%'}}
               >
                 {options}
               </Select>
