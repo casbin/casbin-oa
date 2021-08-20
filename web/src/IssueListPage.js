@@ -50,10 +50,6 @@ class IssueListPage extends React.Component {
     }
   }
 
-  getProjectNameById() {
-
-  }
-
   deleteIssue(index) {
     issueBackend.deleteIssue(this.state.issues[index])
       .then((res) => {
@@ -78,7 +74,7 @@ class IssueListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={``}>{text}</a>
+            <a href={`/issues/${text}`}>{text}</a>
           )
         }
       },
@@ -144,11 +140,11 @@ class IssueListPage extends React.Component {
         title: 'Action',
         dataIndex: '',
         key: 'op',
-        width: '250px',
+        width: '160px',
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}}
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary"
                       onClick={() => Setting.goToLink(`/issues/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete issue webhook: ${record.name} ?`}
