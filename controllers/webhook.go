@@ -43,7 +43,12 @@ func (c *ApiController) IssueOpen() {
 	if issueWebhook != nil {
 		issueNumber := *issueEvent.Issue.Number
 
-		label := util.GetIssueLabel(*issueEvent.Issue.Title, *issueEvent.Issue.Body)
+		content := ""
+		if issueEvent.Issue.Body != nil {
+			content = *issueEvent.Issue.Body
+		}
+
+		label := util.GetIssueLabel(*issueEvent.Issue.Title, content)
 		if label != "" {
 			go util.SetIssueLabel(owner, repo, issueNumber, label)
 		}
