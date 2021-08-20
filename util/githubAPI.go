@@ -121,7 +121,7 @@ func GetIssueLabel(title string, content string) string {
 		}
 	}
 
-	return ""
+	return "question"
 }
 
 func GetProjectColumns(projectId int64) []*github.ProjectColumn {
