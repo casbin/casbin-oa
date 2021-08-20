@@ -58,7 +58,7 @@ func GetLateRound(owner string, program string) *Round {
 	DateTemplate := "2006-01-02"
 	round := Round{Owner: owner, Program: program}
 	now := time.Now().Format(DateTemplate)
-	has, err := adapter.Engine.Where("end_date < ?", now).Desc("end_date").Limit(1).Get(&round)
+	has, err := adapter.Engine.Where("end_date <= ?", now).Desc("end_date").Limit(1).Get(&round)
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +67,7 @@ func GetLateRound(owner string, program string) *Round {
 	}
 
 	EndDate, _ := time.ParseInLocation(DateTemplate, round.EndDate, time.UTC)
-	if math.Abs(float64(time.Now().YearDay()-EndDate.YearDay())) < 2 {
+	if math.Abs(float64(time.Now().YearDay()-EndDate.YearDay())) <= 2 {
 		return &round
 	}
 	return nil
