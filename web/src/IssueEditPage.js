@@ -285,14 +285,13 @@ class IssueEditPage extends React.Component {
             }}/>
           </Col>
         </Row>
-        <Row style={{marginTop: '10px'}}>
+        <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
             Org:
           </Col>
           <Col span={10}>
             <AutoComplete
               defaultValue={this.state.issue.org}
-              size={"large"}
               style={{width: '80%', marginRight: '10px'}}
               placeholder="Organization"
               options={orgOptions}
@@ -306,13 +305,10 @@ class IssueEditPage extends React.Component {
                 (<CheckCircleTwoTone twoToneColor="#52c41a"/>) :
                 (<CloseCircleTwoTone twoToneColor="#ff0000"/>)
             }
-
             {/*<Button type={"primary"} size={"large"} loading={this.state.loading} onClick={() => {this.searchRepositories(this.state.issue.org)}}>Search</Button>*/}
           </Col>
-          <Col style={{marginTop: '5px'}} span={1}>
-            <p style={{marginLeft: 10}}>
-              Repo:
-            </p>
+          <Col span={1}>
+            Repo:
           </Col>
           <Col span={10} style={{marginLeft: '10px'}}>
             <Select
@@ -320,14 +316,13 @@ class IssueEditPage extends React.Component {
               value={this.state.issue.repo}
               defaultValue={this.state.issue.repo}
               style={{width: '80%'}}
-              autoClearSearchValue={true} size={"large"}
+              autoClearSearchValue={true}
               showSearch
               onChange={(value => this.updateIssueField("repo", value))}
             >
               {repoOptions}
             </Select>
           </Col>
-
         </Row>
         <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
@@ -352,10 +347,7 @@ class IssueEditPage extends React.Component {
                 (<CloseCircleTwoTone twoToneColor="#ff0000"/>) :
                 (<CheckCircleTwoTone twoToneColor="#52c41a"/>)
             }
-
-
           </Col>
-
         </Row>
         <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
@@ -397,7 +389,6 @@ class IssueEditPage extends React.Component {
       </Card>
     )
   }
-
 
   render() {
     return (
