@@ -44,10 +44,7 @@ func (c *ApiController) IssueOpen() {
 	if issueWebhook != nil {
 		issueNumber := issueEvent.Issue.GetNumber()
 
-		content := ""
-		if issueEvent.Issue.Body != nil {
-			content = issueEvent.Issue.GetBody()
-		}
+		content := issueEvent.Issue.GetBody()
 
 		label := util.GetIssueLabel(issueEvent.Issue.GetTitle(), content)
 		if label != "" {
