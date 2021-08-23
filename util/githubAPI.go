@@ -138,13 +138,13 @@ func GetProjectColumns(projectId int64) []*github.ProjectColumn {
 func GetUserByUsername(githubUsername string) *github.User {
 	client := GetClient()
 	users := client.Users
-
 	user, response, err := users.Get(context.Background(), githubUsername)
-	if response.StatusCode == 404 {
-		return nil
-	}
+
 	if err != nil {
 		panic(err)
+	}
+	if response.StatusCode == 404 {
+		return nil
 	}
 
 	return user
