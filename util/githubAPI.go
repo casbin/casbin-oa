@@ -140,11 +140,12 @@ func GetUserByUsername(githubUsername string) *github.User {
 	users := client.Users
 
 	user, response, err := users.Get(context.Background(), githubUsername)
-	if response.StatusCode == 404 {
-		return nil
-	}
 	if err != nil {
 		panic(err)
+	}
+
+	if response.StatusCode == 404 {
+		return nil
 	}
 
 	return user

@@ -35,20 +35,16 @@ func (c *ApiController) IssueOpen() {
 		return
 	}
 
-	owner, repo := util.GetOwnerAndNameFromId(*issueEvent.Repo.FullName)
+	owner, repo := util.GetOwnerAndNameFromId(issueEvent.Repo.GetFullName())
 	issueWebhook := object.GetIssueByOrgAndRepo(owner, repo)
+
 	if issueWebhook == nil {
 		issueWebhook = object.GetIssueByOrgAndRepo(owner, "All")
 	}
 	if issueWebhook != nil {
-		issueNumber := *issueEvent.Issue.Number
+		issueNumber := issueEvent.Issue.GetNumber()
 
-		content := ""
-		if issueEvent.Issue.Body != nil {
-			content = *issueEvent.Issue.Body
-		}
-
-		label := util.GetIssueLabel(*issueEvent.Issue.Title, content)
+		label := util.GetIssueLabel(issueEvent.Issue.GetTitle(), issueEvent.Issue.GetBody())
 		if label != "" {
 			go util.SetIssueLabel(owner, repo, issueNumber, label)
 		}
