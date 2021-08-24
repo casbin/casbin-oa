@@ -102,3 +102,18 @@ func DeleteIssue(issueWebhook *Issue) bool {
 
 	return affected != 0
 }
+
+func GetWebhookOrgs() []string {
+	issues := []*Issue{}
+	var orgs []string
+	err := adapter.Engine.Select("org").GroupBy("org").Find(&issues)
+	if err != nil {
+		panic(err)
+	}
+
+	for i := 0; i < len(issues); i++ {
+		orgs = append(orgs, issues[i].Org)
+	}
+
+	return orgs
+}
