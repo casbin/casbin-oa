@@ -56,10 +56,10 @@ func (c *ApiController) IssueOpen() {
 		if issueWebhook.Assignee != "" {
 			go util.SetIssueAssignee(owner, repo, issueNumber, issueWebhook.Assignee)
 
-			if len(issueWebhook.AtPeople) != 0 {
-				go util.AtPeople(issueWebhook.AtPeople, owner, repo, issueNumber)
-			}
+		}
 
+		if len(issueWebhook.AtPeople) != 0 {
+			go util.AtPeople(issueWebhook.AtPeople, owner, repo, issueNumber)
 		}
 
 	}
