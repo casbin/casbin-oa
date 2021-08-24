@@ -26,6 +26,7 @@ import (
 func main() {
 	object.InitAdapter()
 	object.RegularUpdate()
+	object.RegularRedeliver()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

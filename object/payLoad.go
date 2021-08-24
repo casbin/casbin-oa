@@ -14,7 +14,7 @@
 
 package object
 
-import "github.com/google/go-github/v37/github"
+import "github.com/google/go-github/v38/github"
 
 type PayLoad struct {
 	Review      github.PullRequestReview  `json:"review"`
