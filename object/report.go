@@ -231,9 +231,12 @@ func AutoUpdateReportText(id string, author string, startDate time.Time, endDate
 }
 
 func TimingAutoUpdate() {
+	fmt.Println("TimingAutoUpdate Start!")
 	owner := beego.AppConfig.String("defaultOwner")
 	program := beego.AppConfig.String("defaultProgram")
 	round := GetLateRound(owner, program)
+	fmt.Println("The latest round")
+	fmt.Println(round)
 	if round == nil {
 		return
 	}
@@ -258,6 +261,7 @@ func TimingAutoUpdate() {
 
 		githubUserName, ok := studentGithubMap[curStudent.Name]
 		if ok && githubUserName != "" {
+			fmt.Printf("update %s report", githubUserName)
 			go AutoUpdateReportText(id, githubUserName, startDate, endDate, *curStudent)
 		}
 
