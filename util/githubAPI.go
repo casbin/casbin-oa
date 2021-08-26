@@ -106,6 +106,13 @@ func GetIssueLabel(title string, content string) string {
 	title = strings.ToLower(title)
 	content = strings.ToLower(content)
 
+	bugWords := []string{"bug", "wrong", "error", "broken"}
+	for i := range bugWords {
+		if strings.Contains(title, bugWords[i]) {
+			return "bug"
+		}
+	}
+
 	enhancementWords := []string{"make", "support", "add", "allow", "enable", "design", "use", "extract"}
 	for i := range enhancementWords {
 		if strings.Contains(title, enhancementWords[i]) {
@@ -113,12 +120,6 @@ func GetIssueLabel(title string, content string) string {
 		}
 	}
 
-	bugWords := []string{"bug", "wrong", "error", "broken"}
-	for i := range bugWords {
-		if strings.Contains(title, bugWords[i]) {
-			return "bug"
-		}
-	}
 	questionWords := []string{"?", "what", "how", "why"}
 	for i := range questionWords {
 		if strings.Contains(title, questionWords[i]) || strings.Contains(content, questionWords[i]) {
