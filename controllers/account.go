@@ -19,12 +19,6 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-type Response struct {
-	Status string      `json:"status"`
-	Msg    string      `json:"msg"`
-	Data   interface{} `json:"data"`
-}
-
 var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
 var ClientId = beego.AppConfig.String("clientId")
 var ClientSecret = beego.AppConfig.String("clientSecret")
@@ -50,51 +44,31 @@ func (c *ApiController) Signin() {
 	}
 
 	claims.AccessToken = token.AccessToken
-	c.SetSessionUser(claims)
+	c.SetSessionClaims(claims)
 
-	resp := &Response{Status: "ok", Msg: "", Data: claims}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(claims)
 }
 
 func (c *ApiController) Signout() {
-	var resp Response
+	c.SetSessionClaims(nil)
 
-	c.SetSessionUser(nil)
-
-	resp = Response{Status: "ok", Msg: ""}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk()
 }
 
 func (c *ApiController) GetAccount() {
-	var resp Response
-
-	if c.GetSessionUser() == nil {
-		resp = Response{Status: "error", Msg: "please sign in first", Data: c.GetSessionUser()}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if c.RequireSignedIn() {
 		return
 	}
 
-	claims := c.GetSessionUser()
-	userObj := claims
-	resp = Response{Status: "ok", Msg: "", Data: userObj}
+	claims := c.GetSessionClaims()
 
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(claims)
 }
 
 func (c *ApiController) GetUsers() {
-	var resp Response
-
-	//owner := c.Input().Get("owner")
-
 	users, err := auth.GetUsers()
 	if err != nil {
-		resp = Response{Status: "error", Msg: err.Error()}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError(err.Error())
 		return
 	}
 
