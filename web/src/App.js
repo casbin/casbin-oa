@@ -29,6 +29,7 @@ import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
 import IssueListPage from "./IssueListPage"
 import IssueEditPage from "./IssueEditPage"
+import CDListPage from "./CDListPage";
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
@@ -228,6 +229,14 @@ class App extends Component {
         </Menu.Item>
     );
 
+    res.push(
+        <Menu.Item key="6">
+          <a href="/cds">
+            CD
+          </a>
+        </Menu.Item>
+    )
+
     return res;
   }
 
@@ -266,6 +275,7 @@ class App extends Component {
           <Route exact path="/reports/:reportName" render={(props) => <ReportEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/issues" render={ (props) => <IssueListPage account={this.state.account} {...props} />} />
           <Route exct path="/issues/:issueName" render={ (props) => <IssueEditPage account={this.state.account} {...props} /> } />
+          <Route exact path="/cds" render={ (props) => <CDListPage account={this.state.account} {...props} />} />
         </Switch>
       </div>
     )

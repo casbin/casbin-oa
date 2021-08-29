@@ -76,6 +76,11 @@ func initAPI() {
 	beego.Router("/api/add-issue", &controllers.ApiController{}, "POST:AddIssue")
 	beego.Router("/api/delete-issue", &controllers.ApiController{}, "POST:DeleteIssue")
 
-	beego.Router("/api/webhook", &controllers.ApiController{}, "Post:IssueOpen")
+	beego.Router("/api/get-cds", &controllers.ApiController{}, "Get:GetCDs")
+	beego.Router("/api/update-cd", &controllers.ApiController{}, "POST:UpdateCD")
+	beego.Router("/api/add-cd", &controllers.ApiController{}, "POST:AddCD")
+	beego.Router("/api/delete-cd", &controllers.ApiController{}, "POST:DeleteCD")
+
+	beego.Router("/api/webhook", &controllers.ApiController{}, "Post:Webhook")
 
 }

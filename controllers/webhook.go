@@ -16,37 +16,66 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/util"
 	"github.com/google/go-github/v38/github"
 )
 
-func (c *ApiController) IssueOpen() {
-	var issueEvent github.IssuesEvent
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueEvent)
+func (c *ApiController) Webhook() {
+	var pushEvent github.WebHookPayload
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &pushEvent)
 	if err != nil {
 		panic(err)
 	}
 
-	if issueEvent.GetAction() != "opened" {
-		c.Data["json"] = false
-		c.ServeJSON()
-		return
+	if pushEvent.GetRef() != "" {
+		c.Data["json"] = PushEventStart(pushEvent)
+	} else {
+		var issueEvent github.IssuesEvent
+		err = json.Unmarshal(c.Ctx.Input.RequestBody, &issueEvent)
+		if err != nil {
+			panic(err)
+		}
+		c.Data["json"] = IssueEventStart(issueEvent)
 	}
 
-	owner, repo := util.GetOwnerAndNameFromId(issueEvent.Repo.GetFullName())
-	issueWebhook := object.GetIssueByOrgAndRepo(owner, repo)
+	c.ServeJSON()
+}
+
+func PushEventStart(pushEvent github.WebHookPayload) bool {
+	org, repo := util.GetOwnerAndNameFromId(pushEvent.Repo.GetFullName())
+	cd := object.GetCDByOrgAndRepo(org, repo)
+
+	if cd == nil {
+		return false
+	}
+
+	fmt.Println(cd.Path)
+	util.CD(cd.Path)
+	return true
+
+}
+
+func IssueEventStart(issueEvent github.IssuesEvent) bool {
+	if issueEvent.GetAction() != "opened" {
+		return false
+	}
+
+	org, repo := util.GetOwnerAndNameFromId(issueEvent.Repo.GetFullName())
+	issueWebhook := object.GetIssueByOrgAndRepo(org, repo)
 
 	if issueWebhook == nil {
-		issueWebhook = object.GetIssueByOrgAndRepo(owner, "All")
+		issueWebhook = object.GetIssueByOrgAndRepo(org, "All")
 	}
+
 	if issueWebhook != nil {
 		issueNumber := issueEvent.Issue.GetNumber()
 
 		label := util.GetIssueLabel(issueEvent.Issue.GetTitle(), issueEvent.Issue.GetBody())
 		if label != "" {
-			go util.SetIssueLabel(owner, repo, issueNumber, label)
+			go util.SetIssueLabel(org, repo, issueNumber, label)
 		}
 
 		if issueWebhook.ProjectId != -1 {
@@ -54,16 +83,14 @@ func (c *ApiController) IssueOpen() {
 		}
 
 		if issueWebhook.Assignee != "" {
-			go util.SetIssueAssignee(owner, repo, issueNumber, issueWebhook.Assignee)
+			go util.SetIssueAssignee(org, repo, issueNumber, issueWebhook.Assignee)
 
 		}
 
 		if len(issueWebhook.AtPeople) != 0 {
-			go util.AtPeople(issueWebhook.AtPeople, owner, repo, issueNumber)
+			go util.AtPeople(issueWebhook.AtPeople, org, repo, issueNumber)
 		}
 
 	}
-
-	c.Data["json"] = true
-	c.ServeJSON()
+	return true
 }
