@@ -33,6 +33,7 @@ import CDListPage from "./CDListPage";
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
+import CDEditPage from "./CDEditPage";
 
 const { Header, Footer } = Layout;
 
@@ -69,7 +70,11 @@ class App extends Component {
       this.setState({ selectedMenuKey: 4 });
     } else if (uri.includes('issues')){
       this.setState({ selectedMenuKey: 5})
-    } else {
+    } else if (uri.includes('cds')){
+      this.setState({ selectedMenuKey: 6})
+    }
+
+    else {
       this.setState({ selectedMenuKey: -1 });
     }
   }
@@ -276,6 +281,7 @@ class App extends Component {
           <Route exact path="/issues" render={ (props) => <IssueListPage account={this.state.account} {...props} />} />
           <Route exct path="/issues/:issueName" render={ (props) => <IssueEditPage account={this.state.account} {...props} /> } />
           <Route exact path="/cds" render={ (props) => <CDListPage account={this.state.account} {...props} />} />
+          <Route exact path="/cds/:cdName" render={ (props) => <CDEditPage account={this.state.account} {...props} /> } />
         </Switch>
       </div>
     )

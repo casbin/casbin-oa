@@ -21,6 +21,13 @@ export function getCDs() {
     }).then(res => res.json());
 }
 
+export function getCD(name) {
+    return fetch(`${Setting.ServerUrl}/api/get-filtered-cd?name=${name}`, {
+        method: "Get",
+        credentials: "include"
+    }).then(res => res.json())
+}
+
 export function addCD(CD) {
     let newIssueWebhook = Setting.deepCopy(CD);
     return fetch(`${Setting.ServerUrl}/api/add-cd`, {

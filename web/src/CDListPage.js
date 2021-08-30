@@ -39,10 +39,12 @@ class CDListPage extends React.Component {
 
   newCD() {
     return {
-      name: `issue_${this.state.CDs.length}`,
+      name: `CD_${this.state.CDs.length}`,
       org: `casbin`,
       repo: 'casnode',
-      path: 'F:\\github_repos\\casnode',
+      path: 'F:\\\\github_repos\\\\casnode',
+      latest_deploy: '',
+      deploy_state: '',
     }
   }
 
@@ -60,7 +62,7 @@ class CDListPage extends React.Component {
       });
   }
 
-  renderTable(issues) {
+  renderTable(CDs) {
     const columns = [
       {
         title: 'Name',
@@ -106,8 +108,28 @@ class CDListPage extends React.Component {
         title: 'Path',
         dataIndex: 'path',
         key: 'path',
-        width: '120px',
-        sorter: (a, b) => a.assignee.localeCompare(b.assignee),
+        sorter: (a, b) => a.path.localeCompare(b.path),
+      },
+      {
+        title: 'Latest Deploy',
+        dataIndex: 'latest_deploy',
+        key: 'latest_deploy',
+        width: '200px',
+        sorter: (a, b) => a.latest_deploy.localeCompare(b.latest_deploy),
+      },
+      {
+        title: 'Deploy State',
+        dataIndex: 'deploy_state',
+        key: 'deploy_state',
+        width: '200px',
+        sorter: (a, b) => a.deploy_state.localeCompare(b.deploy_state),
+        render: (text, record, index) => {
+          if (text !== 'Success'){
+            return <p style={{color: "red"}}>{text}</p>
+          }else {
+            return <p style={{color: "green"}}>{text}</p>
+          }
+        }
       },
       {
         title: 'Action',
@@ -135,15 +157,15 @@ class CDListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={issues} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table columns={columns} dataSource={CDs} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
                title={() => (
                  <div>
-                   Issues&nbsp;&nbsp;&nbsp;&nbsp;
+                   CDs&nbsp;&nbsp;&nbsp;&nbsp;
                    <Button type="primary" size="small" disabled={!Setting.isAdminUser(this.props.account)}
                            onClick={() => this.addNewCD()}>Add</Button>
                  </div>
                )}
-               loading={issues === null}
+               loading={CDs === null}
         />
       </div>
     );

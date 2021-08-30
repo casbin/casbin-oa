@@ -77,6 +77,7 @@ func initAPI() {
 	beego.Router("/api/delete-issue", &controllers.ApiController{}, "POST:DeleteIssue")
 
 	beego.Router("/api/get-cds", &controllers.ApiController{}, "Get:GetCDs")
+	beego.Router("/api/get-filtered-cd", &controllers.ApiController{}, "Get:GetCDByName")
 	beego.Router("/api/update-cd", &controllers.ApiController{}, "POST:UpdateCD")
 	beego.Router("/api/add-cd", &controllers.ApiController{}, "POST:AddCD")
 	beego.Router("/api/delete-cd", &controllers.ApiController{}, "POST:DeleteCD")

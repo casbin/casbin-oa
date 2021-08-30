@@ -17,10 +17,12 @@ package object
 import "xorm.io/core"
 
 type CD struct {
-	Name string `xorm:"varchar(100) notnull pk" json:"name"`
-	Org  string `xorm:"varchar(100)" json:"org"`
-	Repo string `xorm:"varchar(100)"  json:"repo"`
-	Path string `xorm:"varchar(255)" json:"path"`
+	Name         string `xorm:"varchar(100) notnull pk" json:"name"`
+	Org          string `xorm:"varchar(100)" json:"org"`
+	Repo         string `xorm:"varchar(100)"  json:"repo"`
+	Path         string `xorm:"varchar(255)" json:"path"`
+	LatestDeploy string `xorm:"varchar(100)" json:"latest_deploy"`
+	DeployState  string `xorm:"varchar(100)" json:"deploy_state"`
 }
 
 func GetCD() []*CD {
@@ -81,6 +83,17 @@ func UpdateCD(name string, cd *CD) bool {
 	}
 
 	return true
+}
+
+func UpdateCDState(name string, time string, state string) bool {
+	cd := CD{LatestDeploy: time, DeployState: state}
+
+	affected, err := adapter.Engine.Id(core.PK{name}).Cols("latest_deploy", "deploy_state").Update(&cd)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }
 
 func DeleteCD(cd *CD) bool {

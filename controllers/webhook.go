@@ -16,7 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
+	"time"
 
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/util"
@@ -25,16 +25,13 @@ import (
 
 func (c *ApiController) Webhook() {
 	var pushEvent github.WebHookPayload
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &pushEvent)
-	if err != nil {
-		panic(err)
-	}
+	json.Unmarshal(c.Ctx.Input.RequestBody, &pushEvent)
 
 	if pushEvent.GetRef() != "" {
 		c.Data["json"] = PushEventStart(pushEvent)
 	} else {
 		var issueEvent github.IssuesEvent
-		err = json.Unmarshal(c.Ctx.Input.RequestBody, &issueEvent)
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueEvent)
 		if err != nil {
 			panic(err)
 		}
@@ -52,9 +49,16 @@ func PushEventStart(pushEvent github.WebHookPayload) bool {
 		return false
 	}
 
-	fmt.Println(cd.Path)
-	util.CD(cd.Path)
-	return true
+	message := util.CD(cd.Path)
+	time.Now().String()
+	time := time.Now().Format("2006-01-02 15:04:05")
+	if message != "" {
+		object.UpdateCDState(cd.Name, time, message)
+		return false
+	} else {
+		object.UpdateCDState(cd.Name, time, "Success")
+		return true
+	}
 
 }
 
