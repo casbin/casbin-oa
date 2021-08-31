@@ -25,7 +25,7 @@ func CD(path string) string {
 
 	message = Command(runCommand)
 	if strings.Contains(message, "Automatic merge failed") {
-		return message
+		return "Automatic merge failed"
 	}
 	go Command(buildCommand)
 
