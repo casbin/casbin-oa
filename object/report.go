@@ -114,11 +114,6 @@ func DeleteReport(report *Report) bool {
 }
 
 func GetReportTextByEvents(events []*Event) string {
-
-	if len(events) == 0 {
-		return ""
-	}
-
 	var PREvents []*Event
 	var IssueCommentEvents []*Event
 	var CodeReviewEvents []*Event
@@ -203,13 +198,8 @@ func AutoUpdateReportText(id string, author string, startDate time.Time, endDate
 	events := GetEvents(author, orgOrRepoMap, startDate, endDate)
 	report.Events = events
 	text := report.Text
-	textByEvents := GetReportTextByEvents(events)
-
-	if textByEvents == "" {
-		return ""
-	}
-
 	splitsArr := strings.Split(text, "<!--PR_TABLE_START-->")
+
 	if text == "" {
 		report.Text = GetReportTextByEvents(events)
 	} else if len(splitsArr) == 1 {
