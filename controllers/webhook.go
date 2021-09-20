@@ -36,11 +36,8 @@ func (c *ApiController) IssueOpen() {
 	}
 
 	owner, repo := util.GetOwnerAndNameFromId(issueEvent.Repo.GetFullName())
-	issueWebhook := object.GetIssueByOrgAndRepo(owner, repo)
+	issueWebhook := object.GetIssueIfExist(owner, repo)
 
-	if issueWebhook == nil {
-		issueWebhook = object.GetIssueByOrgAndRepo(owner, "All")
-	}
 	if issueWebhook != nil {
 		issueNumber := issueEvent.Issue.GetNumber()
 
@@ -65,5 +62,32 @@ func (c *ApiController) IssueOpen() {
 	}
 
 	c.Data["json"] = true
+	c.ServeJSON()
+}
+
+func (c *ApiController) PullRequestOpen() {
+	var pullRequestEvent github.PullRequestEvent
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &pullRequestEvent)
+	if err != nil {
+		panic(err)
+	}
+
+	if pullRequestEvent.GetAction() != "opened" {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	owner, repo := util.GetOwnerAndNameFromId(pullRequestEvent.Repo.GetFullName())
+	issueWebhook := object.GetIssueIfExist(owner, repo)
+
+	result := true
+	if issueWebhook != nil {
+		reviewers := issueWebhook.Reviewers
+		if len(reviewers) != 0 {
+			result = util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
+		}
+	}
+
+	c.Data["json"] = result
 	c.ServeJSON()
 }

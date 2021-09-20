@@ -156,3 +156,16 @@ func GetUserByUsername(githubUsername string) *github.User {
 
 	return user
 }
+
+func RequestReviewers(owner string, repo string, number int, reviewerNames []string) bool {
+	client := GetClient()
+	pullRequests := client.PullRequests
+
+	reviewers := github.ReviewersRequest{Reviewers: reviewerNames}
+	_, response, err := pullRequests.RequestReviewers(context.Background(), owner, repo, number, reviewers)
+	if err != nil {
+		panic(err)
+	}
+
+	return response.StatusCode == 201
+}

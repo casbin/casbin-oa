@@ -77,5 +77,6 @@ func initAPI() {
 	beego.Router("/api/delete-issue", &controllers.ApiController{}, "POST:DeleteIssue")
 
 	beego.Router("/api/webhook", &controllers.ApiController{}, "Post:IssueOpen")
+	beego.Router("/api/pull-request-open", &controllers.ApiController{}, "Post:PullRequestOpen")
 
 }
