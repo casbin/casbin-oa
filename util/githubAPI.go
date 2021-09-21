@@ -113,7 +113,7 @@ func GetIssueLabel(title string, content string) string {
 		}
 	}
 
-	enhancementWords := []string{"make", "implement", "support", "add", "allow", "enable", "design", "use", "extract"}
+	enhancementWords := []string{"make", "implement", "support", "update", "add", "allow", "enable", "design", "use", "extract"}
 	for i := range enhancementWords {
 		if strings.Contains(title, enhancementWords[i]) {
 			return "enhancement"
