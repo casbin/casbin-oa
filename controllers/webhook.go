@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/util"
@@ -80,14 +81,21 @@ func (c *ApiController) PullRequestOpen() {
 	owner, repo := util.GetOwnerAndNameFromId(pullRequestEvent.Repo.GetFullName())
 	issueWebhook := object.GetIssueIfExist(owner, repo)
 
-	result := true
 	if issueWebhook != nil {
 		reviewers := issueWebhook.Reviewers
 		if len(reviewers) != 0 {
-			result = util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
+			go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
+
+			var commentStr string
+			for i := range reviewers {
+				commentStr = fmt.Sprintf("%s @%s", commentStr, reviewers[i])
+			}
+			commentStr = fmt.Sprintf("%s %s", commentStr, "please review")
+
+			go util.Comment(commentStr, owner, repo, pullRequestEvent.GetNumber())
 		}
 	}
 
-	c.Data["json"] = result
+	c.Data["json"] = true
 	c.ServeJSON()
 }

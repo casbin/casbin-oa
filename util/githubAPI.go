@@ -87,19 +87,22 @@ func AddIssueToProjectCard(cardId int64, issueId int64) bool {
 	return false
 }
 
-func AtPeople(people []string, org string, repo string, number int) bool {
+func Comment(commentStr string, org string, repo string, number int) bool {
 	client := GetClient()
 	issues := client.Issues
 
+	comment := github.IssueComment{Body: &commentStr}
+	_, response, _ := issues.CreateComment(context.Background(), org, repo, number, &comment)
+	return response.StatusCode == 201
+}
+
+func AtPeople(people []string, org string, repo string, number int) bool {
 	var commentStr string
 	for i := range people {
 		commentStr = fmt.Sprintf("%s @%s", commentStr, people[i])
 	}
 
-	comment := github.IssueComment{Body: &commentStr}
-	_, response, _ := issues.CreateComment(context.Background(), org, repo, number, &comment)
-	return response.StatusCode == 201
-
+	return Comment(commentStr, org, repo, number)
 }
 
 func GetIssueLabel(title string, content string) string {
