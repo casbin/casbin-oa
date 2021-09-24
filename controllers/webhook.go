@@ -16,31 +16,39 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/util"
 	"github.com/google/go-github/v38/github"
 )
 
-func (c *ApiController) IssueOpen() {
+func (c *ApiController) WebhookOpen() {
 	var issueEvent github.IssuesEvent
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueEvent)
-	if err != nil {
-		panic(err)
+	var pullRequestEvent github.PullRequestEvent
+	json.Unmarshal(c.Ctx.Input.RequestBody, &pullRequestEvent)
+
+	var result bool
+	if pullRequestEvent.PullRequest != nil {
+		result = PullRequestOpen(pullRequestEvent)
+	} else {
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &issueEvent)
+		if err != nil {
+			panic(err)
+		}
+		result = IssueOpen(issueEvent)
 	}
 
+	c.Data["json"] = result
+	c.ServeJSON()
+}
+
+func IssueOpen(issueEvent github.IssuesEvent) bool {
 	if issueEvent.GetAction() != "opened" {
-		c.Data["json"] = false
-		c.ServeJSON()
-		return
+		return false
 	}
-
 	owner, repo := util.GetOwnerAndNameFromId(issueEvent.Repo.GetFullName())
-	issueWebhook := object.GetIssueByOrgAndRepo(owner, repo)
-
-	if issueWebhook == nil {
-		issueWebhook = object.GetIssueByOrgAndRepo(owner, "All")
-	}
+	issueWebhook := object.GetIssueIfExist(owner, repo)
 	if issueWebhook != nil {
 		issueNumber := issueEvent.Issue.GetNumber()
 
@@ -63,7 +71,29 @@ func (c *ApiController) IssueOpen() {
 		}
 
 	}
+	return true
+}
 
-	c.Data["json"] = true
-	c.ServeJSON()
+func PullRequestOpen(pullRequestEvent github.PullRequestEvent) bool {
+	if pullRequestEvent.GetAction() != "opened" {
+		return false
+	}
+	owner, repo := util.GetOwnerAndNameFromId(pullRequestEvent.Repo.GetFullName())
+	issueWebhook := object.GetIssueIfExist(owner, repo)
+
+	if issueWebhook != nil {
+		reviewers := issueWebhook.Reviewers
+		if len(reviewers) != 0 {
+			go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
+
+			var commentStr string
+			for i := range reviewers {
+				commentStr = fmt.Sprintf("%s @%s", commentStr, reviewers[i])
+			}
+			commentStr = fmt.Sprintf("%s %s", commentStr, "please review")
+
+			go util.Comment(commentStr, owner, repo, pullRequestEvent.GetNumber())
+		}
+	}
+	return true
 }
