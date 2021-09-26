@@ -84,6 +84,13 @@ func PullRequestOpen(pullRequestEvent github.PullRequestEvent) bool {
 	if issueWebhook != nil {
 		reviewers := issueWebhook.Reviewers
 		if len(reviewers) != 0 {
+			members := util.GetOrgMembers(owner)
+			for i := 0; i < len(reviewers); i++ {
+				if _, existed := members[reviewers[i]]; !existed {
+					reviewers = append(reviewers[:i], reviewers[i+1:]...)
+					i = i - 1
+				}
+			}
 			go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
 
 			var commentStr string

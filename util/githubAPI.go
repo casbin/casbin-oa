@@ -172,3 +172,30 @@ func RequestReviewers(owner string, repo string, number int, reviewerNames []str
 
 	return response.StatusCode == 201
 }
+
+func GetOrgMembers(org string) map[string]bool {
+	client := GetClient()
+
+	curPage := 1
+	membersMap := make(map[string]bool)
+	options := github.ListMembersOptions{ListOptions: github.ListOptions{Page: curPage, PerPage: 100}}
+	lists, _, err := client.Organizations.ListMembers(context.Background(), org, &options)
+
+	for {
+		if err != nil {
+			panic(err)
+		}
+		if len(lists) != 0 {
+			for i := range lists {
+				membersMap[lists[i].GetLogin()] = true
+			}
+			curPage++
+			options = github.ListMembersOptions{ListOptions: github.ListOptions{Page: curPage, PerPage: 100}}
+			lists, _, err = client.Organizations.ListMembers(context.Background(), org, &options)
+		} else {
+			break
+		}
+	}
+
+	return membersMap
+}
