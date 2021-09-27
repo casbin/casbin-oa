@@ -83,10 +83,13 @@ func PullRequestOpen(pullRequestEvent github.PullRequestEvent) bool {
 
 	if issueWebhook != nil {
 		reviewers := issueWebhook.Reviewers
+		sender := pullRequestEvent.Sender.GetLogin()
+
 		if len(reviewers) != 0 {
 			members := util.GetOrgMembers(owner)
 			for i := 0; i < len(reviewers); i++ {
-				if _, existed := members[reviewers[i]]; !existed {
+				_, existed := members[reviewers[i]]
+				if !existed || reviewers[i] == sender {
 					reviewers = append(reviewers[:i], reviewers[i+1:]...)
 					i = i - 1
 				}
