@@ -94,15 +94,17 @@ func PullRequestOpen(pullRequestEvent github.PullRequestEvent) bool {
 					i = i - 1
 				}
 			}
-			go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
+			if len(reviewers) != 0 {
+				go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
 
-			var commentStr string
-			for i := range reviewers {
-				commentStr = fmt.Sprintf("%s @%s", commentStr, reviewers[i])
+				var commentStr string
+				for i := range reviewers {
+					commentStr = fmt.Sprintf("%s @%s", commentStr, reviewers[i])
+				}
+				commentStr = fmt.Sprintf("%s %s", commentStr, "please review")
+
+				go util.Comment(commentStr, owner, repo, pullRequestEvent.GetNumber())
 			}
-			commentStr = fmt.Sprintf("%s %s", commentStr, "please review")
-
-			go util.Comment(commentStr, owner, repo, pullRequestEvent.GetNumber())
 		}
 	}
 	return true
