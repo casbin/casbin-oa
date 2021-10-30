@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, DatePicker, Input, Row} from 'antd';
+import {Button, Card, Col, DatePicker, Input, Row, Switch} from 'antd';
 import {LinkOutlined} from "@ant-design/icons";
 import * as ProgramBackend from "./backend/ProgramBackend";
 import * as Setting from "./Setting";
@@ -116,6 +116,16 @@ class ProgramEditPage extends React.Component {
           <Col span={22} >
             <DatePicker defaultValue={moment(this.state.program.endDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
               this.updateProgramField('endDate', timeString);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Can Apply:
+          </Col>
+          <Col span={1} >
+            <Switch checked={this.state.program.canApply} onChange={checked => {
+              this.updateProgramField('canApply', checked);
             }} />
           </Col>
         </Row>
