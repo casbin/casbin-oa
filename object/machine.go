@@ -37,7 +37,7 @@ type Machine struct {
 	Username    string `xorm:"varchar(100)" json:"username"`
 	Password    string `xorm:"varchar(100)" json:"password"`
 
-	Service []*Service `json:"services"`
+	Services []*Service `json:"services"`
 }
 
 func GetMachines(owner string) []*Machine {
