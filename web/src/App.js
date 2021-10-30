@@ -29,6 +29,8 @@ import ReportEditPage from "./ReportEditPage";
 import RankingPage from "./RankingPage";
 import IssueListPage from "./IssueListPage"
 import IssueEditPage from "./IssueEditPage"
+import MachineListPage from "./MachineListPage";
+import MachineEditPage from "./MachineEditPage";
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
@@ -68,6 +70,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: '/reports' });
     } else if (uri.includes('/issues')){
       this.setState({ selectedMenuKey: '/issues'})
+    } else if (uri.includes('/machines')){
+      this.setState({ selectedMenuKey: '/machines'})
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -227,6 +231,13 @@ class App extends Component {
           </a>
         </Menu.Item>
     );
+    res.push(
+        <Menu.Item key="/machines">
+          <a href="/machines">
+            Machines
+          </a>
+        </Menu.Item>
+    );
 
     return res;
   }
@@ -266,6 +277,8 @@ class App extends Component {
           <Route exact path="/reports/:reportName" render={(props) => <ReportEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/issues" render={ (props) => <IssueListPage account={this.state.account} {...props} />} />
           <Route exct path="/issues/:issueName" render={ (props) => <IssueEditPage account={this.state.account} {...props} /> } />
+          <Route exact path="/machines" render={(props) => <MachineListPage account={this.state.account} {...props} />}/>
+          <Route exact path="/machines/:machineName" render={(props) => <MachineEditPage account={this.state.account} {...props} />}/>
         </Switch>
       </div>
     )
