@@ -49,6 +49,7 @@ class MachineListPage extends React.Component {
       Ip: "127.0.0.1",
       username: "administrator",
       password: "123",
+      services: [],
     }
   }
 

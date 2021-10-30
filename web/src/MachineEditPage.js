@@ -18,6 +18,7 @@ import {LinkOutlined} from "@ant-design/icons";
 import * as MachineBackend from "./backend/MachineBackend";
 import * as Setting from "./Setting";
 import moment from "moment";
+import ServiceTable from "./ServiceTable";
 
 class MachineEditPage extends React.Component {
   constructor(props) {
@@ -117,6 +118,18 @@ class MachineEditPage extends React.Component {
             <Input value={this.state.machine.password} onChange={e => {
               this.updateMachineField('password', e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Services:
+          </Col>
+          <Col span={22} >
+            <ServiceTable
+              title={"Services"}
+              table={this.state.machine.services}
+              onUpdateTable={(value) => { this.updateMachineField('services', value)}}
+            />
           </Col>
         </Row>
       </Card>
