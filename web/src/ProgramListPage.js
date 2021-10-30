@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Popconfirm, Row, Table} from 'antd';
+import {Button, Col, Popconfirm, Row, Switch, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ProgramBackend from "./backend/ProgramBackend";
@@ -49,6 +49,7 @@ class ProgramListPage extends React.Component {
       url: "https://example.com",
       startDate: "2020-01-23",
       endDate: "2020-01-23",
+      canApply: false,
     }
   }
 
@@ -141,6 +142,17 @@ class ProgramListPage extends React.Component {
         key: 'endDate',
         width: '120px',
         sorter: (a, b) => a.endDate.localeCompare(b.endDate),
+      },
+      {
+        title: 'Can Apply',
+        dataIndex: 'canApply',
+        key: 'canApply',
+        width: '100px',
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checked={text} />
+          )
+        }
       },
       {
         title: 'Action',
