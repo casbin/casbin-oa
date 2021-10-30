@@ -33,9 +33,6 @@ require("codemirror/mode/markdown/markdown");
 class RankingPage extends React.Component {
   constructor(props) {
     super(props);
-
-    this.additionalProvider = "QQ";
-
     const programName = props.match.params.programName !== undefined ? props.match.params.programName : Conf.DefaultProgramName;
     this.state = {
       classes: props,
@@ -43,21 +40,21 @@ class RankingPage extends React.Component {
       students: null,
       reports: null,
       program: null,
-      columns: this.getColumns(programName),
+      roundColumns: [],
       reportVisible: false,
       reportEditable: false,
       report: null,
     };
   }
 
-  isCandidateProgram(programName) {
-    if (programName === undefined) {
-      programName = this.state.programName;
+  getProvider2() {
+    if (this.state.program === null) {
+      return "";
     }
-    return programName.includes("-candidates");
+    return this.state.program.provider2;
   }
 
-  getColumns(programName) {
+  getColumns() {
     let columns = [
       {
         title: 'Name',
@@ -101,16 +98,10 @@ class RankingPage extends React.Component {
         }
       },
       {
-        title: 'Placeholder',
-        dataIndex: 'placeholder',
-        key: 'placeholder',
-        width: '70px',
-      },
-      {
         title: 'Mentor',
         dataIndex: 'mentor',
         key: 'mentor',
-        width: '70px',
+        width: '80px',
         render: (text, record, index) => {
           return (
             <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
@@ -125,23 +116,24 @@ class RankingPage extends React.Component {
       },
     ];
 
-    if (this.isCandidateProgram(programName)) {
-      columns[2] = {
-        title: this.additionalProvider,
-        dataIndex: this.additionalProvider.toLowerCase(),
-        key: this.additionalProvider.toLowerCase(),
+    const provider2 = this.getProvider2();
+    if (provider2 !== "") {
+      const column = {
+        title: provider2,
+        dataIndex: provider2.toLowerCase(),
+        key: provider2.toLowerCase(),
         width: '150px',
         ellipsis: true,
         render: (text, record, index) => {
-          let username = record[this.additionalProvider.toLowerCase()];
+          let username = record[provider2.toLowerCase()];
           let avatarUrl = record.avatar;
 
           if (record.properties === undefined) {
             return "";
           }
-          if (record.properties[`oauth_${this.additionalProvider}_displayName`] !== undefined) {
-            username = record.properties[`oauth_${this.additionalProvider}_displayName`];
-            avatarUrl = record.properties[`oauth_${this.additionalProvider}_avatarUrl`];
+          if (record.properties[`oauth_${provider2}_displayName`] !== undefined) {
+            username = record.properties[`oauth_${provider2}_displayName`];
+            avatarUrl = record.properties[`oauth_${provider2}_avatarUrl`];
           }
 
           if (username === "") {
@@ -156,8 +148,10 @@ class RankingPage extends React.Component {
           )
         }
       };
+      columns = Setting.insertRow(columns, 2, column);
     }
 
+    columns = columns.concat(this.state.roundColumns);
     return columns;
   }
 
@@ -350,12 +344,10 @@ class RankingPage extends React.Component {
         return b.score - a.score;
       });
 
-      const columns = this.state.columns.concat(roundColumns);
-      this.initCsv(students, columns);
       this.setState({
         students: students,
         reports: reports,
-        columns: columns,
+        roundColumns: roundColumns,
         program: program,
       });
     });
@@ -396,36 +388,31 @@ class RankingPage extends React.Component {
       });
   }
 
-  initCsv(students, columns) {
-    let data = [];
-    students.forEach((student, i) => {
+  renderDownloadCsvButton() {
+    if (this.state.students === null) {
+      return null;
+    }
+
+    const columns = this.getColumns();
+
+    let csvData = [];
+    this.state.students.forEach((student, i) => {
       let row = {};
 
       columns.forEach((column, i) => {
         row[column.key] = Setting.toCsv(student[column.key]);
       });
 
-      data.push(row);
+      csvData.push(row);
     });
 
-    let headers = columns.map(column => {
+    let csvHeaders = columns.map(column => {
       return {label: column.title, key: column.key};
     });
-    headers = headers.slice(0, 4);
-
-    this.setState({
-      csvData: data,
-      csvHeaders: headers,
-    });
-  }
-
-  renderDownloadCsvButton() {
-    if (this.state.csvData === null || this.state.students === null) {
-      return null;
-    }
+    csvHeaders = csvHeaders.slice(0, 4);
 
     return (
-      <CSVLink data={this.state.csvData} headers={this.state.csvHeaders} filename={`Ranking-${this.state.programName}.csv`}>
+      <CSVLink data={csvData} headers={csvHeaders} filename={`Ranking-${this.state.programName}.csv`}>
         <Button type="primary" size="small">Download CSV</Button>
       </CSVLink>
     )
@@ -480,7 +467,7 @@ class RankingPage extends React.Component {
 
     return (
       <div>
-        <Table columns={this.state.columns} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table columns={this.getColumns()} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
                title={() => (
                  <div>
                    <a target="_blank" href={this.state.program.url}>
@@ -614,7 +601,6 @@ class RankingPage extends React.Component {
   }
 
   getPrsFromGithub(){
-
     let githubUsername = this.state.curStudent.github;
     if (this.state.curStudent.properties?.oauth_GitHub_username !== undefined) {
       githubUsername = this.state.curStudent.properties.oauth_GitHub_username;
@@ -703,18 +689,19 @@ class RankingPage extends React.Component {
   }
 
   renderLinkModal() {
-    if (!this.isCandidateProgram()) {
+    const provider2 = this.getProvider2();
+    if (provider2 === "") {
       return null;
     }
 
     const student = this.getSelfStudent();
-    if (student === null || student[this.additionalProvider.toLowerCase()] !== "") {
+    if (student === null || student[provider2.toLowerCase()] !== "") {
       return null;
     }
 
     return (
       <Modal
-        title={`Please Link your ${this.additionalProvider}`}
+        title={`Please Link your ${provider2}`}
         visible={true}
         onOk={() => {
           Setting.openLink(Setting.getMyProfileUrl(this.props.account));
@@ -722,23 +709,24 @@ class RankingPage extends React.Component {
         onCancel={() => {
           window.location.reload();
         }}
-        okText={`Link ${this.additionalProvider}`}
+        okText={`Link ${provider2}`}
         cancelText="Refresh"
       >
         <div>
-          Click the button to link your {this.additionalProvider}, then refresh the page.
+          Click the button to link your {provider2}, then refresh the page.
         </div>
       </Modal>
     )
   }
 
   renderNameModal() {
-    if (!this.isCandidateProgram()) {
+    const provider2 = this.getProvider2();
+    if (provider2 === "") {
       return null;
     }
 
     const student = this.getSelfStudent();
-    if (student === null || student[this.additionalProvider.toLowerCase()] === "") {
+    if (student === null || student[provider2.toLowerCase()] === "") {
       return null;
     }
 

@@ -101,6 +101,10 @@ export function prependRow(array, row) {
   return [row, ...array];
 }
 
+export function insertRow(array, i, row) {
+  return [].concat(array.slice(0, i), row, array.slice(i));
+}
+
 export function deleteRow(array, i) {
   // return array = array.slice(0, i).concat(array.slice(i + 1));
   return [...array.slice(0, i), ...array.slice(i + 1)];

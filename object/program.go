@@ -28,6 +28,7 @@ type Program struct {
 	Url       string `xorm:"varchar(100)" json:"url"`
 	StartDate string `xorm:"varchar(100)" json:"startDate"`
 	EndDate   string `xorm:"varchar(100)" json:"endDate"`
+	Provider2 string `xorm:"varchar(100)" json:"provider2"`
 	CanApply  bool   `json:"canApply"`
 }
 
