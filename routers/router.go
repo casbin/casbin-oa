@@ -78,4 +78,9 @@ func initAPI() {
 
 	beego.Router("/api/webhook", &controllers.ApiController{}, "Post:WebhookOpen")
 
+	beego.Router("/api/get-machines", &controllers.ApiController{}, "GET:GetMachines")
+	beego.Router("/api/get-machine", &controllers.ApiController{}, "GET:GetMachine")
+	beego.Router("/api/update-machine", &controllers.ApiController{}, "POST:UpdateMachine")
+	beego.Router("/api/add-machine", &controllers.ApiController{}, "POST:AddMachine")
+	beego.Router("/api/delete-machine", &controllers.ApiController{}, "POST:DeleteMachine")
 }
