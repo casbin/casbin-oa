@@ -69,8 +69,7 @@ func GetMachine(id string) *Machine {
 	return getMachine(owner, name)
 }
 
-func UpdateMachine(id string, machine *Machine) bool {
-	owner, name := util.GetOwnerAndNameFromId(id)
+func updateMachine(owner string, name string, machine *Machine) bool {
 	if getMachine(owner, name) == nil {
 		return false
 	}
@@ -82,6 +81,11 @@ func UpdateMachine(id string, machine *Machine) bool {
 
 	//return affected != 0
 	return true
+}
+
+func UpdateMachine(id string, machine *Machine) bool {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	return updateMachine(owner, name, machine)
 }
 
 func AddMachine(machine *Machine) bool {
