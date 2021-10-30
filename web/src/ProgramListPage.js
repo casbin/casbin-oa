@@ -50,6 +50,7 @@ class ProgramListPage extends React.Component {
       startDate: "2020-01-23",
       endDate: "2020-01-23",
       canApply: false,
+      provider2: "",
     }
   }
 
@@ -142,6 +143,13 @@ class ProgramListPage extends React.Component {
         key: 'endDate',
         width: '120px',
         sorter: (a, b) => a.endDate.localeCompare(b.endDate),
+      },
+      {
+        title: 'Provider 2',
+        dataIndex: 'provider2',
+        key: 'provider2',
+        width: '120px',
+        sorter: (a, b) => a.provider2.localeCompare(b.provider2),
       },
       {
         title: 'Can Apply',
