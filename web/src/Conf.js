@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const DefaultProgramName = "talent2021";
+export const DefaultProgramName = "talent2022";
 
 export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",
   serverUrl: "http://localhost:7001",
   clientId: "0ba528121ea87b3eb54d",
   appName: "app-casbin-oa",
-  organizationName: "casbin-oa",
+  organizationName: "casbin",
 };
 
 export const Assignees = ["hsluoyz"]
 export const defaultOrgs = ["casbin", "casdoor" ,"casnode", "casbin-lua", "casbin-net", "casbin-rs", "casbin-ex", "casbin-ruby", "casbin-cpp", "casbin-js", "casbin4d", "node-casbin", "scala-casbin", "dart-casbin", "pycasbin", "jcasbin", "php-casbin", "SwiftCasbin", "k8s-authz"]
 
-export const CasnodeEndpoint = "http://localhost:3000";
+export const CasnodeEndpoint = "https://forum.casbin.com";
