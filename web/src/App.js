@@ -57,17 +57,17 @@ class App extends Component {
     // eslint-disable-next-line no-restricted-globals
     const uri = location.pathname;
     if (uri === '/') {
-      this.setState({ selectedMenuKey: 0 });
-    } else if (uri.includes('students')) {
-      this.setState({ selectedMenuKey: 1 });
-    } else if (uri.includes('programs')) {
-      this.setState({ selectedMenuKey: 2 });
-    } else if (uri.includes('rounds')) {
-      this.setState({ selectedMenuKey: 3 });
-    } else if (uri.includes('reports')) {
-      this.setState({ selectedMenuKey: 4 });
-    } else if (uri.includes('issues')){
-      this.setState({ selectedMenuKey: 5})
+      this.setState({ selectedMenuKey: '/' });
+    } else if (uri.includes('/students')) {
+      this.setState({ selectedMenuKey: '/students' });
+    } else if (uri.includes('/programs')) {
+      this.setState({ selectedMenuKey: '/programs' });
+    } else if (uri.includes('/rounds')) {
+      this.setState({ selectedMenuKey: '/rounds' });
+    } else if (uri.includes('/reports')) {
+      this.setState({ selectedMenuKey: '/reports' });
+    } else if (uri.includes('/issues')){
+      this.setState({ selectedMenuKey: '/issues'})
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -130,11 +130,11 @@ class App extends Component {
   renderRightDropdown() {
     const menu = (
       <Menu onClick={this.handleRightDropdownClick.bind(this)}>
-        <Menu.Item key='0'>
+        <Menu.Item key="/account">
           <SettingOutlined />
           My Account
         </Menu.Item>
-        <Menu.Item key='1'>
+        <Menu.Item key="/logout">
           <LogoutOutlined />
           Sign Out
         </Menu.Item>
@@ -165,7 +165,7 @@ class App extends Component {
       return null;
     } else if (this.state.account === null) {
       res.push(
-        <Menu.Item key="101" style={{float: 'right'}}>
+        <Menu.Item key="/login" style={{float: 'right'}}>
           <a href={Setting.getSigninUrl()}>
             Sign In
           </a>
@@ -186,42 +186,42 @@ class App extends Component {
     // }
 
     res.push(
-      <Menu.Item key="0">
+      <Menu.Item key="/">
         <a href="/">
           Home
         </a>
       </Menu.Item>
     );
     res.push(
-      <Menu.Item key="1">
+      <Menu.Item key="/students">
         <a href="/students">
           Students
         </a>
       </Menu.Item>
     );
     res.push(
-      <Menu.Item key="2">
+      <Menu.Item key="/programs">
         <a href="/programs">
           Programs
         </a>
       </Menu.Item>
     );
     res.push(
-      <Menu.Item key="3">
+      <Menu.Item key="/rounds">
         <a href="/rounds">
           Rounds
         </a>
       </Menu.Item>
     );
     res.push(
-      <Menu.Item key="4">
+      <Menu.Item key="/reports">
         <a href="/reports">
           Reports
         </a>
       </Menu.Item>
     );
     res.push(
-        <Menu.Item key="5">
+        <Menu.Item key="/issues">
           <a href="/issues">
             Issues
           </a>
