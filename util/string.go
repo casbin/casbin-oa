@@ -17,8 +17,18 @@ package util
 import (
 	"errors"
 	"io/ioutil"
+	"strconv"
 	"strings"
 )
+
+func ParseInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+
+	return i
+}
 
 func GetOwnerAndNameFromId(id string) (string, string) {
 	tokens := strings.Split(id, "/")

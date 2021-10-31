@@ -20,12 +20,13 @@ import (
 	"strings"
 
 	"github.com/casbin/casbin-oa/ssh"
+	"github.com/casbin/casbin-oa/util"
 )
 
 var reBatNames *regexp.Regexp
 
 func init() {
-	reBatNames = regexp.MustCompile("run_(.*?)\\.bat")
+	reBatNames = regexp.MustCompile(`run_(.*?)\.bat`)
 }
 
 func getMachineService(id string, service *Service) *Service {
@@ -40,21 +41,48 @@ func updateMachineService(id string, service *Service) bool {
 	return UpdateMachine(id, machine)
 }
 
-func updateMachineServiceStatus(machine *Machine, service *Service, status string) bool {
+func updateMachineServiceStatus(machine *Machine, service *Service, status string, subStatus string, message string) bool {
 	id := machine.getId()
 	service.Status = status
+	service.SubStatus = subStatus
+	service.Message = message
 	return updateMachineService(id, service)
 }
 
-func getBatNamesFromOutput(output string) map[string]int {
-	res := map[string]int{}
-	matches := reBatNames.FindAllStringSubmatch(output, -1)
-	for _, v := range matches {
-		batName := v[1]
-		res[batName] = 1
+func parseBatName(s string) string {
+	res := reBatNames.FindStringSubmatch(s)
+	if res == nil {
+		return ""
 	}
 
-	return res
+	return res[1]
+}
+
+func getBatNamesFromOutput(output string) map[string]int {
+	batNameMap := map[string]int{}
+
+	output = strings.ReplaceAll(output, "\r", "")
+	lines := strings.Split(output, "\n")
+	for _, line := range lines {
+		tokens := strings.Split(line, " ")
+		tokens2 := []string{}
+		for _, token := range tokens {
+			if token != "" {
+				tokens2 = append(tokens2, token)
+			}
+		}
+
+		if len(tokens2) < 5 || strings.ToLower(tokens2[0]) != `c:\windows\system32\cmd.exe` || tokens2[1] != "/c" {
+			continue
+		}
+
+		batName := parseBatName(tokens2[2])
+		processId := util.ParseInt(tokens2[len(tokens2)-1])
+		batNameMap[batName] = processId
+		//fmt.Printf("%s, %d\n", batName, processId)
+	}
+
+	return batNameMap
 }
 
 func (machine *Machine) runCommand(command string) string {
@@ -63,14 +91,14 @@ func (machine *Machine) runCommand(command string) string {
 }
 
 func getBatInfo(machine *Machine) map[string]int {
-	command := "wmic process where (name=\"cmd.exe\") get CommandLine"
+	command := `wmic process where (name="cmd.exe") get CommandLine, ProcessID`
 	output := machine.runCommand(command)
 	batNameMap := getBatNamesFromOutput(output)
 	return batNameMap
 }
 
 func doPull(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Pull: Running")
+	updateMachineServiceStatus(machine, service, "Pull", "Running", "")
 
 	command := fmt.Sprintf("cd C:/github_repos/%s && git pull --rebase --autostash", service.Name)
 	output := machine.runCommand(command)
@@ -78,16 +106,16 @@ func doPull(machine *Machine, service *Service) error {
 	var err error
 	if strings.Contains(output, "Successfully rebased and updated") || strings.Contains(output, "Current branch master is up to date") {
 		err = nil
-		updateMachineServiceStatus(machine, service, "Pull: Done")
+		updateMachineServiceStatus(machine, service, "Pull", "Done", "")
 	} else {
 		err = fmt.Errorf(output)
-		updateMachineServiceStatus(machine, service, fmt.Sprintf("Pull: Error: %s", output))
+		updateMachineServiceStatus(machine, service, "Pull", "Error", output)
 	}
 	return err
 }
 
 func doBuild(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Build: Running")
+	updateMachineServiceStatus(machine, service, "Build", "Running", "")
 
 	command := fmt.Sprintf("cd C:/github_repos/%s/web && yarn build", service.Name)
 	output := machine.runCommand(command)
@@ -95,16 +123,16 @@ func doBuild(machine *Machine, service *Service) error {
 	var err error
 	if strings.Contains(output, "Done in ") {
 		err = nil
-		updateMachineServiceStatus(machine, service, "Build: Done")
+		updateMachineServiceStatus(machine, service, "Build", "Done", "")
 	} else {
 		err = fmt.Errorf(output)
-		updateMachineServiceStatus(machine, service, fmt.Sprintf("Build: Error: %s", output))
+		updateMachineServiceStatus(machine, service, "Build", "Error", output)
 	}
 	return err
 }
 
 func doDeploy(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Deploy: Running")
+	updateMachineServiceStatus(machine, service, "Deploy", "Running", "")
 
 	command := fmt.Sprintf("cd C:/github_repos/%s && go test -run TestDeploy ./oss/conf.go ./oss/deploy.go ./oss/deploy_test.go ./oss/oss.go", service.Name)
 	output := machine.runCommand(command)
@@ -112,27 +140,53 @@ func doDeploy(machine *Machine, service *Service) error {
 	var err error
 	if strings.HasPrefix(output, "ok") {
 		err = nil
-		updateMachineServiceStatus(machine, service, "Deploy: Done")
+	return err
+}
+<<<<<<< HEAD
+func syncMachine(machine *Machine) {
+	for _, service := range machine.Services {
+		doPull(machine, service)
+		doBuild(machine, service)
+		doDeploy(machine, service)
+	command2 := fmt.Sprintf(`SCHTASKS /Run /TN "%s"`, service.Name)
+	command3 := fmt.Sprintf(`SCHTASKS /Delete /TN "%s" /F`, service.Name)
+	command = fmt.Sprintf("%s && %s && %s", command1, command2, command3)
+	output = machine.runCommand(command)
+
+	var err error
+	if strings.Contains(output, "成功创建") && strings.Contains(output, "尝试运行") && strings.Contains(output, "被成功删除") {
+		err = nil
+		updateMachineServiceStatus(machine, service, "Restart", "Done", "")
 	} else {
 		err = fmt.Errorf(output)
-		updateMachineServiceStatus(machine, service, fmt.Sprintf("Deploy: Error: %s", output))
+		updateMachineServiceStatus(machine, service, "Restart", "Error", output)
 	}
 	return err
+}
+
+func syncProcessIds(machine *Machine) {
+
 }
 
 func syncMachine(machine *Machine) {
 	batNameMap := getBatInfo(machine)
 	for _, service := range machine.Services {
-		doPull(machine, service)
-		doBuild(machine, service)
-		doDeploy(machine, service)
-
-		if _, ok := batNameMap[service.Name]; ok {
+		if processId, ok := batNameMap[service.Name]; ok {
 			service.Status = "Running"
+			service.ProcessId = processId
 		} else {
 			service.Status = "Stopped"
+			service.ProcessId = -1
 		}
 	}
 
+	for _, service := range machine.Services {
+		//doPull(machine, service)
+		//doBuild(machine, service)
+		//doDeploy(machine, service)
+		doRestart(machine, service)
+	}
+
+>>>>>>> upstream/master
 	updateMachine(machine.Owner, machine.Name, machine)
 }
