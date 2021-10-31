@@ -30,9 +30,7 @@ func (c *ApiController) GetMachines() {
 func (c *ApiController) GetMachine() {
 	id := c.Input().Get("id")
 
-	machine := object.GetMachine(id)
-	object.SyncAndSaveProcessIds(machine)
-	c.Data["json"] = machine
+	c.Data["json"] = object.GetProcessIdSyncedMachine(id)
 	c.ServeJSON()
 }
 
@@ -45,7 +43,10 @@ func (c *ApiController) UpdateMachine() {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateMachine(id, &machine)
+	affected := object.UpdateMachine(id, &machine)
+	go machine.DoActions()
+
+	c.Data["json"] = affected
 	c.ServeJSON()
 }
 

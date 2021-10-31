@@ -18,15 +18,18 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/casbin/casbin-oa/ssh"
 	"github.com/casbin/casbin-oa/util"
 )
 
 var reBatNames *regexp.Regexp
+var machineMutex *sync.RWMutex
 
 func init() {
 	reBatNames = regexp.MustCompile(`\\Desktop\\(.*?)\.bat`)
+	machineMutex = new(sync.RWMutex)
 }
 
 func getMachineService(id string, service *Service) *Service {
@@ -36,6 +39,9 @@ func getMachineService(id string, service *Service) *Service {
 }
 
 func updateMachineService(id string, service *Service) bool {
+	machineMutex.Lock()
+	defer machineMutex.Unlock()
+
 	machine := GetMachine(id)
 	machine.Services[service.No] = service
 	return UpdateMachine(id, machine)
@@ -148,30 +154,37 @@ func doDeploy(machine *Machine, service *Service) error {
 	return err
 }
 
-func doRestart(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Restart", "In Progress", "")
-
-	command := fmt.Sprintf("taskkill /T /F /PID %d", service.ProcessId)
-	output := machine.runCommand(command)
+func doStart(machine *Machine, service *Service) error {
+	updateMachineServiceStatus(machine, service, "Running", "In Progress", "")
 
 	command1 := fmt.Sprintf(`SCHTASKS /Create /SC ONCE /ST "00:00" /TN "%s" /TR "CMD /C START '' 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\%s.bat - 快捷方式.lnk' /K CD /D '%%CD%%'"`, service.Name, service.Name)
 	command2 := fmt.Sprintf(`SCHTASKS /Run /TN "%s"`, service.Name)
 	command3 := fmt.Sprintf(`SCHTASKS /Delete /TN "%s" /F`, service.Name)
-	command = fmt.Sprintf("%s && %s && %s", command1, command2, command3)
-	output = machine.runCommand(command)
+	command := fmt.Sprintf("%s && %s && %s", command1, command2, command3)
+	output := machine.runCommand(command)
 
 	var err error
 	if strings.Contains(output, "成功创建") && strings.Contains(output, "尝试运行") && strings.Contains(output, "被成功删除") {
 		err = nil
-		updateMachineServiceStatus(machine, service, "Restart", "Done", "")
+		updateMachineServiceStatus(machine, service, "Running", "Done", "")
 	} else {
 		err = fmt.Errorf(output)
-		updateMachineServiceStatus(machine, service, "Restart", "Error", output)
+		updateMachineServiceStatus(machine, service, "Running", "Error", output)
 	}
 	return err
 }
 
-func syncProcessIds(machine *Machine) bool {
+func doStop(machine *Machine, service *Service) error {
+	updateMachineServiceStatus(machine, service, "Stopped", "In Progress", "")
+
+	command := fmt.Sprintf("taskkill /T /F /PID %d", service.ProcessId)
+	machine.runCommand(command)
+
+	updateMachineServiceStatus(machine, service, "Stopped", "Done", "")
+	return nil
+}
+
+func (machine *Machine) syncProcessIds() bool {
 	affected := false
 	batNameMap := getBatInfo(machine)
 	for _, service := range machine.Services {
@@ -192,23 +205,29 @@ func syncProcessIds(machine *Machine) bool {
 	return affected
 }
 
-func SyncAndSaveProcessIds(machine *Machine) {
-	affected := syncProcessIds(machine)
+func GetProcessIdSyncedMachine(id string) *Machine {
+	machineMutex.Lock()
+	defer machineMutex.Unlock()
+
+	machine := GetMachine(id)
+	affected := machine.syncProcessIds()
 	if affected {
 		updateMachine(machine.Owner, machine.Name, machine)
 	}
+	return machine
 }
 
-func syncMachine(machine *Machine) {
-	syncProcessIds(machine)
-
+func (machine *Machine) DoActions() {
 	for _, service := range machine.Services {
 		//doPull(machine, service)
 		//doBuild(machine, service)
 		//doDeploy(machine, service)
-		doRestart(machine, service)
+		if service.ExpectedStatus == "Running" && service.Status == "Stopped" {
+			doStart(machine, service)
+		} else if service.ExpectedStatus == "Stopped" && service.Status == "Running" {
+			doStop(machine, service)
+		}
 	}
 
-	syncProcessIds(machine)
-	updateMachine(machine.Owner, machine.Name, machine)
+	machine.syncProcessIds()
 }

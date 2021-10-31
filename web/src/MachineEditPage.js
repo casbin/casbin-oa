@@ -13,11 +13,9 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, DatePicker, Input, Row} from 'antd';
-import {LinkOutlined} from "@ant-design/icons";
+import {Button, Card, Col, Input, Row, Switch} from 'antd';
 import * as MachineBackend from "./backend/MachineBackend";
 import * as Setting from "./Setting";
-import moment from "moment";
 import ServiceTable from "./ServiceTable";
 
 class MachineEditPage extends React.Component {
@@ -27,22 +25,67 @@ class MachineEditPage extends React.Component {
       classes: props,
       machineName: props.match.params.machineName,
       machine: null,
-      tasks: [],
-      resources: [],
     };
+
+    this.timer = null;
   }
 
   componentWillMount() {
-    this.getMachine();
+    this.getMachine(true);
+    this.startTimer();
   }
 
-  getMachine() {
+  componentWillUnmount() {
+    this.stopTimer();
+  }
+
+  getMachine(updateFromRemote = false) {
     MachineBackend.getMachine("admin", this.state.machineName)
       .then((machine) => {
+        if (!updateFromRemote && this.state.machine !== null) {
+          machine.autoQuery = this.state.machine.autoQuery;
+
+          for (let i = 0; i < this.state.machine.services.length; i ++) {
+            if (i >= machine.services.length) {
+              machine.services.push(this.state.machine.services[i]);
+              continue;
+            }
+
+            machine.services[i].no = this.state.machine.services[i].no;
+            machine.services[i].name = this.state.machine.services[i].name;
+            machine.services[i].path = this.state.machine.services[i].path;
+            machine.services[i].port = this.state.machine.services[i].port;
+            machine.services[i].expectedStatus = this.state.machine.services[i].expectedStatus;
+          }
+
+          if (machine.services.length > this.state.machine.services.length) {
+            machine.services = machine.services.slice(0, this.state.machine.services.length);
+          }
+        }
+
         this.setState({
           machine: machine,
         });
       });
+  }
+
+  startTimer() {
+    if (this.timer === null) {
+      this.timer = window.setInterval(this.doTimer.bind(this), 3000);
+    }
+  }
+
+  stopTimer() {
+    if (this.timer !== null) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  doTimer() {
+    if (this.state.machine?.autoQuery) {
+      this.getMachine(false);
+    }
   }
 
   parseMachineField(key, value) {
@@ -122,6 +165,16 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
+            Auto Query:
+          </Col>
+          <Col span={1} >
+            <Switch checked={this.state.machine.autoQuery} onChange={checked => {
+              this.updateMachineField('autoQuery', checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
             Services:
           </Col>
           <Col span={22} >
@@ -146,6 +199,7 @@ class MachineEditPage extends React.Component {
             machineName: this.state.machine.name,
           });
           this.props.history.push(`/machines/${this.state.machine.name}`);
+          this.getMachine(true);
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
           this.updateMachineField('name', this.state.machineName);

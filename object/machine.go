@@ -42,6 +42,7 @@ type Machine struct {
 	Ip          string `xorm:"varchar(100)" json:"ip"`
 	Username    string `xorm:"varchar(100)" json:"username"`
 	Password    string `xorm:"varchar(100)" json:"password"`
+	AutoQuery   bool   `json:"autoQuery"`
 
 	Services []*Service `json:"services"`
 }
@@ -80,12 +81,13 @@ func updateMachine(owner string, name string, machine *Machine) bool {
 		return false
 	}
 
-	affected, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(machine)
+	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(machine)
 	if err != nil {
 		panic(err)
 	}
 
-	return affected != 0
+	//return affected != 0
+	return true
 }
 
 func UpdateMachine(id string, machine *Machine) bool {

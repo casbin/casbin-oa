@@ -21,5 +21,7 @@ func TestSyncMachine(t *testing.T) {
 	InitAdapter()
 
 	machine := getMachine("admin", "test")
-	syncMachine(machine)
+	machine.syncProcessIds()
+	machine.DoActions()
+	updateMachine(machine.Owner, machine.Name, machine)
 }

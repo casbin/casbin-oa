@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Popconfirm, Row, Table} from 'antd';
+import {Button, Col, Popconfirm, Row, Switch, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as MachineBackend from "./backend/MachineBackend";
@@ -49,6 +49,7 @@ class MachineListPage extends React.Component {
       Ip: "127.0.0.1",
       username: "administrator",
       password: "123",
+      autoQuery: false,
       services: [],
     }
   }
@@ -126,6 +127,17 @@ class MachineListPage extends React.Component {
         key: 'username',
         width: '130px',
         sorter: (a, b) => a.username.localeCompare(b.username),
+      },
+      {
+        title: 'Auto Query',
+        dataIndex: 'autoQuery',
+        key: 'autoQuery',
+        width: '100px',
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checked={text} />
+          )
+        }
       },
       {
         title: 'Action',
