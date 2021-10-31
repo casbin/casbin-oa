@@ -38,7 +38,7 @@ func RunCommand(ip string, username string, password string, command string) str
 	defer client.Close()
 
 	out, err := client.Run(command)
-	if err != nil {
+	if out == nil && err != nil {
 		panic(err)
 	}
 
