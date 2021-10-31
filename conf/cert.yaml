@@ -1,0 +1,14 @@
+PropagationTimeout: 5  #Waiting for dns response time, the unit is minutes
+DNSProvider: dnspod #Choose a dns service provider, currently supports dnspod and alidens
+DevMode: true #Development mode switch, the test environment of let's encrypt will be selected
+Path: "./.cert" # The directory where the generated certificates are stored
+Email: "abc@abc.com" #
+AliDNS: #AliDNS provider’s setting, if use RAMMode, RAMRole is required, otherwise you need to fill in AccessKey and SecretKey
+  RAMMode: false #use RAMRold Mode
+  RAMRole: "" 
+  AccessKey: ""
+  SecretKey: ""
+  SecurityToken : "" #Optional
+DNSPOD: #DNSPOD provider’s setting
+  Token: ""
+
