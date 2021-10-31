@@ -73,6 +73,7 @@ class ServiceTable extends React.Component {
         title: 'No.',
         dataIndex: 'no',
         key: 'no',
+        width: '60px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -85,6 +86,7 @@ class ServiceTable extends React.Component {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
+        width: '150px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -97,6 +99,7 @@ class ServiceTable extends React.Component {
         title: 'Path',
         dataIndex: 'path',
         key: 'path',
+        width: '300px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -109,6 +112,7 @@ class ServiceTable extends React.Component {
         title: 'Port',
         dataIndex: 'port',
         key: 'port',
+        width: '100px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -121,6 +125,7 @@ class ServiceTable extends React.Component {
         title: 'Process ID',
         dataIndex: 'processId',
         key: 'processId',
+        width: '100px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {

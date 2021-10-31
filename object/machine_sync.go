@@ -26,7 +26,7 @@ import (
 var reBatNames *regexp.Regexp
 
 func init() {
-	reBatNames = regexp.MustCompile(`run_(.*?)\.bat`)
+	reBatNames = regexp.MustCompile(`\\Desktop\\(.*?)\.bat`)
 }
 
 func getMachineService(id string, service *Service) *Service {
@@ -98,7 +98,7 @@ func getBatInfo(machine *Machine) map[string]int {
 }
 
 func doPull(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Pull", "Running", "")
+	updateMachineServiceStatus(machine, service, "Pull", "In Progress", "")
 
 	command := fmt.Sprintf("cd C:/github_repos/%s && git pull --rebase --autostash", service.Name)
 	output := machine.runCommand(command)
@@ -115,7 +115,7 @@ func doPull(machine *Machine, service *Service) error {
 }
 
 func doBuild(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Build", "Running", "")
+	updateMachineServiceStatus(machine, service, "Build", "In Progress", "")
 
 	command := fmt.Sprintf("cd C:/github_repos/%s/web && yarn build", service.Name)
 	output := machine.runCommand(command)
@@ -132,7 +132,7 @@ func doBuild(machine *Machine, service *Service) error {
 }
 
 func doDeploy(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Deploy", "Running", "")
+	updateMachineServiceStatus(machine, service, "Deploy", "In Progress", "")
 
 	command := fmt.Sprintf("cd C:/github_repos/%s && go test -run TestDeploy ./oss/conf.go ./oss/deploy.go ./oss/deploy_test.go ./oss/oss.go", service.Name)
 	output := machine.runCommand(command)
@@ -149,12 +149,12 @@ func doDeploy(machine *Machine, service *Service) error {
 }
 
 func doRestart(machine *Machine, service *Service) error {
-	updateMachineServiceStatus(machine, service, "Restart", "Running", "")
+	updateMachineServiceStatus(machine, service, "Restart", "In Progress", "")
 
 	command := fmt.Sprintf("taskkill /T /F /PID %d", service.ProcessId)
 	output := machine.runCommand(command)
 
-	command1 := fmt.Sprintf(`SCHTASKS /Create /SC ONCE /ST "00:00" /TN "%s" /TR "CMD /C START '' 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\run_%s.bat - 快捷方式.lnk' /K CD /D '%%CD%%'"`, service.Name, service.Name)
+	command1 := fmt.Sprintf(`SCHTASKS /Create /SC ONCE /ST "00:00" /TN "%s" /TR "CMD /C START '' 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\%s.bat - 快捷方式.lnk' /K CD /D '%%CD%%'"`, service.Name, service.Name)
 	command2 := fmt.Sprintf(`SCHTASKS /Run /TN "%s"`, service.Name)
 	command3 := fmt.Sprintf(`SCHTASKS /Delete /TN "%s" /F`, service.Name)
 	command = fmt.Sprintf("%s && %s && %s", command1, command2, command3)
@@ -171,21 +171,36 @@ func doRestart(machine *Machine, service *Service) error {
 	return err
 }
 
-func syncProcessIds(machine *Machine) {
-
-}
-
-func syncMachine(machine *Machine) {
+func syncProcessIds(machine *Machine) bool {
+	affected := false
 	batNameMap := getBatInfo(machine)
 	for _, service := range machine.Services {
 		if processId, ok := batNameMap[service.Name]; ok {
-			service.Status = "Running"
-			service.ProcessId = processId
+			if service.Status != "Running" || service.ProcessId != processId {
+				affected = true
+				service.Status = "Running"
+				service.ProcessId = processId
+			}
 		} else {
-			service.Status = "Stopped"
-			service.ProcessId = -1
+			if service.Status != "Stopped" || service.ProcessId != processId {
+				affected = true
+				service.Status = "Stopped"
+				service.ProcessId = -1
+			}
 		}
 	}
+	return affected
+}
+
+func SyncAndSaveProcessIds(machine *Machine) {
+	affected := syncProcessIds(machine)
+	if affected {
+		updateMachine(machine.Owner, machine.Name, machine)
+	}
+}
+
+func syncMachine(machine *Machine) {
+	syncProcessIds(machine)
 
 	for _, service := range machine.Services {
 		//doPull(machine, service)
@@ -194,5 +209,6 @@ func syncMachine(machine *Machine) {
 		doRestart(machine, service)
 	}
 
+	syncProcessIds(machine)
 	updateMachine(machine.Owner, machine.Name, machine)
 }

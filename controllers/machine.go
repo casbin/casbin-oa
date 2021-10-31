@@ -30,7 +30,9 @@ func (c *ApiController) GetMachines() {
 func (c *ApiController) GetMachine() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetMachine(id)
+	machine := object.GetMachine(id)
+	object.SyncAndSaveProcessIds(machine)
+	c.Data["json"] = machine
 	c.ServeJSON()
 }
 
