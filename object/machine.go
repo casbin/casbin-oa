@@ -15,6 +15,8 @@
 package object
 
 import (
+	"fmt"
+
 	"github.com/casbin/casbin-oa/util"
 	"xorm.io/core"
 )
@@ -104,4 +106,8 @@ func DeleteMachine(machine *Machine) bool {
 	}
 
 	return affected != 0
+}
+
+func (machine *Machine) getId() string {
+	return fmt.Sprintf("%s/%s", machine.Owner, machine.Name)
 }
