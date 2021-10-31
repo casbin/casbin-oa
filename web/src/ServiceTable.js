@@ -30,7 +30,7 @@ class ServiceTable extends React.Component {
   }
 
   parseField(key, value) {
-    if (["no", "port"].includes(key)) {
+    if (["no", "port", "processId"].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
@@ -44,7 +44,7 @@ class ServiceTable extends React.Component {
   }
 
   addRow(table) {
-    let row = {no: table.length, name: `New Service - ${table.length}`, path: "C:/github_repos/casbin-oa", port: 10000, status: ""};
+    let row = {no: table.length, name: `New Service - ${table.length}`, path: "C:/github_repos/casbin-oa", port: 10000, processId: -1, expectedStatus: "", status: "", subStatus: "", message: ""};
     if (table === undefined) {
       table = [];
     }
@@ -118,6 +118,30 @@ class ServiceTable extends React.Component {
         }
       },
       {
+        title: 'Process ID',
+        dataIndex: 'processId',
+        key: 'processId',
+        render: (text, record, index) => {
+          return (
+            <Input value={text} onChange={e => {
+              this.updateField(table, index, 'processId', e.target.value);
+            }} />
+          )
+        }
+      },
+      {
+        title: 'Expected Status',
+        dataIndex: 'expectedStatus',
+        key: 'expectedStatus',
+        render: (text, record, index) => {
+          return (
+            <Input value={text} onChange={e => {
+              this.updateField(table, index, 'expectedStatus', e.target.value);
+            }} />
+          )
+        }
+      },
+      {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
@@ -125,6 +149,30 @@ class ServiceTable extends React.Component {
           return (
             <Input value={text} onChange={e => {
               this.updateField(table, index, 'status', e.target.value);
+            }} />
+          )
+        }
+      },
+      {
+        title: 'Sub Status',
+        dataIndex: 'subStatus',
+        key: 'subStatus',
+        render: (text, record, index) => {
+          return (
+            <Input value={text} onChange={e => {
+              this.updateField(table, index, 'subStatus', e.target.value);
+            }} />
+          )
+        }
+      },
+      {
+        title: 'Message',
+        dataIndex: 'message',
+        key: 'message',
+        render: (text, record, index) => {
+          return (
+            <Input value={text} onChange={e => {
+              this.updateField(table, index, 'message', e.target.value);
             }} />
           )
         }

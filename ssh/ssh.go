@@ -17,6 +17,7 @@ package ssh
 import (
 	"net"
 
+	"github.com/casbin/casbin-oa/util"
 	"github.com/melbahja/goph"
 	"golang.org/x/crypto/ssh"
 )
@@ -37,11 +38,16 @@ func RunCommand(ip string, username string, password string, command string) str
 	}
 	defer client.Close()
 
-	out, err := client.Run(command)
-	if out == nil && err != nil {
+	output, err := client.Run(command)
+	if output == nil && err != nil {
 		panic(err)
 	}
 
-	res := string(out)
+	gbkOutput, err := util.GbkToUtf8(output)
+	if err != nil {
+		panic(err)
+	}
+
+	res := string(gbkOutput)
 	return res
 }

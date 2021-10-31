@@ -22,11 +22,15 @@ import (
 )
 
 type Service struct {
-	No     int    `json:"no"`
-	Name   string `json:"name"`
-	Path   string `json:"path"`
-	Port   int    `json:"port"`
-	Status string `json:"status"`
+	No             int    `json:"no"`
+	Name           string `json:"name"`
+	Path           string `json:"path"`
+	Port           int    `json:"port"`
+	ProcessId      int    `json:"processId"`
+	ExpectedStatus string `json:"expectedStatus"`
+	Status         string `json:"status"`
+	SubStatus      string `json:"subStatus"`
+	Message        string `json:"message"`
 }
 
 type Machine struct {
@@ -76,13 +80,12 @@ func updateMachine(owner string, name string, machine *Machine) bool {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(machine)
+	affected, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(machine)
 	if err != nil {
 		panic(err)
 	}
 
-	//return affected != 0
-	return true
+	return affected != 0
 }
 
 func UpdateMachine(id string, machine *Machine) bool {
