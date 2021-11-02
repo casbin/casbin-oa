@@ -43,6 +43,7 @@ type Machine struct {
 	Username    string `xorm:"varchar(100)" json:"username"`
 	Password    string `xorm:"varchar(100)" json:"password"`
 	AutoQuery   bool   `json:"autoQuery"`
+	IsPermanent bool   `json:"isPermanent"`
 
 	Services []*Service `json:"services"`
 }
@@ -104,8 +105,26 @@ func AddMachine(machine *Machine) bool {
 	return affected != 0
 }
 
+func AddMachines(machines []*Machine) bool {
+	affected, err := adapter.Engine.Insert(machines)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 func DeleteMachine(machine *Machine) bool {
 	affected, err := adapter.Engine.Id(core.PK{machine.Owner, machine.Name}).Delete(&Machine{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func deleteImpermanentMachines() bool {
+	affected, err := adapter.Engine.Where("is_permanent=?", false).Delete(&Machine{})
 	if err != nil {
 		panic(err)
 	}
