@@ -50,6 +50,7 @@ class MachineListPage extends React.Component {
       username: "administrator",
       password: "123",
       autoQuery: false,
+      isPermanent: true,
       services: [],
     }
   }
@@ -137,6 +138,26 @@ class MachineListPage extends React.Component {
           return (
             <Switch disabled checked={text} />
           )
+        }
+      },
+      {
+        title: 'Is Permanent',
+        dataIndex: 'isPermanent',
+        key: 'isPermanent',
+        width: '110px',
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checked={text} />
+          )
+        }
+      },
+      {
+        title: 'Services',
+        dataIndex: 'services',
+        key: 'services',
+        width: '90px',
+        render: (text, record, index) => {
+          return `${record.services.filter(service => service.status === "Running").length} / ${record.services.length}`;
         }
       },
       {

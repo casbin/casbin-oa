@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package object
+package cloud
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestSyncMachine(t *testing.T) {
-	InitConfig()
-	InitAdapter()
-
-	machine := getMachine("admin", "casbintest")
-	machine.syncProcessIds()
-	machine.DoActions()
-	updateMachine(machine.Owner, machine.Name, machine)
-}
-
-func TestSyncImpermanentMachines(t *testing.T) {
-	InitConfig()
-	InitAdapter()
-
-	syncImpermanentMachines()
+func TestGetInstances(t *testing.T) {
+	instances := GetInstances()
+	fmt.Printf("%v\n", instances)
 }

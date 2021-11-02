@@ -3,6 +3,7 @@ module github.com/casbin/casbin-oa
 go 1.16
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1312
 	github.com/astaxie/beego v1.12.3
 	github.com/casbin/lego/v4 v4.5.3-FIX2
 	github.com/casdoor/casdoor-go-sdk v0.0.12-FIX

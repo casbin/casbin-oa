@@ -12,23 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package object
+package cloud
 
-import "testing"
+var regionId = ""
+var accessKeyId = ""
+var accessKeySecret = ""
 
-func TestSyncMachine(t *testing.T) {
-	InitConfig()
-	InitAdapter()
-
-	machine := getMachine("admin", "casbintest")
-	machine.syncProcessIds()
-	machine.DoActions()
-	updateMachine(machine.Owner, machine.Name, machine)
-}
-
-func TestSyncImpermanentMachines(t *testing.T) {
-	InitConfig()
-	InitAdapter()
-
-	syncImpermanentMachines()
-}
+var vsgId = ""
+var slbId = ""
+var coolDownMinutes = 30
