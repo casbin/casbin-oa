@@ -26,11 +26,6 @@ var (
 	myUser Account
 )
 
-type LetsConf struct {
-	Email   string // Register the email used by letsencrypt
-	DevMode bool   // Whether to enable letsencrypt test mode
-}
-
 type Account struct {
 	Email        string
 	Registration *registration.Resource
@@ -54,15 +49,15 @@ func (a *Account) GetRegistration() *registration.Resource {
 	return a.Registration
 }
 
-//Incoming an email and a Boolean value that controls the opening of the test environment
+//Incoming an email ,a privatekey and a Boolean value that controls the opening of the test environment
 //When this function is started for the first time, it will initialize the account-related configuration,
 //After initializing the configuration, an account will be applied for,
 //and this account will be used during the running of the program
-func CreateAccount(email string, devMode bool) (*lego.Client, error) {
+func CreateAccount(email string, privateKey *ecdsa.PrivateKey, devMode bool) (*lego.Client, error) {
 	// Create a user. New accounts need an email and private key to start.
 	once.Do(func() {
 		// This function will only generate an account config the first time it is run
-		initConfig(email, devMode)
+		initConfig(email, privateKey, devMode)
 	})
 	if myUser.Registration == nil || myUser.Registration.Body.Status == "" {
 		var err error
@@ -78,9 +73,7 @@ func GetClient() *lego.Client {
 	return client
 }
 
-func initConfig(email string, devMode bool) {
-	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-
+func initConfig(email string, privateKey *ecdsa.PrivateKey, devMode bool) {
 	myUser = Account{
 		Email: email,
 		key:   privateKey,
@@ -93,4 +86,10 @@ func initConfig(email string, devMode bool) {
 	}
 	legoConfig.Certificate.KeyType = certcrypto.RSA2048
 	client, _ = lego.NewClient(legoConfig)
+}
+
+//GenerateKey generates a public and private key pair.(NIST P-256)
+func GenerateKey() *ecdsa.PrivateKey {
+	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	return privateKey
 }
