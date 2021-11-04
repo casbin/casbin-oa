@@ -5,6 +5,8 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/x509"
+	"encoding/pem"
 	"sync"
 
 	"github.com/casbin/lego/v4/certcrypto"
@@ -51,15 +53,19 @@ func (a *Account) GetRegistration() *registration.Resource {
 
 //Incoming an email ,a privatekey and a Boolean value that controls the opening of the test environment
 //When this function is started for the first time, it will initialize the account-related configuration,
-//After initializing the configuration, an account will be applied for,
-//and this account will be used during the running of the program
+//After initializing the configuration, It will try to obtain an account based on the private key,
+//if it fails, it will create an account based on the private key.
+//This account will be used during the running of the program
 func CreateAccount(email string, privateKey *ecdsa.PrivateKey, devMode bool) (*lego.Client, error) {
 	// Create a user. New accounts need an email and private key to start.
 	once.Do(func() {
 		// This function will only generate an account config the first time it is run
 		initConfig(email, privateKey, devMode)
 	})
+	//try to obtain an account based on the private key,
+	myUser.Registration, _ = client.Registration.ResolveAccountByKey()
 	if myUser.Registration == nil || myUser.Registration.Body.Status == "" {
+		//Failed to get account, so create an account based on the private key.
 		var err error
 		myUser.Registration, err = client.Registration.Register(registration.RegisterOptions{TermsOfServiceAgreed: true})
 		if err != nil {
@@ -92,4 +98,22 @@ func initConfig(email string, privateKey *ecdsa.PrivateKey, devMode bool) {
 func GenerateKey() *ecdsa.PrivateKey {
 	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	return privateKey
+}
+
+//Return the input private key object as string type private key
+func EncodeEC(privateKey *ecdsa.PrivateKey) (string, error) {
+	x509Encoded, err := x509.MarshalECPrivateKey(privateKey)
+	if err != nil {
+		return "", err
+	}
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: x509Encoded})
+	return string(pemEncoded), nil
+}
+
+//Return the entered private key string as a private key object that can be used
+func DecodeEC(pemEncoded string) (*ecdsa.PrivateKey, error) {
+	block, _ := pem.Decode([]byte(pemEncoded))
+	x509Encoded := block.Bytes
+	privateKey, err := x509.ParseECPrivateKey(x509Encoded)
+	return privateKey, err
 }
