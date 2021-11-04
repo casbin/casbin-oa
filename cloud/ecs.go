@@ -28,9 +28,14 @@ func GetInstances() []ecs.Instance {
 	r.PageSize = requests.NewInteger(100)
 	r.PageNumber = requests.NewInteger(1)
 
-	resp, err := ecsClient.DescribeInstances(r)
-	if err != nil {
-		panic(err)
+	var resp *ecs.DescribeInstancesResponse
+	var err error
+	for i := 0; i < 100; i++ {
+		resp, err = ecsClient.DescribeInstances(r)
+		if err != nil {
+			continue
+		}
+		break
 	}
 
 	instances := resp.Instances.Instance

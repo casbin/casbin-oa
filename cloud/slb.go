@@ -54,8 +54,11 @@ func AddServerToSlb(serverId string, port int) {
 		Type:     "ecs",
 	}})
 
-	_, err := slbClient.AddVServerGroupBackendServers(r)
-	if err != nil {
-		panic(err)
+	for i := 0; i < 100; i++ {
+		_, err := slbClient.AddVServerGroupBackendServers(r)
+		if err != nil {
+			continue
+		}
+		break
 	}
 }

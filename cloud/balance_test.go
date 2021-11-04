@@ -22,6 +22,6 @@ import (
 func TestDoBalance(t *testing.T) {
 	for {
 		doBalance()
-		time.Sleep(5 * time.Second)
+		time.Sleep(30 * time.Second)
 	}
 }

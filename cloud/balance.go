@@ -16,24 +16,17 @@ package cloud
 
 import (
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 )
 
 func getTargetInstanceCount(slbRate int) int {
-	res := 0
-	if slbRate <= 50 {
-		res = 0
-	} else if 50 < slbRate && slbRate <= 85 {
-		res = 2
-	} else if 85 < slbRate && slbRate <= 120 {
-		res = 7
-	} else if 120 < slbRate && slbRate <= 200 {
-		res = 8
-	} else if 200 < slbRate {
-		res = 10
-	} else {
+	res := int(math.Floor(float64(slbRate - 1) / 100.0)) + 1
+
+	res = res - 3
+	if res < 0 {
 		res = 0
 	}
 
