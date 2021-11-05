@@ -26,6 +26,44 @@ func TestSyncMachine(t *testing.T) {
 	updateMachine(machine.Owner, machine.Name, machine)
 }
 
+func TestDeployMachineService(t *testing.T) {
+	InitConfig()
+	InitAdapter()
+
+	machine := getMachine("admin", "casbintest")
+	machine.syncProcessIds()
+	for _, service := range machine.Services {
+		if service.Name != "casbin-oa" {
+			continue
+		}
+
+		err := doStop(machine, service)
+		if err != nil {
+			panic(err)
+		}
+
+		err = doPull(machine, service)
+		if err != nil {
+			panic(err)
+		}
+
+		err = doBuild(machine, service)
+		if err != nil {
+			panic(err)
+		}
+
+		err = doDeploy(machine, service)
+		if err != nil {
+			panic(err)
+		}
+
+		err = doStart(machine, service)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func TestSyncImpermanentMachines(t *testing.T) {
 	InitConfig()
 	InitAdapter()

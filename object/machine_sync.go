@@ -110,7 +110,7 @@ func doPull(machine *Machine, service *Service) error {
 	output := machine.runCommand(command)
 
 	var err error
-	if strings.Contains(output, "Successfully rebased and updated") || strings.Contains(output, "Current branch master is up to date") {
+	if !strings.Contains(output, "Applying autostash resulted in conflicts") && (strings.Contains(output, "Successfully rebased and updated") || strings.Contains(output, "Current branch master is up to date")) {
 		err = nil
 		updateMachineServiceStatus(machine, service, "Pull", "Done", "")
 	} else {
@@ -123,10 +123,21 @@ func doPull(machine *Machine, service *Service) error {
 func doBuild(machine *Machine, service *Service) error {
 	updateMachineServiceStatus(machine, service, "Build", "In Progress", "")
 
-	command := fmt.Sprintf("cd C:/github_repos/%s/web && yarn build", service.Name)
+	command := fmt.Sprintf("cd C:/github_repos/%s/web && yarn install", service.Name)
 	output := machine.runCommand(command)
 
 	var err error
+	if strings.Contains(output, "Done in ") {
+		err = nil
+	} else {
+		err = fmt.Errorf(output)
+		updateMachineServiceStatus(machine, service, "Build", "Error", output)
+		return err
+	}
+
+	command = fmt.Sprintf("cd C:/github_repos/%s/web && yarn build", service.Name)
+	output = machine.runCommand(command)
+
 	if strings.Contains(output, "Done in ") {
 		err = nil
 		updateMachineServiceStatus(machine, service, "Build", "Done", "")
@@ -142,6 +153,21 @@ func doDeploy(machine *Machine, service *Service) error {
 
 	command := fmt.Sprintf("cd C:/github_repos/%s && go test -run TestDeploy ./oss/conf.go ./oss/deploy.go ./oss/deploy_test.go ./oss/oss.go", service.Name)
 	output := machine.runCommand(command)
+
+	if strings.Contains(output, "no required module provides package") {
+	//if strings.Contains(output, "no required module provides package") {
+		command2 := fmt.Sprintf("cd C:/github_repos/%s && go mod tidy", service.Name)
+		output2 := machine.runCommand(command2)
+		println(output2)
+
+		if strings.Contains(output2, "error") {
+			err := fmt.Errorf(output2)
+			updateMachineServiceStatus(machine, service, "Build", "Error", output)
+			return err
+		}
+
+		output = machine.runCommand(command)
+	}
 
 	var err error
 	if strings.HasPrefix(output, "ok") {
