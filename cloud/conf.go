@@ -20,4 +20,4 @@ var accessKeySecret = ""
 
 var vsgId = ""
 var slbId = ""
-var coolDownMinutes = 30
+var coolDownMinutes = 10
