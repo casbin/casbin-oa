@@ -37,7 +37,9 @@ func TestDeployMachineService(t *testing.T) {
 			continue
 		}
 
-		err := doStop(machine, service)
+		var err error
+
+		err = doStop(machine, service)
 		if err != nil {
 			panic(err)
 		}
