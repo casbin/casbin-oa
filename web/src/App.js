@@ -18,6 +18,7 @@ import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
 import {Switch, Route, withRouter} from 'react-router-dom';
+import CustomGithubCorner from "./CustomGithubCorner";
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
 import StudentListPage from "./StudentListPage";
@@ -335,6 +336,7 @@ class App extends Component {
     return (
       <div id="parent-area">
         <BackTop />
+        <CustomGithubCorner />
         <div id="content-wrap">
           {
             this.renderContent()
