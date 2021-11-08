@@ -12,12 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cloud
+package cert
 
-var regionId = ""
+var domains = []string{"*.casbin.com", "casbin.com"}
 var accessKeyId = ""
 var accessKeySecret = ""
-
-var vsgId = ""
-var slbId = ""
-var coolDownMinutes = 10

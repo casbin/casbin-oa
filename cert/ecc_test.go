@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cloud
+package cert
 
-var regionId = ""
-var accessKeyId = ""
-var accessKeySecret = ""
+import (
+	"testing"
 
-var vsgId = ""
-var slbId = ""
-var coolDownMinutes = 10
+	"github.com/casbin/casbin-oa/util"
+)
+
+func TestGenerateEccKey(t *testing.T) {
+	eccKey := generateEccKey()
+	eccKeyStr := encodeEccKey(eccKey)
+	println(eccKeyStr)
+	util.WriteStringToPath(eccKeyStr, "acme_account.key")
+}

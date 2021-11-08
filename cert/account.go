@@ -1,31 +1,27 @@
+// Copyright 2021 The casbin Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package cert
 
 import (
 	"crypto"
 	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/x509"
-	"encoding/pem"
-	"sync"
 
+	"github.com/casbin/lego/v4/acme"
 	"github.com/casbin/lego/v4/certcrypto"
 	"github.com/casbin/lego/v4/lego"
 	"github.com/casbin/lego/v4/registration"
-)
-
-const (
-	// LEDirectoryProduction URL to the Let's Encrypt production.
-	LEDirectoryProduction = "https://acme-v02.api.letsencrypt.org/directory"
-
-	// LEDirectoryStaging URL to the Let's Encrypt staging.
-	LEDirectoryStaging = "https://acme-staging-v02.api.letsencrypt.org/directory"
-)
-
-var (
-	client *lego.Client
-	once   sync.Once
-	myUser Account
 )
 
 type Account struct {
@@ -51,69 +47,58 @@ func (a *Account) GetRegistration() *registration.Resource {
 	return a.Registration
 }
 
-//Incoming an email ,a privatekey and a Boolean value that controls the opening of the test environment
-//When this function is started for the first time, it will initialize the account-related configuration,
-//After initializing the configuration, It will try to obtain an account based on the private key,
-//if it fails, it will create an account based on the private key.
-//This account will be used during the running of the program
-func CreateAccount(email string, privateKey *ecdsa.PrivateKey, devMode bool) (*lego.Client, error) {
-	// Create a user. New accounts need an email and private key to start.
-	once.Do(func() {
-		// This function will only generate an account config the first time it is run
-		initConfig(email, privateKey, devMode)
-	})
-	//try to obtain an account based on the private key,
-	myUser.Registration, _ = client.Registration.ResolveAccountByKey()
-	if myUser.Registration == nil || myUser.Registration.Body.Status == "" {
-		//Failed to get account, so create an account based on the private key.
-		var err error
-		myUser.Registration, err = client.Registration.Register(registration.RegisterOptions{TermsOfServiceAgreed: true})
-		if err != nil {
-			return nil, err
-		}
-	}
-	return client, nil
-}
-
-func GetClient() *lego.Client {
-	return client
-}
-
-func initConfig(email string, privateKey *ecdsa.PrivateKey, devMode bool) {
-	myUser = Account{
+func getLegoClientAndAccount(email string, privateKey *ecdsa.PrivateKey, devMode bool) (*lego.Client, *Account) {
+	account := &Account{
 		Email: email,
 		key:   privateKey,
 	}
-	legoConfig := lego.NewConfig(&myUser)
+
+	config := lego.NewConfig(account)
 	if devMode {
-		legoConfig.CADirURL = LEDirectoryStaging
+		config.CADirURL = lego.LEDirectoryStaging
 	} else {
-		legoConfig.CADirURL = LEDirectoryProduction
+		config.CADirURL = lego.LEDirectoryProduction
 	}
-	legoConfig.Certificate.KeyType = certcrypto.RSA2048
-	client, _ = lego.NewClient(legoConfig)
-}
 
-//GenerateKey generates a public and private key pair.(NIST P-256)
-func GenerateKey() *ecdsa.PrivateKey {
-	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	return privateKey
-}
+	config.Certificate.KeyType = certcrypto.RSA2048
 
-//Return the input private key object as string type private key
-func EncodeEC(privateKey *ecdsa.PrivateKey) (string, error) {
-	x509Encoded, err := x509.MarshalECPrivateKey(privateKey)
+	client, err := lego.NewClient(config)
 	if err != nil {
-		return "", err
+		panic(err)
 	}
-	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: x509Encoded})
-	return string(pemEncoded), nil
+
+	return client, account
 }
 
-//Return the entered private key string as a private key object that can be used
-func DecodeEC(pemEncoded string) (*ecdsa.PrivateKey, error) {
-	block, _ := pem.Decode([]byte(pemEncoded))
-	x509Encoded := block.Bytes
-	privateKey, err := x509.ParseECPrivateKey(x509Encoded)
-	return privateKey, err
+// getRegisteredLegoClient Incoming an email ,a privatekey and a Boolean value that controls the opening of the test environment
+// When this function is started for the first time, it will initialize the account-related configuration,
+// After initializing the configuration, It will try to obtain an account based on the private key,
+// if it fails, it will create an account based on the private key.
+// This account will be used during the running of the program
+func getRegisteredLegoClient(email string, privateKey *ecdsa.PrivateKey, devMode bool) *lego.Client {
+	// Create a user. New accounts need an email and private key to start.
+	client, account := getLegoClientAndAccount(email, privateKey, devMode)
+
+	// try to obtain an account based on the private key
+	var err error
+	account.Registration, err = client.Registration.ResolveAccountByKey()
+	if err != nil {
+		acmeError, ok := err.(*acme.ProblemDetails)
+		if !ok {
+			panic(err)
+		}
+
+		if acmeError.Type != "urn:ietf:params:acme:error:accountDoesNotExist" {
+			panic(acmeError)
+		}
+
+		// Failed to get account, so create an account based on the private key.
+		var err error
+		account.Registration, err = client.Registration.Register(registration.RegisterOptions{TermsOfServiceAgreed: true})
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return client
 }

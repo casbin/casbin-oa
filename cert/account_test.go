@@ -12,12 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cloud
+package cert
 
-var regionId = ""
-var accessKeyId = ""
-var accessKeySecret = ""
+import (
+	"testing"
 
-var vsgId = ""
-var slbId = ""
-var coolDownMinutes = 10
+	"github.com/casbin/casbin-oa/util"
+)
+
+func TestGetClient(t *testing.T) {
+	eccKeyStr := util.ReadStringFromPath("acme_account.key")
+	println(eccKeyStr)
+
+	eccKey := decodeEccKey(eccKeyStr)
+	client := getRegisteredLegoClient("acme@casbin.org", eccKey, false)
+	pem, key := getOurCert(client)
+	println(pem)
+	println()
+	println(key)
+}

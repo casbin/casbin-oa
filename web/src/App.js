@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import React, {Component} from 'react';
-import './App.css';
+import './App.less';
 import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
 import {Switch, Route, withRouter} from 'react-router-dom';
+import CustomGithubCorner from "./CustomGithubCorner";
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
 import StudentListPage from "./StudentListPage";
@@ -108,9 +109,9 @@ class App extends Component {
   }
 
   handleRightDropdownClick(e) {
-    if (e.key === '0') {
+    if (e.key === '/account') {
       Setting.openLink(Setting.getMyProfileUrl(this.state.account));
-    } else if (e.key === '1') {
+    } else if (e.key === '/logout') {
       this.signout();
     }
   }
@@ -146,14 +147,16 @@ class App extends Component {
     );
 
     return (
-      <Dropdown key="200" overlay={menu} >
-        <a className="ant-dropdown-link" href="#" style={{float: 'right'}}>
+      <Dropdown key="/rightDropDown" overlay={menu} className="rightDropDown">
+        <a className="ant-dropdown-link" style={{float: 'right', cursor: 'pointer'}}>
+          &nbsp;
+          &nbsp;
           {
             this.renderAvatar()
           }
           &nbsp;
           &nbsp;
-          {Setting.isMobile() ? null : Setting.getShortName(this.state.account.name)} &nbsp; <DownOutlined />
+          {Setting.isMobile() ? null : Setting.getShortName(this.state.account.displayName)} &nbsp; <DownOutlined />
           &nbsp;
           &nbsp;
           &nbsp;
@@ -333,6 +336,7 @@ class App extends Component {
     return (
       <div id="parent-area">
         <BackTop />
+        <CustomGithubCorner />
         <div id="content-wrap">
           {
             this.renderContent()

@@ -12,12 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cloud
+import React from "react";
+import * as Conf from "./Conf";
+import GithubCorner from "react-github-corner";
 
-var regionId = ""
-var accessKeyId = ""
-var accessKeySecret = ""
+class CustomGithubCorner extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
 
-var vsgId = ""
-var slbId = ""
-var coolDownMinutes = 10
+  render() {
+    if (!Conf.ShowGithubCorner) {
+      return null;
+    }
+
+    return (
+      <GithubCorner href={Conf.GithubRepo} size={60} />
+    );
+  }
+}
+
+export default CustomGithubCorner;
