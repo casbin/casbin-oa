@@ -22,6 +22,7 @@ import (
 	"github.com/casbin/lego/v4/cmd"
 	"github.com/casbin/lego/v4/lego"
 	"github.com/casbin/lego/v4/providers/dns/alidns"
+	"github.com/casbin/lego/v4/providers/dns/godaddy"
 )
 
 type AliConf struct {
