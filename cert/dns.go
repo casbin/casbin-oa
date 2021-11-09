@@ -22,6 +22,7 @@ import (
 	"github.com/casbin/lego/v4/cmd"
 	"github.com/casbin/lego/v4/lego"
 	"github.com/casbin/lego/v4/providers/dns/alidns"
+	"github.com/casbin/lego/v4/providers/dns/godaddy"
 )
 
 type AliConf struct {
@@ -34,9 +35,17 @@ type AliConf struct {
 	Timeout       int    // Maximum waiting time for certificate application, in minutes
 }
 
+type GodaddyConf struct {
+	Domains   []string // The domain names for which you want to apply for a certificate
+	APIKey    string   // GoDaddy account's API Key
+	APISecret string
+	Path      string // The path to store cert file
+	Timeout   int    // Maximum waiting time for certificate application, in minutes
+}
+
 // getCert Verify domain ownership, then obtain a certificate, and finally store it locally.
 // Need to pass in an AliConf struct, some parameters are required, other parameters can be left blank
-func getCert(client *lego.Client, conf AliConf) (string, string) {
+func getAliCert(client *lego.Client, conf AliConf) (string, string) {
 	// Set the parameters required to apply for a certificate.
 	if conf.Timeout <= 0 {
 		conf.Timeout = 3
@@ -74,6 +83,35 @@ func getCert(client *lego.Client, conf AliConf) (string, string) {
 	return string(cert.Certificate), string(cert.PrivateKey)
 }
 
+func getGoCert(client *lego.Client, conf GodaddyConf) (string, string, error) {
+	//Get account client to apply for a certificate.
+	if conf.Timeout <= 0 {
+		conf.Timeout = 3
+	}
+	config := godaddy.NewDefaultConfig()
+	config.PropagationTimeout = time.Duration(conf.Timeout) * time.Minute
+	config.APIKey = conf.APIKey
+	config.APISecret = conf.APISecret
+	dnsProvider, err := godaddy.NewDNSProvider(config)
+	if err != nil {
+		panic(err)
+	}
+	//Choose a local DNS service provider to increase the authentication speed
+	servers := []string{"223.5.5.5:53"}
+	client.Challenge.SetDNS01Provider(dnsProvider,
+		dns01.CondOption(len(servers) > 0, dns01.AddRecursiveNameservers(dns01.ParseNameservers(servers))))
+	//Obtain the certificate
+	request := certificate.ObtainRequest{
+		Domains: conf.Domains,
+		Bundle:  true,
+	}
+	certificates, err := client.Certificate.Obtain(request)
+	if err != nil {
+		panic(err)
+	}
+	return string(certificates.Certificate), string(certificates.PrivateKey), nil
+}
+
 func getOurCert(client *lego.Client) (string, string) {
 	conf := AliConf{
 		Domains:       domains,
@@ -84,7 +122,7 @@ func getOurCert(client *lego.Client) (string, string) {
 		Path:          "",
 		Timeout:       3,
 	}
-	return getCert(client, conf)
+	return getAliCert(client, conf)
 }
 
 func SaveCert(path, filename string, cert *certificate.Resource) {
