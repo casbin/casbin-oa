@@ -151,11 +151,10 @@ func doBuild(machine *Machine, service *Service) error {
 func doDeploy(machine *Machine, service *Service) error {
 	updateMachineServiceStatus(machine, service, "Deploy", "In Progress", "")
 
-	command := fmt.Sprintf("cd C:/github_repos/%s && go test -run TestDeploy ./oss/conf.go ./oss/deploy.go ./oss/deploy_test.go ./oss/oss.go", service.Name)
+	command := fmt.Sprintf("cd C:/github_repos/%s/oss && go test", service.Name)
 	output := machine.runCommand(command)
 
 	if strings.Contains(output, "no required module provides package") {
-	//if strings.Contains(output, "no required module provides package") {
 		command2 := fmt.Sprintf("cd C:/github_repos/%s && go mod tidy", service.Name)
 		output2 := machine.runCommand(command2)
 		println(output2)
@@ -170,7 +169,7 @@ func doDeploy(machine *Machine, service *Service) error {
 	}
 
 	var err error
-	if strings.HasPrefix(output, "ok") {
+	if strings.Contains(output, "PASS") && strings.Contains(output, "ok") {
 		err = nil
 		updateMachineServiceStatus(machine, service, "Deploy", "Done", "")
 	} else {
