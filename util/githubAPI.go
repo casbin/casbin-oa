@@ -28,7 +28,6 @@ import (
 
 func GetClient() *github.Client {
 	accessToken := beego.AppConfig.String("githubAccessToken")
-	proxy.InitHttpClient()
 	if len(accessToken) == 0 {
 		return github.NewClient(proxy.ProxyHttpClient)
 	} else {

@@ -19,12 +19,14 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
 	"github.com/casbin/casbin-oa/object"
+	"github.com/casbin/casbin-oa/proxy"
 	"github.com/casbin/casbin-oa/routers"
 	_ "github.com/casbin/casbin-oa/routers"
 )
 
 func main() {
 	object.InitAdapter()
+	proxy.InitHttpClient()
 	object.RegularUpdate()
 	object.RegularRedeliver()
 	object.RedeliverAllOrgWebhook()
