@@ -21,14 +21,16 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
+	"github.com/casbin/casbin-oa/proxy"
 	"github.com/google/go-github/v38/github"
 	"golang.org/x/oauth2"
 )
 
 func GetClient() *github.Client {
 	accessToken := beego.AppConfig.String("githubAccessToken")
+	proxy.InitHttpClient()
 	if len(accessToken) == 0 {
-		return github.NewClient(nil)
+		return github.NewClient(proxy.ProxyHttpClient)
 	} else {
 		return github.NewClient(GetHttpClient())
 	}
@@ -39,7 +41,8 @@ func GetHttpClient() *http.Client {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: accessToken},
 	)
-	return oauth2.NewClient(context.Background(), ts)
+	c := context.WithValue(context.Background(), oauth2.HTTPClient, proxy.ProxyHttpClient)
+	return oauth2.NewClient(c, ts)
 }
 
 func SetIssueLabel(owner string, repo string, number int, label string) bool {
