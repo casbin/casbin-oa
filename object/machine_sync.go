@@ -210,6 +210,10 @@ func doStop(machine *Machine, service *Service) error {
 }
 
 func (machine *Machine) syncProcessIds() bool {
+	if machine.Ip == "127.0.0.1" {
+		return false
+	}
+
 	affected := false
 	batNameMap := getBatInfo(machine)
 	for _, service := range machine.Services {
