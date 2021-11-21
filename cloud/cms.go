@@ -54,6 +54,10 @@ func GetSlbPacketRate() int {
 		panic(err)
 	}
 
+	if len(datapoints) <= 0 {
+		return -1
+	}
+
 	res := int(datapoints[0].Average)
 	fmt.Printf("SLB packet rate = %d\n", res)
 
