@@ -108,6 +108,7 @@ func doPull(machine *Machine, service *Service) error {
 
 	command := fmt.Sprintf("cd C:/github_repos/%s && git pull --rebase --autostash", service.Name)
 	output := machine.runCommand(command)
+	fmt.Println(output)
 
 	var err error
 	if !strings.Contains(output, "Applying autostash resulted in conflicts") && (strings.Contains(output, "Successfully rebased and updated") || strings.Contains(output, "Current branch master is up to date")) {
@@ -125,6 +126,7 @@ func doBuild(machine *Machine, service *Service) error {
 
 	command := fmt.Sprintf("cd C:/github_repos/%s/web && yarn install", service.Name)
 	output := machine.runCommand(command)
+	fmt.Println(output)
 
 	var err error
 	if strings.Contains(output, "Done in ") {
@@ -153,6 +155,7 @@ func doDeploy(machine *Machine, service *Service) error {
 
 	command := fmt.Sprintf("cd C:/github_repos/%s/oss && go test", service.Name)
 	output := machine.runCommand(command)
+	fmt.Println(output)
 
 	if strings.Contains(output, "no required module provides package") {
 		command2 := fmt.Sprintf("cd C:/github_repos/%s && go mod tidy", service.Name)
@@ -187,6 +190,7 @@ func doStart(machine *Machine, service *Service) error {
 	command3 := fmt.Sprintf(`SCHTASKS /Delete /TN "%s" /F`, service.Name)
 	command := fmt.Sprintf("%s && %s && %s", command1, command2, command3)
 	output := machine.runCommand(command)
+	fmt.Println(output)
 
 	var err error
 	if strings.Contains(output, "成功创建") && strings.Contains(output, "尝试运行") && strings.Contains(output, "被成功删除") {
@@ -203,7 +207,8 @@ func doStop(machine *Machine, service *Service) error {
 	updateMachineServiceStatus(machine, service, "Stopped", "In Progress", "")
 
 	command := fmt.Sprintf("taskkill /T /F /PID %d", service.ProcessId)
-	machine.runCommand(command)
+	output := machine.runCommand(command)
+	fmt.Println(output)
 
 	updateMachineServiceStatus(machine, service, "Stopped", "Done", "")
 	return nil
