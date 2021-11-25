@@ -54,6 +54,20 @@ class App extends Component {
   componentWillMount() {
     this.updateMenuKey();
     this.getAccount();
+    this.handleCasnodeEmbeddedPlugin();
+  }
+
+  handleCasnodeEmbeddedPlugin() {
+    window.addEventListener("message", event => {
+      const data = event.data;
+      if (data.tag !== "casnode") {
+        return;
+      }
+
+      if (data.action === "login") {
+        window.location.href = Setting.getSigninUrl();
+      }
+    });
   }
 
   updateMenuKey() {
