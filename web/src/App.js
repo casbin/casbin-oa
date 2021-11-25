@@ -323,6 +323,7 @@ class App extends Component {
 
     return (
       <iframe
+        key={accessToken}
         style={{
           width: "100%",
           height: 500,
