@@ -43,11 +43,24 @@ func GetWebhookDelivers(org string, webhook int64) []*github.HookDelivery {
 	organizations := client.Organizations
 
 	option := github.ListCursorOptions{PerPage: 100}
-	deliveries, response, err := organizations.ListHookDeliveries(context.Background(), org, webhook, &option)
 
-	if err != nil {
-		panic(err)
+	var deliveries []*github.HookDelivery
+	var response *github.Response
+	var err error
+	times := 0
+	for {
+		deliveries, response, err = organizations.ListHookDeliveries(context.Background(), org, webhook, &option)
+		if err != nil {
+			times += 1
+			fmt.Printf("GetWebhookDelivers() error: %s, org = %s, times = %d\n", err.Error(), org, times)
+			if times >= 5 {
+				panic(err)
+			}
+		} else {
+			break
+		}
 	}
+
 	if response.StatusCode == 404 {
 		return nil
 	}
