@@ -94,7 +94,11 @@ func Comment(commentStr string, org string, repo string, number int) bool {
 	issues := client.Issues
 
 	comment := github.IssueComment{Body: &commentStr}
-	_, response, _ := issues.CreateComment(context.Background(), org, repo, number, &comment)
+	_, response, err := issues.CreateComment(context.Background(), org, repo, number, &comment)
+	if err != nil {
+		panic(err)
+	}
+
 	return response.StatusCode == 201
 }
 
