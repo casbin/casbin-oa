@@ -9,7 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "antd": "4.15.5",
-    "casdoor-js-sdk": "^0.0.2",
+    "casdoor-js-sdk": "^0.0.3",
     "codemirror": "^5.57.0",
     "craco-less": "^1.20.0",
     "moment": "^2.27.0",
