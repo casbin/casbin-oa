@@ -30,6 +30,7 @@ type Program struct {
 	EndDate   string `xorm:"varchar(100)" json:"endDate"`
 	Provider2 string `xorm:"varchar(100)" json:"provider2"`
 	CanApply  bool   `json:"canApply"`
+	Type      string `xorm:"varchar(100)" json:"type"`
 }
 
 func GetPrograms(owner string) []*Program {

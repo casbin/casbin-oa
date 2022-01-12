@@ -30,6 +30,10 @@ func getDateFromString(date string) time.Time {
 	return res
 }
 
+func getAddedDate(t time.Time, i int) string {
+	return t.AddDate(0, 0, i).Format("2006-01-02")
+}
+
 func TestAddRounds(t *testing.T) {
 	InitConfig()
 	InitAdapter()
@@ -45,11 +49,57 @@ func TestAddRounds(t *testing.T) {
 			CreatedTime: fmt.Sprintf("%sT00:00:%02d+08:00", date, i),
 			Title:       fmt.Sprintf("Week %d", i),
 			Program:     "gsoc2021",
-			StartDate:   startDate.AddDate(0, 0, 7*i).Format("2006-01-02"),
-			EndDate:     startDate.AddDate(0, 0, 7*(i+1)).Format("2006-01-02"),
+			StartDate:   getAddedDate(startDate, 7*i),
+			EndDate:     getAddedDate(startDate, 7*(i+1)),
 		}
 
 		AddRound(round)
 		fmt.Printf("%v\n", round)
+	}
+}
+
+func TestAddRounds2(t *testing.T) {
+	InitConfig()
+	InitAdapter()
+
+	startDate := getDateFromString("2022-01-13")
+
+	for i := 0; i < 20; i++ {
+		newDate := getAddedDate(startDate, i)
+		round := &Round{
+			Owner:       "admin",
+			Name:        fmt.Sprintf("%s-%s", ProgramName, newDate),
+			CreatedTime: fmt.Sprintf("%sT00:00:00+08:00", newDate),
+			Title:       newDate,
+			Program:     ProgramName,
+			StartDate:   getAddedDate(startDate, i),
+			EndDate:     getAddedDate(startDate, i+1),
+		}
+
+		AddRound(round)
+		fmt.Printf("%v\n", round)
+	}
+}
+
+func TestAddStudents(t *testing.T) {
+	InitConfig()
+	InitAdapter()
+
+	startDate := getDateFromString("2022-01-13")
+
+	for i := 0; i < 24; i++ {
+		for j := 0; j < 60; j++ {
+			student := &Student{
+				Owner:           "admin",
+				Name:            fmt.Sprintf("%02d-%02d", i, j),
+				Program:         ProgramName,
+				CreatedTime:     fmt.Sprintf("%sT00:00:00+08:00", startDate),
+				OrgRepositories: []*OrgRepositories{},
+				Mentor:          "",
+			}
+
+			AddStudent(student)
+			fmt.Printf("%v\n", student)
+		}
 	}
 }

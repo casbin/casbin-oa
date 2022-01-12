@@ -54,6 +54,10 @@ class RankingPage extends React.Component {
     return this.state.program.provider2;
   }
 
+  isWeekProgram() {
+    return this.state.program.type === "Week";
+  }
+
   getColumns() {
     let columns = [
       {
@@ -62,6 +66,10 @@ class RankingPage extends React.Component {
         key: 'name',
         width: '60px',
         render: (text, record, index) => {
+          if (!this.isWeekProgram()) {
+            return text.replace("-", ":");
+          }
+
           if (record.displayName === undefined) {
             return `User: ${record.name} not found`;
           }
@@ -149,6 +157,10 @@ class RankingPage extends React.Component {
         }
       };
       columns = Setting.insertRow(columns, 2, column);
+    }
+
+    if (!this.isWeekProgram()) {
+      columns = [columns[0]];
     }
 
     columns = columns.concat(this.state.roundColumns);
@@ -287,6 +299,27 @@ class RankingPage extends React.Component {
                 return null;
               }
 
+              if (!this.isWeekProgram()) {
+                if (report.text === "") {
+                  return "";
+                }
+
+                const topicInfos = JSON.parse(report.text);
+                if (topicInfos.length === 0) {
+                  return "";
+                }
+
+                return topicInfos.map(topicInfo => {
+                  return (
+                    <a onClick={() => this.openReport.bind(this)(round, report, student)}>
+                      <Tag style={{cursor: "pointer"}} icon={<CheckCircleOutlined />} color="default">
+                        {`${topicInfo.member}: ${topicInfo.title}`}
+                      </Tag>
+                    </a>
+                  )
+                });
+              }
+
               if (this.isReportEmptyAndFromOthers(report)) {
                 return this.getTag(report);
               } else {
@@ -340,9 +373,11 @@ class RankingPage extends React.Component {
         student.score += report.score >= 0 ? report.score : 0;
       });
 
-      students.sort(function(a, b) {
-        return b.score - a.score;
-      });
+      if (program.type === "Week") {
+        students.sort(function(a, b) {
+          return b.score - a.score;
+        });
+      }
 
       this.setState({
         students: students,
@@ -467,7 +502,7 @@ class RankingPage extends React.Component {
 
     return (
       <div>
-        <Table columns={this.getColumns()} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table columns={this.getColumns()} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: this.isWeekProgram() ? 100 : 10000}}
                title={() => (
                  <div>
                    <a target="_blank" href={this.state.program.url}>

@@ -51,6 +51,7 @@ class ProgramListPage extends React.Component {
       endDate: "2020-01-23",
       canApply: false,
       provider2: "",
+      type: "Week",
     }
   }
 
