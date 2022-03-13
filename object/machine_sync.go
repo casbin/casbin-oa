@@ -111,7 +111,7 @@ func doPull(machine *Machine, service *Service) error {
 	fmt.Println(output)
 
 	var err error
-	if !strings.Contains(output, "Applying autostash resulted in conflicts") && (strings.Contains(output, "Successfully rebased and updated") || strings.Contains(output, "Current branch master is up to date")) {
+	if !strings.Contains(output, "Applying autostash resulted in conflicts") && (strings.Contains(output, "Successfully rebased and updated") || strings.Contains(output, "Current branch master is up to date") || strings.Contains(output, "Already up to date") || strings.Contains(output, "Applied autostash")) {
 		err = nil
 		updateMachineServiceStatus(machine, service, "Pull", "Done", "")
 	} else {
