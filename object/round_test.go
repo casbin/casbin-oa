@@ -38,17 +38,18 @@ func TestAddRounds(t *testing.T) {
 	InitConfig()
 	InitAdapter()
 
-	startDate := getDateFromString("2021-06-08")
+	startDate := getDateFromString("2021-09-27")
 
 	now := time.Now()
 	date := now.Format("2006-01-02")
-	for i := 0; i < 10; i++ {
+	date = "2021-09-24"
+	for i := 29; i < 35; i++ {
 		round := &Round{
 			Owner:       "admin",
-			Name:        fmt.Sprintf("gsoc-2021-week-%d", i),
+			Name:        fmt.Sprintf("talent2022-week-%d", i),
 			CreatedTime: fmt.Sprintf("%sT00:00:%02d+08:00", date, i),
-			Title:       fmt.Sprintf("Week %d", i),
-			Program:     "gsoc2021",
+			Title:       fmt.Sprintf("第%d周", i),
+			Program:     "talent2022",
 			StartDate:   getAddedDate(startDate, 7*i),
 			EndDate:     getAddedDate(startDate, 7*(i+1)),
 		}
@@ -78,28 +79,5 @@ func TestAddRounds2(t *testing.T) {
 
 		AddRound(round)
 		fmt.Printf("%v\n", round)
-	}
-}
-
-func TestAddStudents(t *testing.T) {
-	InitConfig()
-	InitAdapter()
-
-	startDate := getDateFromString("2022-01-13")
-
-	for i := 0; i < 24; i++ {
-		for j := 0; j < 60; j++ {
-			student := &Student{
-				Owner:           "admin",
-				Name:            fmt.Sprintf("%02d-%02d", i, j),
-				Program:         ProgramName,
-				CreatedTime:     fmt.Sprintf("%sT00:00:00+08:00", startDate),
-				OrgRepositories: []*OrgRepositories{},
-				Mentor:          "",
-			}
-
-			AddStudent(student)
-			fmt.Printf("%v\n", student)
-		}
 	}
 }
