@@ -139,7 +139,7 @@ class ReportListPage extends React.Component {
         sorter: (a, b) => a.student.localeCompare(b.student),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
+            <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },

@@ -13,16 +13,16 @@
 // limitations under the License.
 
 import React from 'react'
-import {Button, Card, AutoComplete, Col, Input, Row, Select, Tooltip} from "antd";
+import {Button, Card, AutoComplete, Col, Input, Row, Select} from "antd";
 import * as Setting from "./Setting";
 import * as issueBackend from "./backend/issueBackend";
-import {CloseCircleTwoTone, CheckCircleTwoTone, LoadingOutlined} from '@ant-design/icons'
+import {CloseCircleTwoTone, CheckCircleTwoTone} from '@ant-design/icons'
 import * as ReportBackend from "./backend/ReportBackend"
 import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
 import * as StudentBackend from "./backend/StudentBackend";
 
-const {Option} = Select
+const {Option} = Select;
 
 class IssueEditPage extends React.Component {
   constructor(props) {
@@ -164,7 +164,7 @@ class IssueEditPage extends React.Component {
       this.setState({
         getOrg: false,
       })
-      Setting.showMessage("warn", "No Organization");
+      Setting.showMessage("warning", "No Organization");
       return;
     }
     this.setState({
@@ -242,23 +242,23 @@ class IssueEditPage extends React.Component {
 
   renderIssue() {
     let orgOptions = [];
-    this.state.organizations.map((item) => {
+    this.state.organizations.forEach((item) => {
       orgOptions.push({value: item});
     })
 
     let repoOptions = [];
     repoOptions.push(<Option value={'All'} key={'ALl'}>All</Option>)
-    this.state.repositories.map((item, index) => {
-      repoOptions.push(<Option value={item} key={index}>{item}</Option>)
+    this.state.repositories.forEach((item, index) => {
+      repoOptions.push(<Option value={item} key={index}>{item}</Option>);
     })
 
     let assignees = [];
-    this.state.assignees.map((item) => {
-      assignees.push({value: item})
+    this.state.assignees.forEach((item) => {
+      assignees.push({value: item});
     })
 
     let atPeople = [];
-    this.state.students.map((student) => {
+    this.state.students.forEach((student) => {
       let githubUsername
       if (student.properties === undefined && student.github === undefined)
         githubUsername = ""
@@ -270,12 +270,12 @@ class IssueEditPage extends React.Component {
                               key={githubUsername}>{student.displayName} ({githubUsername})</Option>)
       }
     })
-    this.state.mentorsGithub.map((item) => {
+    this.state.mentorsGithub.forEach((item) => {
       atPeople.push(<Option value={item} key={item}>(mentor) {item}</Option>)
     })
 
     let projectColumns = [];
-    this.state.projectColumns.map(item => {
+    this.state.projectColumns.forEach(item => {
       projectColumns.push(<Option value={item.id} key={item.id}>{item.name}</Option>);
     })
 
@@ -355,7 +355,7 @@ class IssueEditPage extends React.Component {
             />
           </Col>
           <Col span={1} style={{marginLeft: '10px'}}>
-            <img style={{marginRight: '5px'}} width={30} height={30} src={this.state.assigneeAvatar}/>
+            <img style={{marginRight: '5px'}} width={30} height={30} alt={this.state.issue.assignee} src={this.state.assigneeAvatar}/>
             {
               this.state.assigneeAvatar === "" ?
                 (<CloseCircleTwoTone twoToneColor="#ff0000"/>) :

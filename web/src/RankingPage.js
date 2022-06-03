@@ -75,7 +75,7 @@ class RankingPage extends React.Component {
           }
 
           return (
-            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{record.displayName}</a>
+            <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{record.displayName}</a>
           )
         }
       },
@@ -100,7 +100,7 @@ class RankingPage extends React.Component {
           return (
             <div>
               <img style={{marginRight: '5px'}} width={30} height={30} src={avatarUrl} alt={username} />
-              <a target="_blank" href={`https://github.com/${username}`}>{username}</a>
+              <a target="_blank" rel="noreferrer" href={`https://github.com/${username}`}>{username}</a>
             </div>
           )
         }
@@ -112,7 +112,7 @@ class RankingPage extends React.Component {
         width: '80px',
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
+            <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },
@@ -311,11 +311,11 @@ class RankingPage extends React.Component {
 
                 return topicInfos.map(topicInfo => {
                   return (
-                    <a onClick={() => this.openReport.bind(this)(round, report, student)}>
+                    <div onClick={() => this.openReport.bind(this)(round, report, student)}>
                       <Tag style={{cursor: "pointer"}} icon={<CheckCircleOutlined />} color="default">
                         {`${topicInfo.member}: ${topicInfo.title}`}
                       </Tag>
-                    </a>
+                    </div>
                   )
                 });
               }
@@ -325,11 +325,11 @@ class RankingPage extends React.Component {
               } else {
                 return (
                   <Tooltip title={this.getReportTooltip(report)}>
-                    <a onClick={() => this.openReport.bind(this)(round, report, student)}>
+                    <div onClick={() => this.openReport.bind(this)(round, report, student)}>
                       {
                         this.getTag(report)
                       }
-                    </a>
+                    </div>
                   </Tooltip>
                 )
               }
@@ -505,7 +505,7 @@ class RankingPage extends React.Component {
         <Table columns={this.getColumns()} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: this.isWeekProgram() ? 100 : 10000}}
                title={() => (
                  <div>
-                   <a target="_blank" href={this.state.program.url}>
+                   <a target="_blank" rel="noreferrer" href={this.state.program.url}>
                      {`"${this.state.program.title}"`}
                    </a> Ranking&nbsp;&nbsp;&nbsp;&nbsp;
                    {
@@ -648,14 +648,14 @@ class RankingPage extends React.Component {
     ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, githubUsername, this.state.curRound).then(res =>{
       this.setState({loading: false});
       if (res !== ""){
-        this.state.report.text = res;
         let report = Setting.deepCopy(this.state.report);
+        report.text = res;
         Setting.showMessage("success","Successfully saved");
         this.setState({
-          report: report
-        })
+          report: report,
+        });
       }else{
-        Setting.showMessage("warn", "Get Empty");
+        Setting.showMessage("warning", "Get Empty");
       }
     }).catch(err=>{
       this.setState({loading: false})

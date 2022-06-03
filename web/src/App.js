@@ -17,7 +17,7 @@ import './App.less';
 import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
-import {Switch, Route, withRouter} from 'react-router-dom';
+import {Switch, Route, withRouter, Link} from 'react-router-dom';
 import CustomGithubCorner from "./CustomGithubCorner";
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
@@ -162,7 +162,7 @@ class App extends Component {
 
     return (
       <Dropdown key="/rightDropDown" overlay={menu} className="rightDropDown">
-        <a className="ant-dropdown-link" style={{float: 'right', cursor: 'pointer'}}>
+        <div className="ant-dropdown-link" style={{float: 'right', cursor: 'pointer'}}>
           &nbsp;
           &nbsp;
           {
@@ -174,7 +174,7 @@ class App extends Component {
           &nbsp;
           &nbsp;
           &nbsp;
-        </a>
+        </div>
       </Dropdown>
     )
   }
@@ -264,7 +264,11 @@ class App extends Component {
       <div>
         <Header style={{ padding: '0', marginBottom: '3px'}}>
           {
-            Setting.isMobile() ? null : <a className="logo" href={"/"} />
+            Setting.isMobile() ? null : (
+              <Link to={"/"}>
+                <div className="logo" />
+              </Link>
+            )
           }
           <Menu
             // theme="dark"
@@ -313,7 +317,7 @@ class App extends Component {
           textAlign: 'center',
         }
       }>
-        Made with <span style={{color: 'rgb(255, 255, 255)'}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" href="https://casbin.org">Casbin</a>
+        Made with <span style={{color: 'rgb(255, 255, 255)'}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://casbin.org">Casbin</a>
       </Footer>
     )
   }
@@ -337,6 +341,7 @@ class App extends Component {
 
     return (
       <iframe
+        title={"Casnode"}
         key={accessToken}
         style={{
           width: "100%",

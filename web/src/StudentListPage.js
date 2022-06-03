@@ -89,7 +89,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
+            <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },
@@ -124,8 +124,8 @@ class StudentListPage extends React.Component {
         render: (text, record, index) => {
           let repositories = ''
           if (text !== null && text !== undefined){
-            text.map(item => {
-              repositories += item.organization+'[' +item.repositories+']\n'
+            text.forEach(item => {
+              repositories += item.organization+'[' +item.repositories+']\n';
             })
             return repositories
           }
@@ -141,7 +141,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.mentor.localeCompare(b.mentor),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
+            <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
           )
         }
       },

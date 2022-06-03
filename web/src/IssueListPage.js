@@ -100,7 +100,7 @@ class IssueListPage extends React.Component {
         sorter: (a, b) => a.org.localeCompare(b.org),
         render: (text, record, index) => {
           return (
-            <a href={`https://github.com/${text}`} target={"_blank"}>{text}</a>
+            <a target="_blank" rel="noreferrer" href={`https://github.com/${text}`}>{text}</a>
           )
         }
       },
@@ -113,7 +113,7 @@ class IssueListPage extends React.Component {
         render: (text, record, index) => {
           if (text !== "All") {
             return (
-              <a href={`https://github.com/${record.org}/${text}`} target={"_blank"}>{text}</a>
+              <a target="_blank" rel="noreferrer" href={`https://github.com/${record.org}/${text}`}>{text}</a>
             )
           } else {
             return "All"

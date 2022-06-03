@@ -74,13 +74,11 @@ export function goToLink(link) {
 }
 
 export function showMessage(type, text) {
-  if (type === "") {
-    return;
-  } else if (type === "success") {
+  if (type === "success") {
     message.success(text);
   } else if (type === "error") {
     message.error(text);
-  } else if (type === "warn") {
+  } else if (type === "warning") {
     message.warn(text)
   }
 }

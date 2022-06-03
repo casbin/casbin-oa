@@ -123,7 +123,7 @@ class ProgramListPage extends React.Component {
         sorter: (a, b) => a.url.localeCompare(b.url),
         render: (text, record, index) => {
           return (
-            <a target="_blank" href={text}>
+            <a target="_blank" rel="noreferrer" href={text}>
               {
                 text
               }

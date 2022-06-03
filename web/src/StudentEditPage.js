@@ -44,8 +44,8 @@ class StudentEditPage extends React.Component {
 
   initRepositoriesMap(){
     let orgAndRepositories = this.state.orgAndRepositories;
-    orgAndRepositories.map(item => {
-      this.updateRepositoriesMap(item.organization)
+    orgAndRepositories.forEach(item => {
+      this.updateRepositoriesMap(item.organization);
     })
   }
 
@@ -106,7 +106,6 @@ class StudentEditPage extends React.Component {
 
   getAll(value, record, index){
     const organization = record.organization;
-    let temp = [...this.state.orgAndRepositories];
     if (value) {
       this.updateRepositories(index, this.state.orgRepositoriesMap.get(organization));
     }else {
@@ -192,7 +191,7 @@ class StudentEditPage extends React.Component {
           let options = [];
           let repositories = this.state.orgRepositoriesMap.get(organization);
           if (repositories !== undefined){
-            repositories.map((item, index) => {
+            repositories.forEach((item, index) => {
               options.push(<Option value={item} key={item}>{item}</Option>)
             })
 
@@ -292,14 +291,15 @@ class StudentEditPage extends React.Component {
   }
 
   submitStudentEdit() {
-    this.state.student.org_repositories = this.state.orgAndRepositories;
     let student = Setting.deepCopy(this.state.student);
+    student.org_repositories = this.state.orgAndRepositories;
     StudentBackend.updateStudent(this.state.student.owner, this.state.studentName, this.state.programName, student)
       .then((res) => {
         if (res) {
           Setting.showMessage("success", `Successfully saved`);
           this.setState({
             studentName: this.state.student.name,
+            student: student,
           });
           this.props.history.push(`/students`);
         } else {
