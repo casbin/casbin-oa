@@ -119,7 +119,7 @@ class StudentListPage extends React.Component {
         title: 'Repositories',
         dataIndex: 'org_repositories',
         key: 'createdTime',
-        width: '160px',
+        // width: '160px',
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           let repositories = ''

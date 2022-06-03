@@ -112,14 +112,14 @@ class MachineListPage extends React.Component {
         title: 'Description',
         dataIndex: 'description',
         key: 'description',
-        width: '80px',
+        // width: '80px',
         sorter: (a, b) => a.description.localeCompare(b.description),
       },
       {
         title: 'IP',
         dataIndex: 'ip',
         key: 'ip',
-        // width: '80px',
+        width: '120px',
         sorter: (a, b) => a.ip.localeCompare(b.ip),
       },
       {
