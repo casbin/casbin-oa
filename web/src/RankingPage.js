@@ -373,7 +373,7 @@ class RankingPage extends React.Component {
         student.score += report.score >= 0 ? report.score : 0;
       });
 
-      if (program.type === "Week") {
+      if (program?.type === "Week") {
         students.sort(function(a, b) {
           return b.score - a.score;
         });
