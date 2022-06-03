@@ -17,7 +17,7 @@ import './App.less';
 import * as Setting from "./Setting";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
-import {Switch, Route, withRouter, Link} from 'react-router-dom';
+import {Switch, Route, withRouter, Link, Redirect} from 'react-router-dom';
 import CustomGithubCorner from "./CustomGithubCorner";
 import ProgramListPage from "./ProgramListPage";
 import ProgramEditPage from "./ProgramEditPage";
@@ -35,6 +35,7 @@ import MachineEditPage from "./MachineEditPage";
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
+import SigninPage from "./SigninPage";
 
 const { Header, Footer } = Layout;
 
@@ -259,6 +260,26 @@ class App extends Component {
     return res;
   }
 
+  renderHomeIfSignedIn(component) {
+    if (this.state.account !== null && this.state.account !== undefined) {
+      return <Redirect to='/' />
+    } else {
+      return component;
+    }
+  }
+
+  renderSigninIfNotSignedIn(component) {
+    if (this.state.account === null) {
+      sessionStorage.setItem("from", window.location.pathname);
+      return <Redirect to='/signin' />
+    } else if (this.state.account === undefined) {
+      return null;
+    }
+    else {
+      return component;
+    }
+  }
+
   renderContent() {
     return (
       <div>
@@ -287,6 +308,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/callback" component={AuthCallback}/>
           <Route exact path="/" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
+          <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)}/>
           <Route exact path="/programs/:programName/ranking" render={(props) => <RankingPage account={this.state.account} {...props} />}/>
           <Route exact path="/students" render={(props) => <StudentListPage account={this.state.account} {...props} />}/>
           <Route exact path="/students/:studentName/:programName" render={(props) => <StudentEditPage account={this.state.account} {...props} />}/>
@@ -296,10 +318,10 @@ class App extends Component {
           <Route exact path="/rounds/:roundName" render={(props) => <RoundEditPage account={this.state.account} {...props} />}/>
           <Route exact path="/reports" render={(props) => <ReportListPage account={this.state.account} {...props} />}/>
           <Route exact path="/reports/:reportName" render={(props) => <ReportEditPage account={this.state.account} {...props} />}/>
-          <Route exact path="/issues" render={ (props) => <IssueListPage account={this.state.account} {...props} />} />
-          <Route exct path="/issues/:issueName" render={ (props) => <IssueEditPage account={this.state.account} {...props} /> } />
-          <Route exact path="/machines" render={(props) => <MachineListPage account={this.state.account} {...props} />}/>
-          <Route exact path="/machines/:machineName" render={(props) => <MachineEditPage account={this.state.account} {...props} />}/>
+          <Route exact path="/issues" render={(props) => this.renderSigninIfNotSignedIn(<IssueListPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/issues/:issueName" render={(props) => this.renderSigninIfNotSignedIn(<IssueEditPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/machines/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)}/>
         </Switch>
       </div>
     )

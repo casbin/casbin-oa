@@ -26,16 +26,25 @@ class AuthCallback extends React.Component {
     };
   }
 
-  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     this.login();
+  }
+
+  getFromLink() {
+    const from = sessionStorage.getItem("from");
+    if (from === null) {
+      return "/";
+    }
+    return from;
   }
 
   login() {
     Setting.signin().then((res) => {
       if (res.status === "ok") {
-        Setting.showMessage("success", `Logged in successfully`);
-        Setting.goToLink("/");
+        Setting.showMessage("success", `Logged in successfully`)
+
+        const link = this.getFromLink();
+        Setting.goToLink(link);
       } else {
         this.setState({
           msg: res.msg,
