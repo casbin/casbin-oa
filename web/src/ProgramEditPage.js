@@ -101,7 +101,7 @@ class ProgramEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            Start Date:
+            Start date:
           </Col>
           <Col span={22} >
             <DatePicker defaultValue={moment(this.state.program.startDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
@@ -111,7 +111,7 @@ class ProgramEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            End Date:
+            End date:
           </Col>
           <Col span={22} >
             <DatePicker defaultValue={moment(this.state.program.endDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
@@ -131,7 +131,7 @@ class ProgramEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            Can Apply:
+            Can apply:
           </Col>
           <Col span={1} >
             <Switch checked={this.state.program.canApply} onChange={checked => {

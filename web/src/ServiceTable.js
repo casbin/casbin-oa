@@ -137,7 +137,7 @@ class ServiceTable extends React.Component {
         }
       },
       {
-        title: 'Expected Status',
+        title: 'Expected status',
         dataIndex: 'expectedStatus',
         key: 'expectedStatus',
         width: '150px',
@@ -195,7 +195,7 @@ class ServiceTable extends React.Component {
         key: 'message',
       },
       {
-        title: 'action',
+        title: 'Action',
         key: 'action',
         width: '100px',
         render: (text, record, index) => {

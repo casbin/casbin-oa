@@ -102,7 +102,7 @@ class RoundListPage extends React.Component {
         sorter: (a, b) => a.title.localeCompare(b.title),
       },
       {
-        title: 'Created Time',
+        title: 'Created time',
         dataIndex: 'createdTime',
         key: 'createdTime',
         width: '160px',
@@ -124,14 +124,14 @@ class RoundListPage extends React.Component {
         }
       },
       {
-        title: 'Start Date',
+        title: 'Start date',
         dataIndex: 'startDate',
         key: 'startDate',
         width: '120px',
         sorter: (a, b) => a.startDate.localeCompare(b.startDate),
       },
       {
-        title: 'End Date',
+        title: 'End date',
         dataIndex: 'endDate',
         key: 'endDate',
         width: '120px',

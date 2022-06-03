@@ -165,7 +165,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            Auto Query:
+            Auto query:
           </Col>
           <Col span={1} >
             <Switch checked={this.state.machine.autoQuery} onChange={checked => {

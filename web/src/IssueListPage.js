@@ -128,7 +128,7 @@ class IssueListPage extends React.Component {
         sorter: (a, b) => a.assignee.localeCompare(b.assignee),
       },
       {
-        title: 'At People',
+        title: 'At people',
         dataIndex: 'at_people',
         key: 'at_people',
         sorter: (a, b) => a.at_people.localeCompare(b.at_people),

@@ -98,7 +98,7 @@ class ReportListPage extends React.Component {
         }
       },
       {
-        title: 'Created Time',
+        title: 'Created time',
         dataIndex: 'createdTime',
         key: 'createdTime',
         width: '160px',

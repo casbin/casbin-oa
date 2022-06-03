@@ -365,7 +365,7 @@ class IssueEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
-            At People:
+            At people:
           </Col>
           <Col span={22}>
             <Select

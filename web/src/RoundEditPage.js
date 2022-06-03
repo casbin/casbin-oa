@@ -116,7 +116,7 @@ class RoundEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            Start Date:
+            Start date:
           </Col>
           <Col span={22} >
             <DatePicker defaultValue={moment(this.state.round.startDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
@@ -126,7 +126,7 @@ class RoundEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
-            End Date:
+            End date:
           </Col>
           <Col span={22} >
             <DatePicker defaultValue={moment(this.state.round.endDate, "YYYY-MM-DD")} onChange={(time, timeString) => {

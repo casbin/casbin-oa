@@ -106,7 +106,7 @@ class ProgramListPage extends React.Component {
         sorter: (a, b) => a.title.localeCompare(b.title),
       },
       {
-        title: 'Created Time',
+        title: 'Created time',
         dataIndex: 'createdTime',
         key: 'createdTime',
         width: '160px',
@@ -132,14 +132,14 @@ class ProgramListPage extends React.Component {
         }
       },
       {
-        title: 'Start Date',
+        title: 'Start date',
         dataIndex: 'startDate',
         key: 'startDate',
         width: '120px',
         sorter: (a, b) => a.startDate.localeCompare(b.startDate),
       },
       {
-        title: 'End Date',
+        title: 'End date',
         dataIndex: 'endDate',
         key: 'endDate',
         width: '120px',
@@ -153,7 +153,7 @@ class ProgramListPage extends React.Component {
         sorter: (a, b) => a.provider2.localeCompare(b.provider2),
       },
       {
-        title: 'Can Apply',
+        title: 'Can apply',
         dataIndex: 'canApply',
         key: 'canApply',
         width: '100px',

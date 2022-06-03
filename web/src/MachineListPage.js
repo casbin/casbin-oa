@@ -99,7 +99,7 @@ class MachineListPage extends React.Component {
         }
       },
       {
-        title: 'Created Time',
+        title: 'Created time',
         dataIndex: 'createdTime',
         key: 'createdTime',
         width: '160px',
@@ -130,7 +130,7 @@ class MachineListPage extends React.Component {
         sorter: (a, b) => a.username.localeCompare(b.username),
       },
       {
-        title: 'Auto Query',
+        title: 'Auto query',
         dataIndex: 'autoQuery',
         key: 'autoQuery',
         width: '100px',
@@ -141,7 +141,7 @@ class MachineListPage extends React.Component {
         }
       },
       {
-        title: 'Is Permanent',
+        title: 'Is permanent',
         dataIndex: 'isPermanent',
         key: 'isPermanent',
         width: '110px',
