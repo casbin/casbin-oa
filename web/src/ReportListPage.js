@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Col, Popconfirm, Row, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -93,7 +94,7 @@ class ReportListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/reports/${text}`}>{text}</a>
+            <Link to={`/reports/${text}`}>{text}</Link>
           )
         }
       },
@@ -115,7 +116,7 @@ class ReportListPage extends React.Component {
         sorter: (a, b) => a.program.localeCompare(b.program),
         render: (text, record, index) => {
           return (
-            <a href={`/programs/${text}`}>{text}</a>
+            <Link to={`/programs/${text}`}>{text}</Link>
           )
         }
       },
@@ -127,7 +128,7 @@ class ReportListPage extends React.Component {
         sorter: (a, b) => a.round.localeCompare(b.round),
         render: (text, record, index) => {
           return (
-            <a href={`/rounds/${text}`}>{text}</a>
+            <Link to={`/rounds/${text}`}>{text}</Link>
           )
         }
       },
@@ -164,7 +165,7 @@ class ReportListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/reports/${record.name}`)}>Edit</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/reports/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete report: ${record.name} ?`}
                 onConfirm={() => this.deleteReport(index)}

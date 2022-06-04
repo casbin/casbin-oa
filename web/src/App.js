@@ -187,7 +187,7 @@ class App extends Component {
       return null;
     } else if (this.state.account === null) {
       res.push(
-        <Menu.Item key="/login" style={{float: 'right'}}>
+        <Menu.Item key="/signin" style={{float: 'right'}}>
           <a href={Setting.getSigninUrl()}>
             Sign In
           </a>
@@ -209,51 +209,51 @@ class App extends Component {
 
     res.push(
       <Menu.Item key="/">
-        <a href="/">
+        <Link to="/">
           Home
-        </a>
+        </Link>
       </Menu.Item>
     );
     res.push(
       <Menu.Item key="/students">
-        <a href="/students">
+        <Link to="/students">
           Students
-        </a>
+        </Link>
       </Menu.Item>
     );
     res.push(
       <Menu.Item key="/programs">
-        <a href="/programs">
+        <Link to="/programs">
           Programs
-        </a>
+        </Link>
       </Menu.Item>
     );
     res.push(
       <Menu.Item key="/rounds">
-        <a href="/rounds">
+        <Link to="/rounds">
           Rounds
-        </a>
+        </Link>
       </Menu.Item>
     );
     res.push(
       <Menu.Item key="/reports">
-        <a href="/reports">
+        <Link to="/reports">
           Reports
-        </a>
+        </Link>
       </Menu.Item>
     );
     res.push(
         <Menu.Item key="/issues">
-          <a href="/issues">
+          <Link to="/issues">
             Issues
-          </a>
+          </Link>
         </Menu.Item>
     );
     res.push(
         <Menu.Item key="/machines">
-          <a href="/machines">
+          <Link to="/machines">
             Machines
-          </a>
+          </Link>
         </Menu.Item>
     );
 
@@ -295,7 +295,7 @@ class App extends Component {
             // theme="dark"
             mode={"horizontal"}
             defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
-            style={{ lineHeight: '64px' }}
+            style={{lineHeight: '64px'}}
           >
             {
               this.renderMenu()

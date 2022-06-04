@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Col, Modal, Rate, Row, Switch, Table, Tag, Tooltip} from 'antd';
 import {CheckCircleOutlined, SyncOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
 import * as AccountBackend from "./backend/AccountBackend";
@@ -282,7 +283,7 @@ class RankingPage extends React.Component {
           {
             title: (
               <Tooltip title={`${round.title} (${round.startDate} to ${round.endDate})`}>
-                <a href={`/rounds/${round.name}`}>{round.title}</a>
+                <Link to={`/rounds/${round.name}`}>{round.title}</Link>
               </Tooltip>
             ),
             dataIndex: round.name,

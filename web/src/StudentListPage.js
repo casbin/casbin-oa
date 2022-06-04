@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Col, Popconfirm, Row, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -111,7 +112,7 @@ class StudentListPage extends React.Component {
         sorter: (a, b) => a.program.localeCompare(b.program),
         render: (text, record, index) => {
           return (
-            <a href={`/programs/${text}`}>{text}</a>
+            <Link to={`/programs/${text}`}>{text}</Link>
           )
         }
       },
@@ -153,7 +154,7 @@ class StudentListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/students/${record.name}/${record.program}`)}>Edit</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/students/${record.name}/${record.program}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete student: ${record.name} ?`}
                 onConfirm={() => this.deleteStudent(index)}

@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react'
+import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Col, Popconfirm, Row, Table} from "antd";
 import * as Setting from "./Setting";
-import * as issueBackend from "./backend/issueBackend"
+import * as issueBackend from "./backend/issueBackend";
 
 class IssueListPage extends React.Component {
   constructor(props) {
@@ -88,7 +89,7 @@ class IssueListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/issues/${text}`}>{text}</a>
+            <Link to={`/issues/${text}`}>{text}</Link>
           )
         }
       },
@@ -175,7 +176,7 @@ class IssueListPage extends React.Component {
           return (
             <div>
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary"
-                      onClick={() => Setting.goToLink(`/issues/${record.name}`)}>Edit</Button>
+                      onClick={() => this.props.history.push(`/issues/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete issue webhook: ${record.name} ?`}
                 onConfirm={() => this.deleteIssue(index)}

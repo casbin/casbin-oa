@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Col, Popconfirm, Row, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -90,7 +91,7 @@ class RoundListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/rounds/${text}`}>{text}</a>
+            <Link to={`/rounds/${text}`}>{text}</Link>
           )
         }
       },
@@ -119,7 +120,7 @@ class RoundListPage extends React.Component {
         sorter: (a, b) => a.program.localeCompare(b.program),
         render: (text, record, index) => {
           return (
-            <a href={`/programs/${text}`}>{text}</a>
+            <Link to={`/programs/${text}`}>{text}</Link>
           )
         }
       },
@@ -145,7 +146,7 @@ class RoundListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/rounds/${record.name}`)}>Edit</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/rounds/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete round: ${record.name} ?`}
                 onConfirm={() => this.deleteRound(index)}

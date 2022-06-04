@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Col, Popconfirm, Row, Switch, Table} from 'antd';
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -94,7 +95,7 @@ class ProgramListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <a href={`/programs/${text}`}>{text}</a>
+            <Link to={`/programs/${text}`}>{text}</Link>
           )
         }
       },
@@ -171,8 +172,8 @@ class ProgramListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => Setting.goToLink(`/programs/${record.name}/ranking`)}>Ranking</Button>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.goToLink(`/programs/${record.name}`)}>Edit</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/programs/${record.name}/ranking`)}>Ranking</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.props.history.push(`/programs/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete program: ${record.name} ?`}
                 onConfirm={() => this.deleteProgram(index)}
