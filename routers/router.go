@@ -89,4 +89,5 @@ func initAPI() {
 	beego.Router("/api/update-domain", &controllers.ApiController{}, "POST:UpdateDomain")
 	beego.Router("/api/add-domain", &controllers.ApiController{}, "POST:AddDomain")
 	beego.Router("/api/delete-domain", &controllers.ApiController{}, "POST:DeleteDomain")
+	beego.Router("/api/renew-domain", &controllers.ApiController{}, "POST:RenewDomain")
 }

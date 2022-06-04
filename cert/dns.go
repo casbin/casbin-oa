@@ -15,6 +15,7 @@
 package cert
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/casbin/lego/v4/certificate"
@@ -112,11 +113,11 @@ func getGoCert(client *lego.Client, conf GodaddyConf) (string, string, error) {
 	return string(certificates.Certificate), string(certificates.PrivateKey), nil
 }
 
-func getOurCert(client *lego.Client) (string, string) {
+func ObtainCertificate(client *lego.Client, domain string, accessKey string, accessSecret string) (string, string) {
 	conf := AliConf{
-		Domains:       domains,
-		AccessKey:     accessKeyId,
-		Secret:        accessKeySecret,
+		Domains:       []string{fmt.Sprintf("*.%s", domain), domain},
+		AccessKey:     accessKey,
+		Secret:        accessSecret,
 		RAMRole:       "",
 		SecurityToken: "",
 		Path:          "",

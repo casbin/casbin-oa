@@ -54,3 +54,12 @@ export function deleteDomain(domain) {
     body: JSON.stringify(newDomain),
   }).then(res => res.json());
 }
+
+export function renewDomain(domain) {
+  let newDomain = Setting.deepCopy(domain);
+  return fetch(`${Setting.ServerUrl}/api/renew-domain`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(newDomain),
+  }).then(res => res.json());
+}

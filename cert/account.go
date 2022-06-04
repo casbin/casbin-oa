@@ -16,7 +16,6 @@ package cert
 
 import (
 	"crypto"
-	"crypto/ecdsa"
 
 	"github.com/casbin/lego/v4/acme"
 	"github.com/casbin/lego/v4/certcrypto"
@@ -47,10 +46,10 @@ func (a *Account) GetRegistration() *registration.Resource {
 	return a.Registration
 }
 
-func getLegoClientAndAccount(email string, privateKey *ecdsa.PrivateKey, devMode bool) (*lego.Client, *Account) {
+func getLegoClientAndAccount(email string, privateKey string, devMode bool) (*lego.Client, *Account) {
 	account := &Account{
 		Email: email,
-		key:   privateKey,
+		key:   decodeEccKey(privateKey),
 	}
 
 	config := lego.NewConfig(account)
@@ -70,12 +69,12 @@ func getLegoClientAndAccount(email string, privateKey *ecdsa.PrivateKey, devMode
 	return client, account
 }
 
-// getRegisteredLegoClient Incoming an email ,a privatekey and a Boolean value that controls the opening of the test environment
+// GetAcmeClient Incoming an email ,a privatekey and a Boolean value that controls the opening of the test environment
 // When this function is started for the first time, it will initialize the account-related configuration,
 // After initializing the configuration, It will try to obtain an account based on the private key,
 // if it fails, it will create an account based on the private key.
 // This account will be used during the running of the program
-func getRegisteredLegoClient(email string, privateKey *ecdsa.PrivateKey, devMode bool) *lego.Client {
+func GetAcmeClient(email string, privateKey string, devMode bool) *lego.Client {
 	// Create a user. New accounts need an email and private key to start.
 	client, account := getLegoClientAndAccount(email, privateKey, devMode)
 

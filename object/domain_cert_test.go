@@ -21,5 +21,5 @@ func TestCheckCert(t *testing.T) {
 	InitAdapter()
 
 	domain := getDomain("admin", "casbin.com")
-	println(domain.checkDomain())
+	println(getCertExpireTime(domain.Cert))
 }

@@ -14,6 +14,5 @@
 
 package cert
 
-var domains = []string{"*.casbin.com", "casbin.com"}
 var accessKeyId = ""
 var accessKeySecret = ""

@@ -70,3 +70,14 @@ func (c *ApiController) DeleteDomain() {
 	c.Data["json"] = object.DeleteDomain(&domain)
 	c.ServeJSON()
 }
+
+func (c *ApiController) RenewDomain() {
+	var domain object.Domain
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &domain)
+	if err != nil {
+		panic(err)
+	}
+
+	c.Data["json"] = object.RenewDomain(&domain)
+	c.ServeJSON()
+}

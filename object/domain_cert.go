@@ -34,7 +34,3 @@ func getCertExpireTime(cert string) string {
 
 	return certificate.NotAfter.Local().Format(time.RFC3339)
 }
-
-func (domain *Domain) checkDomain() string {
-	return getCertExpireTime(domain.Cert)
-}

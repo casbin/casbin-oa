@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casbin/casbin-oa/cert"
 	"github.com/casbin/casbin-oa/util"
 	"xorm.io/core"
 )
@@ -112,4 +113,15 @@ func DeleteDomain(domain *Domain) bool {
 
 func (domain *Domain) getId() string {
 	return fmt.Sprintf("%s/%s", domain.Owner, domain.Name)
+}
+
+func RenewDomain(domain *Domain) bool {
+	client := cert.GetAcmeClient(acmeEmail, acmePrivateKey, false)
+	certStr, privateKey := cert.ObtainCertificate(client, domain.Name, domain.AccessKey, domain.AccessSecret)
+
+	domain.ExpireTime = getCertExpireTime(certStr)
+	domain.Cert = certStr
+	domain.PrivateKey = privateKey
+
+	return UpdateDomain(domain.getId(), domain)
 }

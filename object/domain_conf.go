@@ -1,4 +1,4 @@
-// Copyright 2021 The casbin Authors. All Rights Reserved.
+// Copyright 2022 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cert
+package object
 
-import (
-	"testing"
-
-	"github.com/casbin/casbin-oa/util"
-)
-
-func TestGetClient(t *testing.T) {
-	eccKey := util.ReadStringFromPath("acme_account.key")
-	println(eccKey)
-
-	client := GetAcmeClient("acme@casbin.org", eccKey, false)
-	pem, key := ObtainCertificate(client, "casbin.com", accessKeyId, accessKeySecret)
-	println(pem)
-	println()
-	println(key)
-}
+var acmeEmail = ""
+var acmePrivateKey = ``

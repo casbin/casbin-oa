@@ -82,6 +82,18 @@ class DomainListPage extends React.Component {
       });
   }
 
+  renewDomain(i) {
+    DomainBackend.renewDomain(this.state.domains[i])
+      .then((res) => {
+        console.log(res);
+        Setting.showMessage("success", `Domain renewed successfully`);
+        this.getDomains();
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Domain failed to renew: ${error}`);
+      });
+  }
+
   renderTable(domains) {
     const columns = [
       {
@@ -161,10 +173,11 @@ class DomainListPage extends React.Component {
         title: 'Action',
         dataIndex: '',
         key: 'op',
-        width: '160px',
+        width: '240px',
         render: (text, record, index) => {
           return (
             <div>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/domains/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete domain: ${record.name} ?`}
