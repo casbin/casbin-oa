@@ -30,6 +30,7 @@ type Domain struct {
 	AccessKey    string `xorm:"varchar(100)" json:"accessKey"`
 	AccessSecret string `xorm:"varchar(100)" json:"accessSecret"`
 
+	ExpireTime string `xorm:"varchar(100)" json:"expireTime"`
 	Cert       string `xorm:"mediumtext" json:"cert"`
 	PrivateKey string `xorm:"mediumtext" json:"privateKey"`
 }

@@ -112,6 +112,16 @@ class DomainEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
+            Expire time:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.domain.expireTime} onChange={e => {
+              this.updateDomainField('expireTime', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
             Cert:
           </Col>
           <Col span={9} >

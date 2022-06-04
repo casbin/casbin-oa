@@ -49,6 +49,7 @@ class DomainListPage extends React.Component {
       username: "casbin",
       accessKey: "",
       accessSecret: "",
+      expireTime: "",
       cert: "",
       privateKey: "",
     }
@@ -111,14 +112,14 @@ class DomainListPage extends React.Component {
         title: 'Username',
         dataIndex: 'username',
         key: 'username',
-        width: '150px',
+        width: '120px',
         sorter: (a, b) => a.username.localeCompare(b.username),
       },
       {
         title: 'Access key',
         dataIndex: 'accessKey',
         key: 'accessKey',
-        width: '250px',
+        width: '200px',
         sorter: (a, b) => a.accessKey.localeCompare(b.accessKey),
       },
       {
@@ -129,10 +130,20 @@ class DomainListPage extends React.Component {
         sorter: (a, b) => a.accessSecret.localeCompare(b.accessSecret),
       },
       {
+        title: 'Expire time',
+        dataIndex: 'expireTime',
+        key: 'expireTime',
+        width: '160px',
+        sorter: (a, b) => a.expireTime.localeCompare(b.expireTime),
+        render: (text, record, index) => {
+          return Setting.getFormattedDate(text);
+        }
+      },
+      {
         title: 'Cert',
         dataIndex: 'cert',
         key: 'cert',
-        width: '300px',
+        width: '250px',
         sorter: (a, b) => a.cert.localeCompare(b.cert),
         render: (text, record, index) => {
           return Setting.getShortText(text, 60);
@@ -142,7 +153,7 @@ class DomainListPage extends React.Component {
         title: 'Private key',
         dataIndex: 'privateKey',
         key: 'privateKey',
-        width: '300px',
+        width: '250px',
         sorter: (a, b) => a.privateKey.localeCompare(b.privateKey),
         render: (text, record, index) => {
           return Setting.getShortText(text, 60);
