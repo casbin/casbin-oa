@@ -59,12 +59,11 @@ class DomainListPage extends React.Component {
     const newDomain = this.newDomain();
     DomainBackend.addDomain(newDomain)
       .then((res) => {
-          Setting.showMessage("success", `Domain added successfully`);
-          this.setState({
-            domains: Setting.prependRow(this.state.domains, newDomain),
-          });
-        }
-      )
+        Setting.showMessage("success", `Domain added successfully`);
+        this.setState({
+          domains: Setting.prependRow(this.state.domains, newDomain),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Domain failed to add: ${error}`);
       });
@@ -73,12 +72,11 @@ class DomainListPage extends React.Component {
   deleteDomain(i) {
     DomainBackend.deleteDomain(this.state.domains[i])
       .then((res) => {
-          Setting.showMessage("success", `Domain deleted successfully`);
-          this.setState({
-            domains: Setting.deleteRow(this.state.domains, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Domain deleted successfully`);
+        this.setState({
+          domains: Setting.deleteRow(this.state.domains, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Domain failed to delete: ${error}`);
       });

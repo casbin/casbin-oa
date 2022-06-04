@@ -60,12 +60,11 @@ class MachineListPage extends React.Component {
     const newMachine = this.newMachine();
     MachineBackend.addMachine(newMachine)
       .then((res) => {
-          Setting.showMessage("success", `Machine added successfully`);
-          this.setState({
-            machines: Setting.prependRow(this.state.machines, newMachine),
-          });
-        }
-      )
+        Setting.showMessage("success", `Machine added successfully`);
+        this.setState({
+          machines: Setting.prependRow(this.state.machines, newMachine),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Machine failed to add: ${error}`);
       });
@@ -74,12 +73,11 @@ class MachineListPage extends React.Component {
   deleteMachine(i) {
     MachineBackend.deleteMachine(this.state.machines[i])
       .then((res) => {
-          Setting.showMessage("success", `Machine deleted successfully`);
-          this.setState({
-            machines: Setting.deleteRow(this.state.machines, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Machine deleted successfully`);
+        this.setState({
+          machines: Setting.deleteRow(this.state.machines, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Machine failed to delete: ${error}`);
       });

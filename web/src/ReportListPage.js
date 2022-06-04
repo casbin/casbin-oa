@@ -59,12 +59,11 @@ class ReportListPage extends React.Component {
     const newReport = this.newReport();
     ReportBackend.addReport(newReport)
       .then((res) => {
-          Setting.showMessage("success", `Report added successfully`);
-          this.setState({
-            reports: Setting.prependRow(this.state.reports, newReport),
-          });
-        }
-      )
+        Setting.showMessage("success", `Report added successfully`);
+        this.setState({
+          reports: Setting.prependRow(this.state.reports, newReport),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Report failed to add: ${error}`);
       });
@@ -73,12 +72,11 @@ class ReportListPage extends React.Component {
   deleteReport(i) {
     ReportBackend.deleteReport(this.state.reports[i])
       .then((res) => {
-          Setting.showMessage("success", `Report deleted successfully`);
-          this.setState({
-            reports: Setting.deleteRow(this.state.reports, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Report deleted successfully`);
+        this.setState({
+          reports: Setting.deleteRow(this.state.reports, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Report failed to delete: ${error}`);
       });

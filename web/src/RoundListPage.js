@@ -56,12 +56,11 @@ class RoundListPage extends React.Component {
     const newRound = this.newRound();
     RoundBackend.addRound(newRound)
       .then((res) => {
-          Setting.showMessage("success", `Round added successfully`);
-          this.setState({
-            rounds: Setting.prependRow(this.state.rounds, newRound),
-          });
-        }
-      )
+        Setting.showMessage("success", `Round added successfully`);
+        this.setState({
+          rounds: Setting.prependRow(this.state.rounds, newRound),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Round failed to add: ${error}`);
       });
@@ -70,12 +69,11 @@ class RoundListPage extends React.Component {
   deleteRound(i) {
     RoundBackend.deleteRound(this.state.rounds[i])
       .then((res) => {
-          Setting.showMessage("success", `Round deleted successfully`);
-          this.setState({
-            rounds: Setting.deleteRow(this.state.rounds, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Round deleted successfully`);
+        this.setState({
+          rounds: Setting.deleteRow(this.state.rounds, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Round failed to delete: ${error}`);
       });

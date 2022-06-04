@@ -60,12 +60,11 @@ class ProgramListPage extends React.Component {
     const newProgram = this.newProgram();
     ProgramBackend.addProgram(newProgram)
       .then((res) => {
-          Setting.showMessage("success", `Program added successfully`);
-          this.setState({
-            programs: Setting.prependRow(this.state.programs, newProgram),
-          });
-        }
-      )
+        Setting.showMessage("success", `Program added successfully`);
+        this.setState({
+          programs: Setting.prependRow(this.state.programs, newProgram),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Program failed to add: ${error}`);
       });
@@ -74,12 +73,11 @@ class ProgramListPage extends React.Component {
   deleteProgram(i) {
     ProgramBackend.deleteProgram(this.state.programs[i])
       .then((res) => {
-          Setting.showMessage("success", `Program deleted successfully`);
-          this.setState({
-            programs: Setting.deleteRow(this.state.programs, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Program deleted successfully`);
+        this.setState({
+          programs: Setting.deleteRow(this.state.programs, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Program failed to delete: ${error}`);
       });

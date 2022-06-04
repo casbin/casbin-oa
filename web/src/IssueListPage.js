@@ -68,12 +68,11 @@ class IssueListPage extends React.Component {
   deleteIssue(index) {
     issueBackend.deleteIssue(this.state.issues[index])
       .then((res) => {
-          Setting.showMessage("success", `issue deleted successfully`);
-          this.setState({
-            issues: Setting.deleteRow(this.state.issues, index),
-          });
-        }
-      )
+        Setting.showMessage("success", `issue deleted successfully`);
+        this.setState({
+          issues: Setting.deleteRow(this.state.issues, index),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `issue failed to delete: ${error}`);
       });

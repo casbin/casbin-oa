@@ -468,14 +468,13 @@ class RankingPage extends React.Component {
     const newStudent = this.newStudent();
     StudentBackend.addStudent(newStudent)
       .then((res) => {
-          Setting.showMessage("success", `Student added successfully`);
-          this.setState({
-            students: Setting.prependRow(this.state.students, newStudent),
-          });
+        Setting.showMessage("success", `Student added successfully`);
+        this.setState({
+          students: Setting.prependRow(this.state.students, newStudent),
+        });
 
-          window.location.reload();
-        }
-      )
+        window.location.reload();
+      })
       .catch(error => {
         Setting.showMessage("error", `Student failed to add: ${error}`);
       });

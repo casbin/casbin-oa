@@ -55,12 +55,11 @@ class StudentListPage extends React.Component {
     const newStudent = this.newStudent();
     StudentBackend.addStudent(newStudent)
       .then((res) => {
-          Setting.showMessage("success", `Student added successfully`);
-          this.setState({
-            students: Setting.prependRow(this.state.students, newStudent),
-          });
-        }
-      )
+        Setting.showMessage("success", `Student added successfully`);
+        this.setState({
+          students: Setting.prependRow(this.state.students, newStudent),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Student failed to add: ${error}`);
       });
@@ -69,12 +68,11 @@ class StudentListPage extends React.Component {
   deleteStudent(i) {
     StudentBackend.deleteStudent(this.state.students[i])
       .then((res) => {
-          Setting.showMessage("success", `Student deleted successfully`);
-          this.setState({
-            students: Setting.deleteRow(this.state.students, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Student deleted successfully`);
+        this.setState({
+          students: Setting.deleteRow(this.state.students, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Student failed to delete: ${error}`);
       });
