@@ -66,7 +66,7 @@ func getAliCert(client *lego.Client, conf AliConf) (string, string) {
 
 	// Choose a local DNS service provider to increase the authentication speed
 	servers := []string{"223.5.5.5:53"}
-	err = client.Challenge.SetDNS01Provider(dnsProvider, dns01.CondOption(len(servers) > 0, dns01.AddRecursiveNameservers(dns01.ParseNameservers(servers))))
+	err = client.Challenge.SetDNS01Provider(dnsProvider, dns01.CondOption(len(servers) > 0, dns01.AddRecursiveNameservers(dns01.ParseNameservers(servers))), dns01.DisableCompletePropagationRequirement())
 	if err != nil {
 		panic(err)
 	}
