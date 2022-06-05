@@ -118,7 +118,15 @@ func (domain *Domain) getId() string {
 
 func RenewDomain(domain *Domain) bool {
 	client := cert.GetAcmeClient(acmeEmail, acmePrivateKey, false)
-	certStr, privateKey := cert.ObtainCertificate(client, domain.Name, domain.AccessKey, domain.AccessSecret)
+
+	var certStr, privateKey string
+	if domain.Provider == "Aliyun" {
+		certStr, privateKey = cert.ObtainCertificateAli(client, domain.Name, domain.AccessKey, domain.AccessSecret)
+	} else if domain.Provider == "GoDaddy" {
+		certStr, privateKey = cert.ObtainCertificateGoDaddy(client, domain.Name, domain.AccessKey, domain.AccessSecret)
+	} else {
+		panic(fmt.Errorf("unknown provider: %s", domain.Provider))
+	}
 
 	domain.ExpireTime = getCertExpireTime(certStr)
 	domain.Cert = certStr

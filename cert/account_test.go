@@ -25,7 +25,7 @@ func TestGetClient(t *testing.T) {
 	println(eccKey)
 
 	client := GetAcmeClient("acme@casbin.org", eccKey, false)
-	pem, key := ObtainCertificate(client, "casbin.com", accessKeyId, accessKeySecret)
+	pem, key := ObtainCertificateAli(client, "casbin.com", accessKeyId, accessKeySecret)
 	println(pem)
 	println()
 	println(key)
