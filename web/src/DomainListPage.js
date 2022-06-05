@@ -47,6 +47,7 @@ class DomainListPage extends React.Component {
       owner: "admin", // this.props.account.name,
       name: `domain_${this.state.domains.length}`,
       createdTime: moment().format(),
+      provider: "Aliyun",
       username: "casbin",
       accessKey: "",
       accessSecret: "",
@@ -121,15 +122,22 @@ class DomainListPage extends React.Component {
           )
         }
       },
+      // {
+      //   title: 'Created time',
+      //   dataIndex: 'createdTime',
+      //   key: 'createdTime',
+      //   width: '160px',
+      //   sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
+      //   render: (text, record, index) => {
+      //     return Setting.getFormattedDate(text);
+      //   }
+      // },
       {
-        title: 'Created time',
-        dataIndex: 'createdTime',
-        key: 'createdTime',
-        width: '160px',
-        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        }
+        title: 'Provider',
+        dataIndex: 'provider',
+        key: 'provider',
+        width: '120px',
+        sorter: (a, b) => a.provider.localeCompare(b.provider),
       },
       {
         title: 'Username',

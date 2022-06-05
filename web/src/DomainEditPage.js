@@ -13,12 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from 'antd';
+import {Button, Card, Col, Input, Row, Select} from 'antd';
 import * as DomainBackend from "./backend/DomainBackend";
 import * as Setting from "./Setting";
 import TextArea from "antd/es/input/TextArea";
 import copy from "copy-to-clipboard";
 import FileSaver from "file-saver";
+
+const { Option } = Select;
 
 class DomainEditPage extends React.Component {
   constructor(props) {
@@ -78,6 +80,21 @@ class DomainEditPage extends React.Component {
             <Input value={this.state.domain.name} onChange={e => {
               this.updateDomainField('name', e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
+            Provider:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: '100%'}} value={this.state.domain.provider} onChange={(value => {this.updateDomainField('provider', value);})}>
+              {
+                [
+                  {id: 'Aliyun', name: 'Aliyun'},
+                  {id: 'GoDaddy', name: 'GoDaddy'},
+                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
