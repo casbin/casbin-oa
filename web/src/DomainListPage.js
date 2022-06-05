@@ -25,6 +25,7 @@ class DomainListPage extends React.Component {
     this.state = {
       classes: props,
       domains: null,
+      isRenewLoading: false,
     };
   }
 
@@ -82,14 +83,26 @@ class DomainListPage extends React.Component {
       });
   }
 
+  updateTableField(index, key, value) {
+    let domains = this.state.domains;
+    domains[index][key] = value;
+    this.setState({
+      domains: domains,
+    });
+  }
+
   renewDomain(i) {
+    this.updateTableField(i, "isRenewLoading", true);
     DomainBackend.renewDomain(this.state.domains[i])
       .then((res) => {
-        console.log(res);
+        this.updateTableField(i, "isRenewLoading", undefined);
+
         Setting.showMessage("success", `Domain renewed successfully`);
         this.getDomains();
       })
       .catch(error => {
+        this.updateTableField(i, "isRenewLoading", undefined);
+
         Setting.showMessage("error", `Domain failed to renew: ${error}`);
       });
   }
@@ -173,11 +186,11 @@ class DomainListPage extends React.Component {
         title: 'Action',
         dataIndex: '',
         key: 'op',
-        width: '240px',
+        width: '260px',
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>
+              <Button loading={record.isRenewLoading === true} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/domains/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete domain: ${record.name} ?`}
