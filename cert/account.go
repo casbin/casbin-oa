@@ -17,6 +17,7 @@ package cert
 import (
 	"crypto"
 
+	"github.com/casbin/casbin-oa/proxy"
 	"github.com/casbin/lego/v4/acme"
 	"github.com/casbin/lego/v4/certcrypto"
 	"github.com/casbin/lego/v4/lego"
@@ -60,6 +61,7 @@ func getLegoClientAndAccount(email string, privateKey string, devMode bool) (*le
 	}
 
 	config.Certificate.KeyType = certcrypto.RSA2048
+	config.HTTPClient = proxy.ProxyHttpClient
 
 	client, err := lego.NewClient(config)
 	if err != nil {

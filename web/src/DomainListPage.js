@@ -224,14 +224,10 @@ class DomainListPage extends React.Component {
     return (
       <div>
         <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
+          <Col span={24}>
             {
               this.renderTable(this.state.domains)
             }
-          </Col>
-          <Col span={1}>
           </Col>
         </Row>
       </div>
