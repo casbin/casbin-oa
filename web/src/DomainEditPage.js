@@ -147,7 +147,7 @@ class DomainEditPage extends React.Component {
               Setting.showMessage("success", "Cert copied to clipboard successfully");
             }}
             >
-              {"Copy cert"}
+              Copy cert
             </Button>
             <Button type="primary" onClick={() => {
               const blob = new Blob([this.state.domain.cert], {type: "text/plain;charset=utf-8"});

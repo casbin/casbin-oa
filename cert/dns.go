@@ -90,6 +90,7 @@ func getGoDaddyCert(client *lego.Client, conf GodaddyConf) (string, string) {
 
 	config := godaddy.NewDefaultConfig()
 	config.PropagationTimeout = time.Duration(conf.Timeout) * time.Minute
+	config.PollingInterval = time.Duration(conf.Timeout) * time.Minute / 9
 	config.APIKey = conf.APIKey
 	config.APISecret = conf.APISecret
 

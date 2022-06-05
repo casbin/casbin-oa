@@ -14,12 +14,33 @@
 
 package object
 
-import "testing"
+import (
+	"fmt"
+	"testing"
 
-func TestCheckCert(t *testing.T) {
+	"github.com/casbin/casbin-oa/util"
+)
+
+func TestGetCertExpireTime(t *testing.T) {
 	InitConfig()
 	InitAdapter()
 
 	domain := getDomain("admin", "casbin.com")
 	println(getCertExpireTime(domain.Cert))
+}
+
+func TestApplyAllCerts(t *testing.T) {
+	InitConfig()
+	InitAdapter()
+
+	baseDir := "F:/github_repos/nginx/conf/ssl"
+	domains := GetDomains("admin")
+	for _, domain := range domains {
+		if domain.Cert == "" || domain.PrivateKey == "" {
+			continue
+		}
+
+		util.WriteStringToPath(domain.Cert, fmt.Sprintf("%s/%s.pem", baseDir, domain.Name))
+		util.WriteStringToPath(domain.PrivateKey, fmt.Sprintf("%s/%s.key", baseDir, domain.Name))
+	}
 }
