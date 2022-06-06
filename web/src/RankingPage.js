@@ -56,7 +56,7 @@ class RankingPage extends React.Component {
   }
 
   isWeekProgram() {
-    return this.state.program.type === "Week";
+    return this.state.program?.type === "Week";
   }
 
   getColumns() {
@@ -496,23 +496,19 @@ class RankingPage extends React.Component {
   renderTable(students) {
     const applied = this.getSelfStudent() !== null;
 
-    if (this.state.program === null) {
-      return null;
-    }
-
     return (
       <div>
         <Table columns={this.getColumns()} dataSource={students} rowKey="name" size="middle" bordered pagination={{pageSize: this.isWeekProgram() ? 100 : 10000}}
                title={() => (
                  <div>
-                   <a target="_blank" rel="noreferrer" href={this.state.program.url}>
-                     {`"${this.state.program.title}"`}
+                   <a target="_blank" rel="noreferrer" href={this.state.program?.url}>
+                     {`"${this.state.program?.title}"`}
                    </a> Ranking&nbsp;&nbsp;&nbsp;&nbsp;
                    {
                      this.renderDownloadCsvButton()
                    }
                    {
-                     !this.state.program.canApply ? null : (
+                     !this.state.program?.canApply ? null : (
                        <React.Fragment>
                          &nbsp;&nbsp;&nbsp;&nbsp;
                          <Button type="primary" size="small" disabled={this.props.account === undefined || this.props.account === null || applied} onClick={this.addStudent.bind(this)}>
