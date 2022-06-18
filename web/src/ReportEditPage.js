@@ -17,6 +17,10 @@ import {Button, Card, Col, Input, Row} from 'antd';
 import * as ReportBackend from "./backend/ReportBackend";
 import * as Setting from "./Setting";
 
+import {Controlled as CodeMirror} from 'react-codemirror2'
+import "codemirror/lib/codemirror.css"
+require("codemirror/mode/markdown/markdown");
+
 class ReportEditPage extends React.Component {
   constructor(props) {
     super(props);
@@ -109,12 +113,26 @@ class ReportEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
+            Mentor:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.report.mentor} onChange={e => {
+              this.updateReportField('mentor', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
             Text:
           </Col>
           <Col span={22} >
-            <Input value={this.state.report.text} onChange={e => {
-              this.updateReportField('text', e.target.value);
-            }} />
+            <CodeMirror
+              value={this.state.report.text}
+              options={{mode: 'markdown', lineNumbers: true}}
+              onBeforeChange={(editor, data, value) => {
+                this.updateReportField('text', value);
+              }}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >

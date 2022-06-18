@@ -96,16 +96,16 @@ class ReportListPage extends React.Component {
           )
         }
       },
-      {
-        title: 'Created time',
-        dataIndex: 'createdTime',
-        key: 'createdTime',
-        width: '160px',
-        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        }
-      },
+      // {
+      //   title: 'Created time',
+      //   dataIndex: 'createdTime',
+      //   key: 'createdTime',
+      //   width: '160px',
+      //   sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
+      //   render: (text, record, index) => {
+      //     return Setting.getFormattedDate(text);
+      //   }
+      // },
       {
         title: 'Program',
         dataIndex: 'program',
@@ -136,6 +136,18 @@ class ReportListPage extends React.Component {
         key: 'student',
         width: '120px',
         sorter: (a, b) => a.student.localeCompare(b.student),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
+          )
+        }
+      },
+      {
+        title: 'Mentor',
+        dataIndex: 'mentor',
+        key: 'mentor',
+        width: '120px',
+        sorter: (a, b) => a.mentor.localeCompare(b.mentor),
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getUserProfileUrl(text, this.props.account)}>{text}</a>
