@@ -29,14 +29,6 @@ func init() {
 	gob.Register(auth.Claims{})
 }
 
-func GetUserName(user *auth.User) string {
-	if user == nil {
-		return ""
-	}
-
-	return user.Name
-}
-
 func (c *ApiController) GetSessionClaims() *auth.Claims {
 	s := c.GetSession("user")
 	if s == nil {
@@ -63,28 +55,4 @@ func (c *ApiController) GetSessionUser() *auth.User {
 	}
 
 	return &claims.User
-}
-
-func (c *ApiController) SetSessionUser(user *auth.User) {
-	if user == nil {
-		c.DelSession("user")
-		return
-	}
-
-	claims := c.GetSessionClaims()
-	if claims == nil {
-		claims = &auth.Claims{}
-	}
-
-	claims.User = *user
-	c.SetSession("user", claims)
-}
-
-func (c *ApiController) GetSessionUsername() string {
-	user := c.GetSessionUser()
-	if user == nil {
-		return ""
-	}
-
-	return GetUserName(user)
 }
