@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/casbin/casbin-oa/proxy"
 	"github.com/casbin/casbin-oa/util"
 )
 
@@ -29,9 +30,19 @@ func TestGetCertExpireTime(t *testing.T) {
 	println(getCertExpireTime(domain.Cert))
 }
 
+func TestRenewAllCerts(t *testing.T) {
+	InitConfig()
+	proxy.InitHttpClient()
+
+	domains := GetDomains("admin")
+	for i, domain := range domains {
+		res := RenewDomain(domain)
+		fmt.Printf("[%d/%d] Renewed domain: [%s] to [%s], res = %v\n", i+1, len(domains), domain.Name, domain.ExpireTime, res)
+	}
+}
+
 func TestApplyAllCerts(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	baseDir := "F:/github_repos/nginx/conf/ssl"
 	domains := GetDomains("admin")
