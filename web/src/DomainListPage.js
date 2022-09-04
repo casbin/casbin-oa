@@ -140,6 +140,16 @@ class DomainListPage extends React.Component {
         sorter: (a, b) => a.provider.localeCompare(b.provider),
       },
       {
+        title: 'Domain expire',
+        dataIndex: 'domainExpireTime',
+        key: 'domainExpireTime',
+        width: '160px',
+        sorter: (a, b) => a.domainExpireTime.localeCompare(b.domainExpireTime),
+        render: (text, record, index) => {
+          return Setting.getFormattedDate(text);
+        }
+      },
+      {
         title: 'Username',
         dataIndex: 'username',
         key: 'username',
@@ -198,7 +208,7 @@ class DomainListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button loading={record.isRenewLoading === true} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>
+              {/*<Button loading={record.isRenewLoading === true} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>*/}
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/domains/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete domain: ${record.name} ?`}

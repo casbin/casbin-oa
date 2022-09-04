@@ -27,6 +27,8 @@ type Domain struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
+	DomainExpireTime string `xorm:"varchar(100)" json:"domainExpireTime"`
+
 	Provider     string `xorm:"varchar(100)" json:"provider"`
 	Username     string `xorm:"varchar(100)" json:"username"`
 	AccessKey    string `xorm:"varchar(100)" json:"accessKey"`
