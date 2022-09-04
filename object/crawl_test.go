@@ -23,7 +23,6 @@ import (
 
 func TestGetPage(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	updateTopicString()
 	ctab := crontab.New()

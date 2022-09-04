@@ -18,7 +18,6 @@ import "testing"
 
 func TestSyncMachine(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	machine := getMachine("admin", "casbintest")
 	machine.syncProcessIds()
@@ -28,7 +27,6 @@ func TestSyncMachine(t *testing.T) {
 
 func TestDeployMachineService(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	machine := getMachine("admin", "casbintest")
 	machine.syncProcessIds()
@@ -68,7 +66,6 @@ func TestDeployMachineService(t *testing.T) {
 
 func TestSyncImpermanentMachines(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	syncImpermanentMachines()
 }

@@ -36,9 +36,8 @@ func getAddedDate(t time.Time, i int) string {
 
 func TestAddRounds(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
-	startDate := getDateFromString("2021-09-27")
+	startDate := getDateFromString("2022-08-15")
 
 	now := time.Now()
 	date := now.Format("2006-01-02")
@@ -61,7 +60,6 @@ func TestAddRounds(t *testing.T) {
 
 func TestAddRounds2(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	startDate := getDateFromString("2022-01-13")
 

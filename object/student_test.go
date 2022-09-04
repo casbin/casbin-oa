@@ -21,7 +21,6 @@ import (
 
 func TestAddStudents(t *testing.T) {
 	InitConfig()
-	InitAdapter()
 
 	startDate := getDateFromString("2022-01-13")
 
