@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -24,6 +25,10 @@ func TestGetDomainExpireTime(t *testing.T) {
 
 	domains := GetDomains("admin")
 	for i, domain := range domains {
+		if strings.HasSuffix(domain.Name, ".co") {
+			continue
+		}
+
 		domainExpireTime := getDomainExpireTime(domain.Name)
 		domain.DomainExpireTime = domainExpireTime
 
