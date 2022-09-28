@@ -18,7 +18,7 @@ import (
 	"encoding/gob"
 
 	"github.com/astaxie/beego"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 type ApiController struct {
@@ -26,20 +26,20 @@ type ApiController struct {
 }
 
 func init() {
-	gob.Register(auth.Claims{})
+	gob.Register(casdoorsdk.Claims{})
 }
 
-func (c *ApiController) GetSessionClaims() *auth.Claims {
+func (c *ApiController) GetSessionClaims() *casdoorsdk.Claims {
 	s := c.GetSession("user")
 	if s == nil {
 		return nil
 	}
 
-	claims := s.(auth.Claims)
+	claims := s.(casdoorsdk.Claims)
 	return &claims
 }
 
-func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
+func (c *ApiController) SetSessionClaims(claims *casdoorsdk.Claims) {
 	if claims == nil {
 		c.DelSession("user")
 		return
@@ -48,7 +48,7 @@ func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
 	c.SetSession("user", *claims)
 }
 
-func (c *ApiController) GetSessionUser() *auth.User {
+func (c *ApiController) GetSessionUser() *casdoorsdk.User {
 	claims := c.GetSessionClaims()
 	if claims == nil {
 		return nil

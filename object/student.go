@@ -15,7 +15,7 @@
 package object
 
 import (
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"xorm.io/core"
 )
 
@@ -94,9 +94,9 @@ func DeleteStudent(student *Student) bool {
 	return affected != 0
 }
 
-func GetStudentGithubMap(students []*Student, users []*auth.User) map[string]string {
+func GetStudentGithubMap(students []*Student, users []*casdoorsdk.User) map[string]string {
 
-	userMap := make(map[string]*auth.User)
+	userMap := make(map[string]*casdoorsdk.User)
 	studentGithubMap := make(map[string]string)
 
 	for i := range users {

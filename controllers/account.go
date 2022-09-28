@@ -18,7 +18,7 @@ import (
 	_ "embed"
 
 	"github.com/astaxie/beego"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
@@ -31,20 +31,20 @@ var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 var JwtPublicKey string
 
 func init() {
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtPublicKey, CasdoorOrganization, CasdoorApplication)
+	casdoorsdk.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtPublicKey, CasdoorOrganization, CasdoorApplication)
 }
 
 func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
-	token, err := auth.GetOAuthToken(code, state)
+	token, err := casdoorsdk.GetOAuthToken(code, state)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	claims, err := auth.ParseJwtToken(token.AccessToken)
+	claims, err := casdoorsdk.ParseJwtToken(token.AccessToken)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -73,7 +73,7 @@ func (c *ApiController) GetAccount() {
 }
 
 func (c *ApiController) GetUsers() {
-	users, err := auth.GetUsers()
+	users, err := casdoorsdk.GetUsers()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
