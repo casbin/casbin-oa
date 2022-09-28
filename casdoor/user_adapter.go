@@ -18,13 +18,14 @@ import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 
 func getUsers() []*casdoorsdk.User {
 	owner := CasdoorOrganization
+	application := CasdoorApplication
 
 	if adapter == nil {
 		panic("casdoor adapter is nil")
 	}
 
 	users := []*casdoorsdk.User{}
-	err := adapter.Engine.Desc("created_time").Find(&users, &casdoorsdk.User{Owner: owner})
+	err := adapter.Engine.Desc("created_time").Find(&users, &casdoorsdk.User{Owner: owner, SignupApplication: application})
 	if err != nil {
 		panic(err)
 	}
