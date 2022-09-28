@@ -86,7 +86,7 @@ func UpdateReport(id string, report *Report) bool {
 		return true
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(report)
+	_, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(report)
 	if err != nil {
 		panic(err)
 	}
@@ -105,7 +105,7 @@ func AddReport(report *Report) bool {
 }
 
 func DeleteReport(report *Report) bool {
-	affected, err := adapter.Engine.Id(core.PK{report.Owner, report.Name}).Delete(&Report{})
+	affected, err := adapter.Engine.ID(core.PK{report.Owner, report.Name}).Delete(&Report{})
 	if err != nil {
 		panic(err)
 	}

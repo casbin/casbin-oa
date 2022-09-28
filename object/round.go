@@ -98,7 +98,7 @@ func UpdateRound(id string, round *Round) bool {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(round)
+	_, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(round)
 	if err != nil {
 		panic(err)
 	}
@@ -117,7 +117,7 @@ func AddRound(round *Round) bool {
 }
 
 func DeleteRound(round *Round) bool {
-	affected, err := adapter.Engine.Id(core.PK{round.Owner, round.Name}).Delete(&Round{})
+	affected, err := adapter.Engine.ID(core.PK{round.Owner, round.Name}).Delete(&Round{})
 	if err != nil {
 		panic(err)
 	}

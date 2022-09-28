@@ -82,7 +82,7 @@ func updateMachine(owner string, name string, machine *Machine) bool {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(machine)
+	_, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(machine)
 	if err != nil {
 		panic(err)
 	}
@@ -115,7 +115,7 @@ func AddMachines(machines []*Machine) bool {
 }
 
 func DeleteMachine(machine *Machine) bool {
-	affected, err := adapter.Engine.Id(core.PK{machine.Owner, machine.Name}).Delete(&Machine{})
+	affected, err := adapter.Engine.ID(core.PK{machine.Owner, machine.Name}).Delete(&Machine{})
 	if err != nil {
 		panic(err)
 	}

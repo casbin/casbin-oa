@@ -73,7 +73,7 @@ func updateDomain(owner string, name string, domain *Domain) bool {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(domain)
+	_, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(domain)
 	if err != nil {
 		panic(err)
 	}
@@ -106,7 +106,7 @@ func AddDomains(domains []*Domain) bool {
 }
 
 func DeleteDomain(domain *Domain) bool {
-	affected, err := adapter.Engine.Id(core.PK{domain.Owner, domain.Name}).Delete(&Domain{})
+	affected, err := adapter.Engine.ID(core.PK{domain.Owner, domain.Name}).Delete(&Domain{})
 	if err != nil {
 		panic(err)
 	}

@@ -68,7 +68,7 @@ func UpdateProgram(id string, program *Program) bool {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name}).AllCols().Update(program)
+	_, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(program)
 	if err != nil {
 		panic(err)
 	}
@@ -87,7 +87,7 @@ func AddProgram(program *Program) bool {
 }
 
 func DeleteProgram(program *Program) bool {
-	affected, err := adapter.Engine.Id(core.PK{program.Owner, program.Name}).Delete(&Program{})
+	affected, err := adapter.Engine.ID(core.PK{program.Owner, program.Name}).Delete(&Program{})
 	if err != nil {
 		panic(err)
 	}

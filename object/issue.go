@@ -97,7 +97,7 @@ func UpdateIssue(name string, issueWebhook *Issue) bool {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{name}).AllCols().Update(issueWebhook)
+	_, err := adapter.Engine.ID(core.PK{name}).AllCols().Update(issueWebhook)
 	if err != nil {
 		panic(err)
 	}
@@ -106,7 +106,7 @@ func UpdateIssue(name string, issueWebhook *Issue) bool {
 }
 
 func DeleteIssue(issueWebhook *Issue) bool {
-	affected, err := adapter.Engine.Id(core.PK{issueWebhook.Name}).Delete(&Issue{})
+	affected, err := adapter.Engine.ID(core.PK{issueWebhook.Name}).Delete(&Issue{})
 	if err != nil {
 		panic(err)
 	}

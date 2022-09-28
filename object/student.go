@@ -67,7 +67,7 @@ func UpdateStudent(owner string, name string, program string, student *Student) 
 		return false
 	}
 
-	_, err := adapter.Engine.Id(core.PK{owner, name, program}).AllCols().Update(student)
+	_, err := adapter.Engine.ID(core.PK{owner, name, program}).AllCols().Update(student)
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +86,7 @@ func AddStudent(student *Student) bool {
 }
 
 func DeleteStudent(student *Student) bool {
-	affected, err := adapter.Engine.Id(core.PK{student.Owner, student.Name, student.Program}).Delete(&Student{})
+	affected, err := adapter.Engine.ID(core.PK{student.Owner, student.Name, student.Program}).Delete(&Student{})
 	if err != nil {
 		panic(err)
 	}

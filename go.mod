@@ -19,5 +19,5 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
 	golang.org/x/text v0.3.7
 	xorm.io/core v0.7.2
-	xorm.io/xorm v0.8.1
+	xorm.io/xorm v1.0.4
 )
