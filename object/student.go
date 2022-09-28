@@ -95,7 +95,6 @@ func DeleteStudent(student *Student) bool {
 }
 
 func GetStudentGithubMap(students []*Student, users []*casdoorsdk.User) map[string]string {
-
 	userMap := make(map[string]*casdoorsdk.User)
 	studentGithubMap := make(map[string]string)
 
@@ -111,7 +110,7 @@ func GetStudentGithubMap(students []*Student, users []*casdoorsdk.User) map[stri
 		if ok {
 			githubUsername, ok = user.Properties["oauth_GitHub_username"]
 			if !ok {
-				githubUsername = user.Github
+				githubUsername = user.GitHub
 			}
 			studentGithubMap[studentName] = githubUsername
 		}
