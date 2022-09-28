@@ -20,8 +20,8 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/casbin/casbin-oa/casdoor"
 	"github.com/casbin/casbin-oa/util"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/mileusna/crontab"
 	"xorm.io/core"
 )
@@ -236,10 +236,7 @@ func TimingAutoUpdate() {
 	endDate, _ := time.ParseInLocation(layout, round.EndDate, time.UTC)
 
 	students := GetFilteredStudents(owner, program)
-	users, err := casdoorsdk.GetUsers()
-	if err != nil {
-		panic(err)
-	}
+	users := casdoor.GetUsers()
 	studentGithubMap := GetStudentGithubMap(students, users)
 
 	for i := range students {

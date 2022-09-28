@@ -18,6 +18,7 @@ import (
 	_ "embed"
 
 	"github.com/astaxie/beego"
+	"github.com/casbin/casbin-oa/casdoor"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
@@ -73,12 +74,7 @@ func (c *ApiController) GetAccount() {
 }
 
 func (c *ApiController) GetUsers() {
-	users, err := casdoorsdk.GetUsers()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
+	users := casdoor.GetUsers()
 	c.Data["json"] = users
 	c.ServeJSON()
 }

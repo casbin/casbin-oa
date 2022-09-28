@@ -18,6 +18,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
+	"github.com/casbin/casbin-oa/casdoor"
 	"github.com/casbin/casbin-oa/ip"
 	"github.com/casbin/casbin-oa/object"
 	"github.com/casbin/casbin-oa/proxy"
@@ -27,6 +28,7 @@ import (
 
 func main() {
 	object.InitAdapter()
+	casdoor.InitCasdoorAdapter()
 	proxy.InitHttpClient()
 	object.RegularUpdate()
 	object.RegularRedeliver()
