@@ -14,7 +14,10 @@
 
 package object
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestSyncMachine(t *testing.T) {
 	InitConfig()
@@ -44,7 +47,9 @@ func TestDeployMachineService(t *testing.T) {
 
 		err = doPull(machine, service)
 		if err != nil {
-			panic(err)
+			if !strings.Contains(err.Error(), "wincredman") {
+				panic(err)
+			}
 		}
 
 		err = doBuild(machine, service)
