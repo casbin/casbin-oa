@@ -23,7 +23,7 @@ import (
 )
 
 func getTargetInstanceCount(slbRate int) int {
-	res := int(math.Floor(float64(slbRate - 1) / 100.0)) + 1
+	res := int(math.Floor(float64(slbRate-1)/60.0)) + 1
 
 	res = res - 3
 	if res < 0 {
@@ -35,7 +35,7 @@ func getTargetInstanceCount(slbRate int) int {
 }
 
 func getNewInstanceName(instanceCount int) string {
-	return fmt.Sprintf("auto-%02d", instanceCount+1)
+	return fmt.Sprintf("auto-%03d", instanceCount+1)
 }
 
 func getInstanceIdAndCreationTimeFromInstances(instances []ecs.Instance, instanceName string) (string, string) {
@@ -63,7 +63,7 @@ func doBalance() {
 		return
 	}
 
-	targetInstanceCount := getTargetInstanceCount(slbRate)
+	targetInstanceCount := getTargetInstanceCount(slbRate) + 5
 	if instanceCount == targetInstanceCount {
 		fmt.Printf("instance_count: [%d] == target_instance_count: [%d], no change\n", instanceCount, targetInstanceCount)
 	} else if instanceCount < targetInstanceCount {
