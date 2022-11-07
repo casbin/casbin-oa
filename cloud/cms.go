@@ -59,7 +59,7 @@ func GetSlbPacketRate() int {
 	}
 
 	res := int(datapoints[0].Average)
-	fmt.Printf("SLB packet rate = %d\n", res)
+	fmt.Printf("[%s] SLB packet rate = %d\n", util.GetCurrentTimeFormatted(), res)
 
 	return res
 }

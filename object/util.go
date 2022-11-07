@@ -17,16 +17,9 @@ package object
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/chromedp/chromedp"
 )
-
-func getCurrentTime() string {
-	timestamp := time.Now().Unix()
-	tm := time.Unix(timestamp, 0)
-	return tm.Format(time.RFC3339)
-}
 
 func getContext() (context.Context, context.CancelFunc) {
 	options := append(

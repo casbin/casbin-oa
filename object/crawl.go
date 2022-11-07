@@ -97,12 +97,12 @@ func updateTopicString() {
 			continue
 		}
 
-		//fmt.Printf("%s: %v\n", getCurrentTime(), topicInfo)
+		//fmt.Printf("%s: %v\n", util.GetCurrentTime(), topicInfo)
 		topicInfos = append(topicInfos, topicInfo)
 	}
 
 	if len(topicInfos) == 0 {
-		fmt.Printf("%s: <empty>\n", getCurrentTime())
+		fmt.Printf("%s: <empty>\n", util.GetCurrentTime())
 		return
 	}
 
@@ -113,7 +113,7 @@ func updateTopicString() {
 	report := &Report{
 		Owner:       "admin",
 		Name:        fmt.Sprintf("report_%s_%s_%s", ProgramName, roundName, studentName),
-		CreatedTime: getCurrentTime(),
+		CreatedTime: util.GetCurrentTime(),
 		Program:     ProgramName,
 		Round:       roundName,
 		Student:     studentName,
