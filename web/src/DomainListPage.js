@@ -208,7 +208,7 @@ class DomainListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              {/*<Button loading={record.isRenewLoading === true} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>*/}
+              <Button loading={record.isRenewLoading === true} style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.renewDomain(index)}>Renew</Button>
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/domains/${record.name}`)}>Edit</Button>
               <Popconfirm
                 title={`Sure to delete domain: ${record.name} ?`}
