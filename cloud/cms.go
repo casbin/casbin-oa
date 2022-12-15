@@ -45,13 +45,15 @@ func GetSlbPacketRate() int {
 
 	resp, err := cmsClient.DescribeMetricLast(r)
 	if err != nil {
-		panic(err)
+		println(err)
+		return -1
 	}
 
 	var datapoints []Datapoint
 	err = util.JsonToStruct(resp.Datapoints, &datapoints)
 	if err != nil {
-		panic(err)
+		println(err)
+		return -1
 	}
 
 	if len(datapoints) <= 0 {
