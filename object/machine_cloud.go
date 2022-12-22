@@ -27,8 +27,9 @@ func getMachineFromInstance(instance ecs.Instance) *Machine {
 		Description: instance.Description,
 		Ip:          instance.PublicIpAddress.IpAddress[0],
 		Port:        22,
-		Username:    "administrator",
+		Username:    "Administrator",
 		Password:    "123",
+		Language:    "zh",
 		AutoQuery:   true,
 		IsPermanent: false,
 		Services: []*Service{{

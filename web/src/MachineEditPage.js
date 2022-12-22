@@ -175,6 +175,16 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={2}>
+            Language:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.machine.language} onChange={e => {
+              this.updateMachineField('language', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={2}>
             Auto query:
           </Col>
           <Col span={1} >

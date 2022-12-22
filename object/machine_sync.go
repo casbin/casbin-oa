@@ -185,15 +185,26 @@ func doDeploy(machine *Machine, service *Service) error {
 func doStart(machine *Machine, service *Service) error {
 	updateMachineServiceStatus(machine, service, "Running", "In Progress", "")
 
-	command1 := fmt.Sprintf(`SCHTASKS /Create /SC ONCE /ST "00:00" /TN "%s" /TR "CMD /C START '' 'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\%s.bat - 快捷方式.lnk' /K CD /D '%%CD%%'"`, service.Name, service.Name)
+	command1 := fmt.Sprintf(`SCHTASKS /Create /SC ONCE /ST "00:00" /TN "%s" /TR "CMD /C START '' 'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\%s.bat - 快捷方式.lnk' /K CD /D '%%CD%%'"`, service.Name, machine.Username, service.Name)
+	if machine.Language == "en" {
+		command1 = strings.ReplaceAll(command1, "快捷方式", "Shortcut")
+	}
+
 	command2 := fmt.Sprintf(`SCHTASKS /Run /TN "%s"`, service.Name)
 	command3 := fmt.Sprintf(`SCHTASKS /Delete /TN "%s" /F`, service.Name)
 	command := fmt.Sprintf("%s && %s && %s", command1, command2, command3)
 	output := machine.runCommand(command)
 	fmt.Println(output)
 
+	var ok bool
+	if machine.Language == "en" {
+		ok = strings.Contains(output, "has successfully been created") && strings.Contains(output, "Attempted to run") && strings.Contains(output, "was successfully deleted")
+	} else {
+		ok = strings.Contains(output, "成功创建") && strings.Contains(output, "尝试运行") && strings.Contains(output, "被成功删除")
+	}
+
 	var err error
-	if strings.Contains(output, "成功创建") && strings.Contains(output, "尝试运行") && strings.Contains(output, "被成功删除") {
+	if ok {
 		err = nil
 		updateMachineServiceStatus(machine, service, "Running", "Done", "")
 	} else {

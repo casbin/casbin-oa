@@ -43,6 +43,7 @@ type Machine struct {
 	Port        int    `json:"port"`
 	Username    string `xorm:"varchar(100)" json:"username"`
 	Password    string `xorm:"varchar(100)" json:"password"`
+	Language    string `xorm:"varchar(100)" json:"language"`
 	AutoQuery   bool   `json:"autoQuery"`
 	IsPermanent bool   `json:"isPermanent"`
 
