@@ -92,7 +92,7 @@ func getBatNamesFromOutput(output string) map[string]int {
 }
 
 func (machine *Machine) runCommand(command string) string {
-	output := ssh.RunCommand(machine.Ip, machine.Username, machine.Password, command)
+	output := ssh.RunCommand(machine.Ip, machine.Port, machine.Username, machine.Password, command)
 	return output
 }
 

@@ -47,7 +47,7 @@ func TestDeployMachineService(t *testing.T) {
 
 		err = doPull(machine, service)
 		if err != nil {
-			if !strings.Contains(err.Error(), "wincredman") {
+			if !strings.Contains(err.Error(), "wincredman") && !strings.Contains(err.Error(), "bash: /dev/tty") {
 				panic(err)
 			}
 		}

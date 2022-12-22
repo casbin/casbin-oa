@@ -22,11 +22,11 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func RunCommand(ip string, username string, password string, command string) string {
+func RunCommand(ip string, port int, username string, password string, command string) string {
 	client, err := goph.NewConn(&goph.Config{
 		User:    username,
 		Addr:    ip,
-		Port:    22,
+		Port:    uint(port),
 		Auth:    goph.Password(password),
 		Timeout: goph.DefaultTimeout,
 		Callback: func(host string, remote net.Addr, key ssh.PublicKey) error {

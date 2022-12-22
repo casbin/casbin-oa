@@ -47,7 +47,8 @@ class MachineListPage extends React.Component {
       name: `machine_${this.state.machines.length}`,
       createdTime: moment().format(),
       description: `New Machine - ${this.state.machines.length}`,
-      Ip: "127.0.0.1",
+      ip: "127.0.0.1",
+      port: 22,
       username: "administrator",
       password: "123",
       autoQuery: false,
@@ -120,6 +121,13 @@ class MachineListPage extends React.Component {
         key: 'ip',
         width: '120px',
         sorter: (a, b) => a.ip.localeCompare(b.ip),
+      },
+      {
+        title: 'Port',
+        dataIndex: 'port',
+        key: 'port',
+        width: '120px',
+        sorter: (a, b) => a.port - b.port,
       },
       {
         title: 'Username',
