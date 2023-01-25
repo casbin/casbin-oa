@@ -14,6 +14,8 @@
 
 package ip
 
+import "fmt"
+
 func InitIpDb() {
 	err := Init("ip/17monipdb.dat")
 	if err != nil {
@@ -24,7 +26,9 @@ func InitIpDb() {
 func IsMainlandIp(ip string) bool {
 	info, err := Find(ip)
 	if err != nil {
-		panic(err)
+		fmt.Printf("error: ip = %s, error = %s\n", ip, err.Error())
+		return false
+		//panic(err)
 	}
 
 	return info.Country == "中国"
