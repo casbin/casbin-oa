@@ -17,6 +17,7 @@ package cloud
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
@@ -71,9 +72,11 @@ func renameInstance(instanceId string, instanceName string) {
 	r.InstanceId = instanceId
 	r.InstanceName = instanceName
 
+	time.Sleep(3000 * time.Millisecond)
 	for i := 0; i < 100; i++ {
 		_, err := ecsClient.ModifyInstanceAttribute(r)
 		if err != nil {
+			time.Sleep(500 * time.Millisecond)
 			continue
 		}
 		break
