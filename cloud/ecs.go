@@ -67,20 +67,31 @@ func AddInstance(instanceName string) {
 	fmt.Printf("1 instance added, name = %s\n", instanceName)
 }
 
+func renameInstanceOnce(r *ecs.ModifyInstanceAttributeRequest) {
+	time.Sleep(3000 * time.Millisecond)
+	for i := 0; i < 100; i++ {
+		_, err := ecsClient.ModifyInstanceAttribute(r)
+		if err != nil {
+			if i == 99 {
+				panic(err)
+			}
+
+			fmt.Printf("renameInstance() error: %s\n", err.Error())
+			time.Sleep(2000 * time.Millisecond)
+			continue
+		}
+		break
+	}
+}
+
 func renameInstance(instanceId string, instanceName string) {
 	r := ecs.CreateModifyInstanceAttributeRequest()
 	r.InstanceId = instanceId
 	r.InstanceName = instanceName
 
-	time.Sleep(3000 * time.Millisecond)
-	for i := 0; i < 100; i++ {
-		_, err := ecsClient.ModifyInstanceAttribute(r)
-		if err != nil {
-			time.Sleep(500 * time.Millisecond)
-			continue
-		}
-		break
-	}
+	renameInstanceOnce(r)
+	renameInstanceOnce(r)
+	renameInstanceOnce(r)
 
 	fmt.Printf("instance: %s renamed to: %s\n", instanceId, instanceName)
 }
