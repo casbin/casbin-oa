@@ -15,6 +15,7 @@
 package object
 
 import (
+	"strings"
 	"time"
 
 	"github.com/likexian/whois"
@@ -22,9 +23,28 @@ import (
 )
 
 func getDomainExpireTime(domainName string) string {
-	data, err := whois.Whois(domainName)
+	server := ""
+	if strings.HasSuffix(domainName, ".com") || strings.HasSuffix(domainName, ".net") {
+		server = "whois.verisign-grs.com"
+	} else if strings.HasSuffix(domainName, ".org") {
+		server = "whois.pir.org"
+	} else if strings.HasSuffix(domainName, ".io") {
+		server = "whois.nic.io"
+	} else if strings.HasSuffix(domainName, ".co") {
+		server = "whois.nic.co"
+	} else if strings.HasSuffix(domainName, ".cn") {
+		server = "whois.cnnic.cn"
+	} else if strings.HasSuffix(domainName, ".run") {
+		server = "whois.nic.run"
+	} else {
+		server = "grs-whois.hichina.com" // com, net, cc, tv
+	}
+
+	data, err := whois.Whois(domainName, server)
 	if err != nil {
-		panic(err)
+		if !strings.HasSuffix(domainName, ".run") || data == "" {
+			panic(err)
+		}
 	}
 
 	whoisInfo, err := whoisparser.Parse(data)
