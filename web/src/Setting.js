@@ -16,7 +16,7 @@ import {message} from "antd";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import Sdk from "casdoor-js-sdk";
 
-export let ServerUrl = '';
+export let ServerUrl = 'http://120.46.213.49:10000';
 export let CasdoorSdk;
 
 export function initServerUrl() {
