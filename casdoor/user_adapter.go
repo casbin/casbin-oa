@@ -17,11 +17,6 @@ package casdoor
 import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 
 
-/*
-创建一个空的用户数组 users，用于存储从数据库中检索到的用户信息。
-使用 adapter.Engine.Desc("created_time").Find() 方法从数据库中检索用户信息。
-这里使用了 Casdoor Go SDK 提供的 User 结构作为查询条件，根据组织名称和应用程序名称进行筛选，并按照创建时间降序排序。
-*/
 func getUsers() []*casdoorsdk.User {
 	owner := CasdoorOrganization
 	application := CasdoorApplication
