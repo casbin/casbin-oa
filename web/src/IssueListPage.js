@@ -150,7 +150,7 @@ class IssueListPage extends React.Component {
         width: '250px',
         sorter: (a, b) => a.project_name.localeCompare(b.project_name),
       },
-      {
+      //{
         // title: 'Reviewers',
         // dataIndex: 'reviewers',
         // key: 'reviewers',
@@ -165,7 +165,7 @@ class IssueListPage extends React.Component {
         //   reviwers += lastPeople
         //   return reviwers;
         // }
-      },
+      //},
       {
         title: 'Action',
         dataIndex: '',

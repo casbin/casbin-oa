@@ -24,7 +24,7 @@ type Issue struct {
 	ProjectName string   `xorm:"varchar(1000)" json:"project_name"`
 	ProjectId   int64    `xorm:"varchar(100)"  json:"project_id"`
 	AtPeople    []string `xorm:"varchar(1000)" json:"at_people"`
-	Reviewers   []string `xorm:"varchar(1000)" json:"reviewers"`
+	//Reviewers   []string `xorm:"varchar(1000)" json:"reviewers"`
 }
 /*
 GetIssues 函数用于获取所有的问题，它通过调用 adapter.Engine.Find 方法从数据库中查询所有的问题，并将结果存储在 issueWebhooks 切片中返回。
