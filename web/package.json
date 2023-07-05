@@ -1,49 +1,17 @@
-{
-  "name": "web",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@ant-design/icons": "4.6.2",
-    "@craco/craco": "^6.3.0",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "antd": "4.15.5",
-    "casdoor-js-sdk": "^0.0.3",
-    "codemirror": "^5.57.0",
-    "copy-to-clipboard": "^3.3.1",
-    "craco-less": "^1.20.0",
-    "file-saver": "^2.0.5",
-    "moment": "^2.27.0",
-    "react": "^17.0.2",
-    "react-codemirror2": "^7.2.1",
-    "react-csv": "^2.0.3",
-    "react-device-detect": "^1.12.1",
-    "react-dom": "^17.0.2",
-    "react-github-corner": "^2.5.0",
-    "react-markdown": "^4.3.1",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3"
-  },
-  "scripts": {
-    "start": "set PORT=9000 && craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
-}
+const CracoLessPlugin = require('craco-less');
+
+module.exports = {
+  plugins: [
+    {
+      plugin: CracoLessPlugin,
+      options: {
+        lessLoaderOptions: {
+          lessOptions: {
+            modifyVars: { '@primary-color': 'rgb(45,120,213)' },
+            javascriptEnabled: true,
+          },
+        },
+      },
+    },
+  ],
+};

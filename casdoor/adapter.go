@@ -22,7 +22,6 @@ import (
 	"xorm.io/xorm"
 )
 
-
 var (
 	adapter             *Adapter = nil
 	CasdoorOrganization string
@@ -73,7 +72,7 @@ func NewAdapter(driverName string, dataSourceName string, dbName string) *Adapte
 	// Open the DB, create it if not existed.
 	a.open()
 
-	// Call the destructor when the object is released. 
+	// Call the destructor when the object is released.
 	runtime.SetFinalizer(a, finalizer)
 
 	return a
