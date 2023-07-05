@@ -19,7 +19,7 @@ export const DefaultProgramName = "talent2022";
 
 export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",
-  serverUrl: "http://120.46.213.49:7001",
+  serverUrl: "http://localhost:7001",
   clientId: "0ba528121ea87b3eb54d",
   appName: "app-casbin-oa",
   organizationName: "casbin",
