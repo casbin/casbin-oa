@@ -383,26 +383,7 @@ class IssueEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}}>
-          <Col style={{marginTop: '5px'}} span={2}>
-            Reviewers:
-          </Col>
-          <Col span={22}>
-            <Select
-                virtual={false}
-                value={this.state.issue.reviewers}
-                mode="tags"
-                style={{width: '100%'}}
-                tokenSeparators={[',']}
-                optionLabelProp="value"
-                onChange={value => {
-                  this.updateIssueField('reviewers', value)
-                }}
-            >
-              {atPeople}
-            </Select>
-          </Col>
-        </Row>
+       
         <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
             Project:
