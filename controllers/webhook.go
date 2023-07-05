@@ -82,24 +82,24 @@ func PullRequestOpen(pullRequestEvent github.PullRequestEvent) bool {
 	issueWebhook := object.GetIssueIfExist(owner, repo)
 
 	if issueWebhook != nil {
-		reviewers := issueWebhook.Reviewers
+		at_people := issueWebhook.AtPeople
 		sender := pullRequestEvent.Sender.GetLogin()
 
-		if len(reviewers) != 0 {
+		if len(at_people) != 0 {
 			members := util.GetOrgMembers(owner)
-			for i := 0; i < len(reviewers); i++ {
-				_, existed := members[reviewers[i]]
-				if !existed || reviewers[i] == sender {
-					reviewers = append(reviewers[:i], reviewers[i+1:]...)
+			for i := 0; i < len(at_people); i++ {
+				_, existed := members[at_people[i]]
+				if !existed || at_people[i] == sender {
+					at_people = append(at_people[:i], at_people[i+1:]...)
 					i = i - 1
 				}
 			}
-			if len(reviewers) != 0 {
-				go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), reviewers)
+			if len(at_people) != 0 {
+				go util.RequestReviewers(owner, repo, pullRequestEvent.GetNumber(), at_people)
 
 				var commentStr string
-				for i := range reviewers {
-					commentStr = fmt.Sprintf("%s @%s", commentStr, reviewers[i])
+				for i := range at_people {
+					commentStr = fmt.Sprintf("%s @%s", commentStr, at_people[i])
 				}
 				commentStr = fmt.Sprintf("%s %s", commentStr, "please review")
 
