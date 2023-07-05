@@ -16,7 +16,6 @@ package casdoor
 
 import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 
-
 func getUsers() []*casdoorsdk.User {
 	owner := CasdoorOrganization
 	application := CasdoorApplication

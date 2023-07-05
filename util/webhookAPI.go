@@ -25,11 +25,11 @@ import (
 func GetOrgWebhooks(org string) []*github.Hook {
 	client := GetClient()
 	organizations := client.Organizations
-	hooks, response, _ := organizations.ListHooks(context.Background(), org, nil)
+	hooks, response, err := organizations.ListHooks(context.Background(), org, nil)
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	if err != nil {
+		panic(err)
+	}
 
 	if response.StatusCode == 404 {
 		return nil
