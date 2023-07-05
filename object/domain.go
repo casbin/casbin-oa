@@ -39,6 +39,7 @@ type Domain struct {
 	PrivateKey string `xorm:"mediumtext" json:"privateKey"`
 }
 
+//根据所有者的名称获取该所有者拥有的所有域名，并按创建时间降序排列。
 func GetDomains(owner string) []*Domain {
 	domains := []*Domain{}
 	err := adapter.Engine.Desc("created_time").Find(&domains, &Domain{Owner: owner})
@@ -48,7 +49,7 @@ func GetDomains(owner string) []*Domain {
 
 	return domains
 }
-
+//根据所有者和名称获取一个域名对象。
 func getDomain(owner string, name string) *Domain {
 	domain := Domain{Owner: owner, Name: name}
 	existed, err := adapter.Engine.Get(&domain)
@@ -62,12 +63,12 @@ func getDomain(owner string, name string) *Domain {
 		return nil
 	}
 }
-
+//根据域名ID获取一个域名对象
 func GetDomain(id string) *Domain {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getDomain(owner, name)
 }
-
+//更新一个域名对象
 func updateDomain(owner string, name string, domain *Domain) bool {
 	if getDomain(owner, name) == nil {
 		return false
@@ -81,12 +82,12 @@ func updateDomain(owner string, name string, domain *Domain) bool {
 	//return affected != 0
 	return true
 }
-
+//根据域名ID更新一个域名对象
 func UpdateDomain(id string, domain *Domain) bool {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return updateDomain(owner, name, domain)
 }
-
+//添加一个域名对象
 func AddDomain(domain *Domain) bool {
 	affected, err := adapter.Engine.Insert(domain)
 	if err != nil {
@@ -95,7 +96,7 @@ func AddDomain(domain *Domain) bool {
 
 	return affected != 0
 }
-
+//批量添加多个域名对象
 func AddDomains(domains []*Domain) bool {
 	affected, err := adapter.Engine.Insert(domains)
 	if err != nil {
@@ -104,7 +105,7 @@ func AddDomains(domains []*Domain) bool {
 
 	return affected != 0
 }
-
+//删除一个域名对象
 func DeleteDomain(domain *Domain) bool {
 	affected, err := adapter.Engine.ID(core.PK{domain.Owner, domain.Name}).Delete(&Domain{})
 	if err != nil {
@@ -113,11 +114,11 @@ func DeleteDomain(domain *Domain) bool {
 
 	return affected != 0
 }
-
+//域名的ID
 func (domain *Domain) getId() string {
 	return fmt.Sprintf("%s/%s", domain.Owner, domain.Name)
 }
-
+//续订一个域名的证书
 func RenewDomain(domain *Domain) bool {
 	client := cert.GetAcmeClient(acmeEmail, acmePrivateKey, false)
 

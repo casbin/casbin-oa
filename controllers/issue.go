@@ -20,6 +20,11 @@ import (
 	"github.com/casbin/casbin-oa/object"
 )
 
+/*
+这个方法用于获取所有问题。
+调用 object.GetIssues() 获取所有问题，并将结果保存到 c.Data["json"] 中。
+通过 ServeJSON() 方法将 JSON 格式的结果作为响应返回。
+*/
 func (c *ApiController) GetIssue() {
 	c.Data["json"] = object.GetIssues()
 	c.ServeJSON()

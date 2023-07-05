@@ -383,7 +383,7 @@ class IssueEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}}>
+        {/* <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
             Reviewers:
           </Col>
@@ -402,7 +402,7 @@ class IssueEditPage extends React.Component {
               {atPeople}
             </Select>
           </Col>
-        </Row>
+        </Row> */}
         <Row style={{marginTop: '20px'}}>
           <Col style={{marginTop: '5px'}} span={2}>
             Project:

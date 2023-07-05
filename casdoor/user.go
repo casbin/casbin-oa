@@ -16,6 +16,7 @@ package casdoor
 
 import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 
+
 func GetUsers() []*casdoorsdk.User {
 	if adapter != nil {
 		return getUsers()

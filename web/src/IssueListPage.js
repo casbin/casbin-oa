@@ -61,7 +61,7 @@ class IssueListPage extends React.Component {
       project_name: '',
       project_id: -1,
       at_people: [],
-      reviewers: [],
+      //reviewers: [],
     }
   }
 
@@ -151,20 +151,20 @@ class IssueListPage extends React.Component {
         sorter: (a, b) => a.project_name.localeCompare(b.project_name),
       },
       {
-        title: 'Reviewers',
-        dataIndex: 'reviewers',
-        key: 'reviewers',
-        width: '250px',
-        sorter: (a, b) => a.reviewers.localeCompare(b.reviewers),
-        render: (text, record, index) => {
-          let reviwers = ""
-          for (let i = 0; i < text.length - 1; i++) {
-            reviwers += `${text[i]} , `
-          }
-          let lastPeople = text.length > 0 ? text[text.length - 1] : ""
-          reviwers += lastPeople
-          return reviwers;
-        }
+        // title: 'Reviewers',
+        // dataIndex: 'reviewers',
+        // key: 'reviewers',
+        // width: '250px',
+        // sorter: (a, b) => a.reviewers.localeCompare(b.reviewers),
+        // render: (text, record, index) => {
+        //   let reviwers = ""
+        //   for (let i = 0; i < text.length - 1; i++) {
+        //     reviwers += `${text[i]} , `
+        //   }
+        //   let lastPeople = text.length > 0 ? text[text.length - 1] : ""
+        //   reviwers += lastPeople
+        //   return reviwers;
+        // }
       },
       {
         title: 'Action',
