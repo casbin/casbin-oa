@@ -72,7 +72,7 @@ class RankingPage extends React.Component {
           }
 
           if (record.displayName === undefined) {
-            return `User: ${record.name} not found`;
+            return record.name;
           }
 
           return (
@@ -633,14 +633,13 @@ class RankingPage extends React.Component {
 
   getPrsFromGithub(){
     let githubUsername = this.state.curStudent.github;
-    if (this.state.curStudent.properties?.oauth_GitHub_username !== undefined) {
+    if (this.state.curStudent.properties?.oauth_GitHub_username) {
       githubUsername = this.state.curStudent.properties.oauth_GitHub_username;
     }
-    if (githubUsername === "") {
-      this.setState({ loading: false });
-      Setting.showMessage("error", "No Github Account!");
-      return;
+    if (githubUsername === undefined) {
+      githubUsername = this.state.curStudent.name;
     }
+
     ReportBackend.autoUpdateReport(this.state.report.owner,this.state.report.name, this.state.curStudent, githubUsername, this.state.curRound).then(res =>{
       this.setState({loading: false});
       if (res !== ""){
