@@ -15,7 +15,7 @@
 export const ShowGithubCorner = false;
 export const GithubRepo = "https://github.com/casbin/casbin-oa";
 
-export const DefaultProgramName = "talent2022";
+export const DefaultProgramName = "talent2023";
 
 export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",

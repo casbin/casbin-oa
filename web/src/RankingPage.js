@@ -65,7 +65,7 @@ class RankingPage extends React.Component {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        width: '60px',
+        width: '70px',
         render: (text, record, index) => {
           if (!this.isWeekProgram()) {
             return text.replace("-", ":");

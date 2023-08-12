@@ -66,6 +66,10 @@ func GetEvents(author string, orgMap map[string]bool, startDate time.Time, endDa
 			options = github.ListOptions{Page: curPage}
 			Events, _, err = activity.ListEventsPerformedByUser(context.Background(), author, true, &options)
 			if err != nil {
+				if strings.Contains(err.Error(), "pagination is limited for this resource") {
+					fmt.Printf("GetEvents() error: %s\n", err.Error())
+					break
+				}
 				panic(err)
 			}
 			continue
