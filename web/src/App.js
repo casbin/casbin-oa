@@ -32,8 +32,6 @@ import IssueListPage from "./IssueListPage"
 import IssueEditPage from "./IssueEditPage"
 import MachineListPage from "./MachineListPage";
 import MachineEditPage from "./MachineEditPage";
-import DomainListPage from "./DomainListPage";
-import DomainEditPage from "./DomainEditPage";
 import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
@@ -90,8 +88,6 @@ class App extends Component {
       this.setState({ selectedMenuKey: '/issues'})
     } else if (uri.includes('/machines')){
       this.setState({ selectedMenuKey: '/machines'})
-    } else if (uri.includes('/domains')){
-      this.setState({ selectedMenuKey: '/domains'})
     } else {
       this.setState({ selectedMenuKey: -1 });
     }
@@ -260,13 +256,6 @@ class App extends Component {
           </Link>
         </Menu.Item>
     );
-    res.push(
-        <Menu.Item key="/domains">
-          <Link to="/domains">
-            Domains
-          </Link>
-        </Menu.Item>
-    );
 
     return res;
   }
@@ -333,8 +322,6 @@ class App extends Component {
           <Route exact path="/issues/:issueName" render={(props) => this.renderSigninIfNotSignedIn(<IssueEditPage account={this.state.account} {...props} />)}/>
           <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/machines/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)}/>
-          <Route exact path="/domains" render={(props) => this.renderSigninIfNotSignedIn(<DomainListPage account={this.state.account} {...props} />)}/>
-          <Route exact path="/domains/:domainName" render={(props) => this.renderSigninIfNotSignedIn(<DomainEditPage account={this.state.account} {...props} />)}/>
         </Switch>
       </div>
     )
