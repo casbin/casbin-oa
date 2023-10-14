@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "set PORT=9000 && craco --openssl-legacy-provider start",
-    "build": "craco build",
+    "build": "craco --openssl-legacy-provider build",
     "test": "craco test",
     "eject": "craco eject"
   },
